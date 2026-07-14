@@ -30,7 +30,7 @@ export default async function AdminVerifyPage({
   if (id) {
     if (!driver) return notFound();
 
-    const d = driver as typeof driver & { _id: unknown };
+    const d = driver as any;
 
     return (
       <div style={{ padding: '2rem', maxWidth: 640 }}>

@@ -9,7 +9,7 @@ export interface AuthPayload {
 
 export function signToken(payload: AuthPayload): string {
   return jwt.sign(payload, process.env.JWT_SECRET!, {
-    expiresIn: process.env.JWT_EXPIRES_IN ?? '30d',
+    expiresIn: (process.env.JWT_EXPIRES_IN ?? '30d') as any,
   });
 }
 
