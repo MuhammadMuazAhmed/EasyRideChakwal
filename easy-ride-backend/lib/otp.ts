@@ -47,7 +47,7 @@ export async function sendOTP(phone: string, otp: string): Promise<void> {
     
     // In development mode, we log the OTP to the terminal and succeed
     // so development is not blocked by Twilio limitations/errors.
-    if (process.env.NODE_ENV === 'development' || !process.env.NODE_ENV) {
+    if (process.env.ALLOW_DEV_OTP === 'true') {
       console.log('\n========================================');
       console.log(`[DEV MODE SMS FALLBACK]`);
       console.log(`Phone: ${formatted}`);
