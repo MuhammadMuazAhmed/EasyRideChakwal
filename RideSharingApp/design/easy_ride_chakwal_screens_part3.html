@@ -1,0 +1,827 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--y:#F5C400;--yd:#D4A900;--b:#111;--bg:#EFEFEF;--brd:#e5e5e5;--t2:#555;--t3:#999;--grn:#16a34a;--red:#dc2626}
+.wrap{background:var(--bg);padding:14px;min-height:580px}
+.nav{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;border-bottom:2.5px solid var(--y);padding-bottom:10px}
+.ng{display:flex;flex-direction:column;gap:3px}
+.nl{font-size:9px;font-weight:700;color:var(--t2);text-transform:uppercase;letter-spacing:.6px;padding-left:2px}
+.np{display:flex;gap:4px;flex-wrap:wrap}
+.pi{background:#fff;border:1.5px solid var(--brd);border-radius:18px;padding:4px 10px;font-size:11px;font-weight:600;cursor:pointer;color:var(--t2);white-space:nowrap;transition:.12s}
+.pi:hover{border-color:var(--y);color:#111}
+.pi.on{background:var(--y);border-color:var(--yd);color:#111}
+.view{display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap}
+.ph{width:270px;min-width:270px;background:#111;border-radius:34px;padding:4px;box-shadow:0 4px 20px rgba(0,0,0,.2)}
+.phi{background:#fff;border-radius:30px;overflow:hidden;min-height:550px}
+.phb{background:#111;height:26px;display:flex;align-items:center;justify-content:center;border-radius:26px 26px 0 0}
+.phb::after{content:'';width:68px;height:5px;background:#2a2a2a;border-radius:3px}
+.sd{flex:1;min-width:200px;max-width:320px}
+.sd h3{font-size:14px;font-weight:700;color:#111;margin-bottom:6px}
+.sd p{font-size:12px;color:var(--t2);line-height:1.55;margin-bottom:7px}
+.ft{display:inline-block;background:#fff5cc;color:#7a5800;border:1px solid var(--y);border-radius:5px;font-size:10px;font-weight:600;padding:2px 7px;margin:2px}
+.s{display:flex;flex-direction:column;height:550px;font-family:'Segoe UI',sans-serif;overflow:hidden}
+.tb{background:#111;color:#fff;padding:8px 12px;display:flex;align-items:center;justify-content:space-between;font-size:11px;flex-shrink:0}
+.tbt{font-weight:700;font-size:12px}
+.lm{background:var(--y);color:#111;font-weight:900;font-size:10px;padding:2px 6px;border-radius:5px;margin-right:4px}
+.scr{flex:1;overflow-y:auto;padding:10px}
+.scr::-webkit-scrollbar{width:0}
+.bb{background:#fff;border-top:1px solid var(--brd);padding:5px 0;display:flex;justify-content:space-around;flex-shrink:0}
+.bi{display:flex;flex-direction:column;align-items:center;gap:1px;font-size:9px;color:var(--t3);padding:3px 6px;cursor:pointer}
+.bi.on{color:#111}
+.bi svg{width:17px;height:17px;stroke-width:2;fill:none;stroke:currentColor}
+.bd{width:4px;height:4px;background:var(--y);border-radius:50%;margin-top:1px}
+.rw{display:flex;align-items:center;gap:7px}
+.rwb{display:flex;align-items:center;justify-content:space-between}
+.av{width:32px;height:32px;border-radius:50%;background:var(--y);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:11px;color:#111;flex-shrink:0}
+.bgg{background:#dcfce7;color:#15803d;font-size:10px;font-weight:700;padding:2px 6px;border-radius:12px}
+.bgy{background:#fff5cc;color:#7a5800;font-size:10px;font-weight:700;padding:2px 6px;border-radius:12px}
+.bgr{background:#fee2e2;color:#dc2626;font-size:10px;font-weight:700;padding:2px 6px;border-radius:12px}
+.bga{background:#f1f1f1;color:#555;font-size:10px;font-weight:700;padding:2px 6px;border-radius:12px}
+.bgb{background:#111;color:var(--y);font-size:10px;font-weight:700;padding:2px 6px;border-radius:12px}
+.div{height:1px;background:var(--brd);margin:7px 0}
+.cd{background:#fff;border-radius:11px;padding:10px;border:1px solid var(--brd);margin-bottom:7px}
+.ml{font-size:10px;color:var(--t3);font-weight:700;text-transform:uppercase;letter-spacing:.4px;margin-bottom:2px}
+.mu{font-size:11px;color:var(--t2)}
+.ms{font-size:10px;color:var(--t3)}
+.inf{background:#f8f8f8;border:1.5px solid var(--brd);border-radius:9px;padding:8px 11px;font-size:12px;color:#111;width:100%;outline:none;font-family:inherit;margin-bottom:8px}
+.inf:focus{border-color:var(--y)}
+.il{font-size:10px;font-weight:700;color:var(--t2);margin-bottom:3px;display:block;text-transform:uppercase;letter-spacing:.3px}
+.pb{background:#111;color:var(--y);border:none;border-radius:10px;padding:11px;font-size:13px;font-weight:700;width:100%;cursor:pointer}
+.yb{background:var(--y);color:#111;border:none;border-radius:10px;padding:11px;font-size:13px;font-weight:700;width:100%;cursor:pointer}
+.pr{height:5px;background:#f0f0f0;border-radius:3px;overflow:hidden;margin:5px 0}
+.pf{height:100%;background:var(--y);border-radius:3px}
+.sg{display:grid;grid-template-columns:1fr 1fr;gap:5px}
+.sc{background:#fff;border-radius:9px;padding:8px;border:1px solid var(--brd);text-align:center}
+.dg{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.map{flex:1;position:relative;overflow:hidden;background:#e8f0d8}
+.asd{width:58px;min-width:58px;background:#111;display:flex;flex-direction:column;align-items:center;padding:10px 0;gap:6px}
+.ab{flex:1;overflow:hidden;display:flex;flex-direction:column;background:#f5f5f5}
+.ah{background:#fff;padding:8px 12px;border-bottom:1px solid var(--brd);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.ac{flex:1;overflow-y:auto;padding:9px}
+.ac::-webkit-scrollbar{width:0}
+.si{width:38px;height:38px;border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.si:hover,.si.on{background:rgba(245,196,0,.18)}
+.si svg{stroke:#777;stroke-width:1.7;width:17px;height:17px;fill:none}
+.si.on svg{stroke:var(--y)}
+.sl2{background:var(--y);width:38px;height:38px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:13px;color:#111;margin-bottom:6px}
+</style>
+
+<div class="wrap">
+<div class="nav">
+  <div class="ng">
+    <div class="nl">💬 Rider extra</div>
+    <div class="np">
+      <div class="pi on" onclick="show('r-chat',this)">In-App Chat</div>
+      <div class="pi" onclick="show('r-surge',this)">Surge Alert</div>
+      <div class="pi" onclick="show('r-schedule',this)">Schedule Ride</div>
+      <div class="pi" onclick="show('r-cancel',this)">Cancel Ride</div>
+      <div class="pi" onclick="show('r-nodriver',this)">No Driver</div>
+      <div class="pi" onclick="show('r-saved',this)">Saved Places</div>
+    </div>
+  </div>
+  <div class="ng">
+    <div class="nl">🚗 Driver extra</div>
+    <div class="np">
+      <div class="pi" onclick="show('d-chat',this)">In-App Chat</div>
+      <div class="pi" onclick="show('d-surge',this)">Surge Zone</div>
+      <div class="pi" onclick="show('d-wallet',this)">Wallet</div>
+      <div class="pi" onclick="show('d-history',this)">Trip History</div>
+      <div class="pi" onclick="show('d-support',this)">Support</div>
+    </div>
+  </div>
+  <div class="ng">
+    <div class="nl">⚙️ Admin extra</div>
+    <div class="np">
+      <div class="pi" onclick="show('a-search',this)">Search User</div>
+      <div class="pi" onclick="show('a-block',this)">Block User</div>
+      <div class="pi" onclick="show('a-promo',this)">Promo Codes</div>
+      <div class="pi" onclick="show('a-feedback',this)">Feedback Log</div>
+      <div class="pi" onclick="show('a-report',this)">Daily Report</div>
+    </div>
+  </div>
+  <div class="ng">
+    <div class="nl">🔧 System screens</div>
+    <div class="np">
+      <div class="pi" onclick="show('s-onboard',this)">Onboard Flow</div>
+      <div class="pi" onclick="show('s-terms',this)">Terms & Privacy</div>
+      <div class="pi" onclick="show('s-update',this)">Force Update</div>
+      <div class="pi" onclick="show('s-maintain',this)">Maintenance</div>
+      <div class="pi" onclick="show('s-nocoverage',this)">No Coverage</div>
+    </div>
+  </div>
+</div>
+
+<div class="view">
+  <div class="ph">
+    <div class="phb"></div>
+    <div class="phi" id="pc"></div>
+  </div>
+  <div class="sd" id="sd"></div>
+</div>
+</div>
+
+<script>
+const SC={
+
+'r-chat':{l:'Rider — In-App Chat with Driver',i:'💬',d:'Private masked chat between rider and driver. No real phone numbers shared. Driver location shown above chat. Quick reply chips for common messages. Urdu + English.',f:['Masked privacy chat','Quick reply chips','Driver seen location','Urdu message support'],
+h:`<div class="s">
+  <div class="tb">
+    <div class="rw"><div style="width:28px;height:28px;background:var(--y);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:10px;color:#111">AR</div><div style="margin-left:6px"><div class="tbt">Abdul Rehman</div><div style="font-size:9px;color:#aaa">Driver · ETA 3 min</div></div></div>
+    <div class="rw" style="gap:8px">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#aaa" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 8.81a2 2 0 012-2.18h3"/></svg>
+    </div>
+  </div>
+  <div style="background:#f0f9e8;padding:8px 10px;border-bottom:1px solid var(--brd);font-size:10px;color:#15803d;flex-shrink:0">
+    📍 Driver 1.2km away — Numbers are private and masked
+  </div>
+  <div style="flex:1;overflow-y:auto;padding:10px;background:#f5f5f5;display:flex;flex-direction:column;gap:8px">
+    <div style="align-self:flex-start;max-width:80%">
+      <div style="background:#fff;border-radius:12px 12px 12px 3px;padding:8px 10px;border:1px solid var(--brd)">
+        <div style="font-size:12px">Assalam o Alaikum, main aapke paas aa raha hoon</div>
+        <div class="ms" style="margin-top:3px;text-align:right">3:08 PM</div>
+      </div>
+    </div>
+    <div style="align-self:flex-end;max-width:80%">
+      <div style="background:#111;border-radius:12px 12px 3px 12px;padding:8px 10px">
+        <div style="font-size:12px;color:#fff">Theek hai, main Clock Tower ke paas hoon</div>
+        <div class="ms" style="margin-top:3px;text-align:right;color:#888">3:09 PM ✓✓</div>
+      </div>
+    </div>
+    <div style="align-self:flex-start;max-width:80%">
+      <div style="background:#fff;border-radius:12px 12px 12px 3px;padding:8px 10px;border:1px solid var(--brd)">
+        <div style="font-size:12px">Kia aap yellow shirt mein hain?</div>
+        <div class="ms" style="margin-top:3px;text-align:right">3:10 PM</div>
+      </div>
+    </div>
+    <div style="text-align:center"><span class="ms" style="background:#ebebeb;padding:3px 8px;border-radius:10px">Quick Replies</span></div>
+    <div style="display:flex;flex-wrap:wrap;gap:5px;justify-content:center">
+      ${['Haan, main yahan hoon ✋','1 minute mein aata hoon','Kia aap mujhe dekh sakte hain?','Okay, theek hai'].map(t=>`<div style="background:#fff;border:1.5px solid var(--brd);border-radius:16px;padding:5px 10px;font-size:10px;font-weight:600;cursor:pointer">${t}</div>`).join('')}
+    </div>
+  </div>
+  <div style="background:#fff;border-top:1px solid var(--brd);padding:8px 10px;display:flex;gap:7px;flex-shrink:0">
+    <input class="inf" style="flex:1;margin:0;font-size:12px;padding:8px 10px" placeholder="Message likhein..." />
+    <button style="background:#111;color:var(--y);border:none;border-radius:9px;padding:8px 12px;font-size:12px;font-weight:700;cursor:pointer">Send</button>
+  </div>
+</div>`},
+
+'r-surge':{l:'Rider — Surge Pricing Alert',i:'⚡',d:'When demand is high in Chakwal (Friday prayer time, Eid, rain), surge multiplier activates. Rider is shown current multiplier and estimated higher fare before confirming.',f:['Surge multiplier shown','Estimated fare preview','Reason for surge','Accept or wait option'],
+h:`<div class="s">
+  <div class="tb"><span class="lm">E</span><span class="tbt">Ride Mahenga Hai Abhi</span></div>
+  <div style="flex:1;overflow:hidden;position:relative">
+    <div class="map">
+      <div style="position:absolute;top:45%;left:0;right:0;height:11px;background:#d8d4c8"></div>
+      <div style="position:absolute;left:38%;top:0;bottom:0;width:10px;background:#d8d4c8"></div>
+      <div style="position:absolute;inset:0;background:rgba(245,196,0,.12)"></div>
+      <div style="position:absolute;top:30%;left:50%;transform:translate(-50%,-50%);text-align:center">
+        <div style="background:rgba(245,196,0,.95);border-radius:12px;padding:8px 14px;font-weight:900;font-size:18px;color:#7a5800">⚡ 1.4x</div>
+        <div style="background:rgba(0,0,0,.7);color:#fff;font-size:10px;padding:3px 8px;border-radius:8px;margin-top:4px">Surge Active Zone</div>
+      </div>
+      <div style="position:absolute;bottom:0;left:0;right:0;background:#fff;border-radius:14px 14px 0 0;padding:12px;box-shadow:0 -3px 14px rgba(0,0,0,.1)">
+        <div style="background:#fff5cc;border:2px solid var(--y);border-radius:11px;padding:11px;margin-bottom:10px">
+          <div class="rwb" style="margin-bottom:5px">
+            <div style="font-size:13px;font-weight:700">Surge Pricing Active ⚡</div>
+            <div style="background:var(--y);color:#7a5800;font-size:12px;font-weight:800;padding:3px 9px;border-radius:8px">1.4x</div>
+          </div>
+          <div class="mu" style="font-size:11px;margin-bottom:6px">Jumma ki namaz ke baad demand zyada hai — fare thoda zyada hoga</div>
+          <div class="rwb">
+            <div><div class="ms">Normal fare</div><div style="font-size:13px;font-weight:700;text-decoration:line-through;color:var(--t2)">PKR 180</div></div>
+            <div style="font-size:8px;color:var(--t3)">×1.4</div>
+            <div><div class="ms">Surge fare</div><div style="font-size:16px;font-weight:800;color:#111">PKR 252</div></div>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <button style="background:#f5f5f5;border:1.5px solid var(--brd);border-radius:10px;padding:11px;font-size:12px;font-weight:700;cursor:pointer">⏳ Wait for Normal</button>
+          <button class="pb" style="font-size:12px;padding:11px">Accept Surge Fare</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>`},
+
+'r-schedule':{l:'Rider — Schedule a Ride',i:'📅',d:'Book a ride up to 24 hours in advance. Select date, time, pickup and drop. Confirm with deposit or full fare. Useful for airport trips and early morning rides.',f:['Date & time picker','Advance booking','Reminder notification','Cancel anytime'],
+h:`<div class="s">
+  <div class="tb"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#aaa" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg><span class="tbt">Ride Schedule Karein</span></div>
+  <div class="scr" style="background:#fff;padding:12px">
+    <div style="background:#fffdf0;border:1.5px solid var(--y);border-radius:11px;padding:10px;margin-bottom:12px;text-align:center">
+      <div style="font-size:12px;font-weight:700;margin-bottom:2px">Advance Booking</div>
+      <div class="ms">Kal subah ki ride aaj hi book karein</div>
+    </div>
+    <label class="il">Pickup Date</label>
+    <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:10px">
+      ${['S','M','T','W','T','F','S'].map(d=>`<div style="text-align:center;font-size:9px;font-weight:700;color:var(--t3);padding:2px">${d}</div>`).join('')}
+      ${[25,26,27,28,29,30,1].map((d,i)=>`<div style="text-align:center;padding:5px 2px;border-radius:6px;cursor:pointer;font-size:11px;font-weight:600;background:${d===26?'#111':'#f8f8f8'};color:${d===26?'var(--y)':d===25?'var(--t3)':'#111'}">${d}</div>`).join('')}
+    </div>
+    <label class="il">Pickup Time</label>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px">
+      ${['6:00 AM','7:00 AM','8:00 AM','9:00 AM','10:00 AM'].map((t,i)=>`<div style="background:${i===1?'#111':'#f5f5f5'};color:${i===1?'var(--y)':'var(--t2)'};border-radius:8px;padding:6px 10px;font-size:11px;font-weight:600;cursor:pointer">${t}</div>`).join('')}
+    </div>
+    <label class="il">From</label>
+    <input class="inf" value="Clock Tower, Chakwal" />
+    <label class="il">To</label>
+    <input class="inf" value="Rawalpindi Saddar" />
+    <div class="cd" style="margin-bottom:10px">
+      <div class="rwb"><span class="mu">Estimated Fare</span><span style="font-size:15px;font-weight:800">PKR 1,200</span></div>
+      <div class="rwb" style="margin-top:4px"><span class="ms">Vehicle: Car · 78 km</span><span class="ms">26 Jun · 7:00 AM</span></div>
+    </div>
+    <button class="pb">Confirm Schedule Ride</button>
+  </div>
+</div>`},
+
+'r-cancel':{l:'Rider — Cancel Ride',i:'❌',d:'Rider wants to cancel after requesting. Shows cancellation policy — free within 2 min, PKR 30 fee after driver arrives. Reason selection required.',f:['Cancellation policy shown','Fee warning','Reason required','Free cancel window'],
+h:`<div class="s">
+  <div class="tb"><span class="tbt">Ride Cancel Karein?</span></div>
+  <div class="scr" style="background:#fff;padding:12px">
+    <div style="background:#fee2e2;border:1.5px solid #fca5a5;border-radius:11px;padding:11px;margin-bottom:12px">
+      <div style="font-size:13px;font-weight:700;color:#dc2626;margin-bottom:5px">⚠️ Cancellation Policy</div>
+      <div style="font-size:11px;color:#b91c1c;margin-bottom:5px">Driver ne aapka request accept kar liya hai aur aapki taraf aa raha hai.</div>
+      <div class="rwb">
+        <div style="text-align:center;background:rgba(220,38,38,.1);border-radius:8px;padding:8px;flex:1;margin-right:5px">
+          <div style="font-size:10px;color:#b91c1c;font-weight:700">Abhi Cancel (0-2 min)</div>
+          <div style="font-size:14px;font-weight:800;color:#dc2626">Free</div>
+        </div>
+        <div style="text-align:center;background:rgba(220,38,38,.1);border-radius:8px;padding:8px;flex:1">
+          <div style="font-size:10px;color:#b91c1c;font-weight:700">Driver Arrive ke Baad</div>
+          <div style="font-size:14px;font-weight:800;color:#dc2626">PKR 30 Fee</div>
+        </div>
+      </div>
+    </div>
+    <div style="font-size:13px;font-weight:700;margin-bottom:8px">Cancel Karne ki Wajah?</div>
+    ${['Driver bahut door hai','Galti se request ho gayi','Plan change ho gaya','Koi driver nahi mila','Koi aur wajah'].map((r,i)=>`
+    <div style="display:flex;align-items:center;gap:10px;padding:10px;border:1.5px solid ${i===2?'var(--y)':'var(--brd)'};border-radius:10px;margin-bottom:6px;cursor:pointer;background:${i===2?'#fffdf0':'#fff'}">
+      <div style="width:16px;height:16px;border-radius:50%;border:2px solid ${i===2?'var(--y)':'#ccc'};background:${i===2?'var(--y)':'transparent'};flex-shrink:0"></div>
+      <span style="font-size:12px;font-weight:${i===2?700:500}">${r}</span>
+    </div>`).join('')}
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px">
+      <button style="background:#f5f5f5;border:1.5px solid var(--brd);border-radius:10px;padding:11px;font-size:12px;font-weight:700;cursor:pointer">Wapas Jao</button>
+      <button style="background:#dc2626;color:#fff;border:none;border-radius:10px;padding:11px;font-size:12px;font-weight:700;cursor:pointer">Ride Cancel Karein</button>
+    </div>
+  </div>
+</div>`},
+
+'r-nodriver':{l:'Rider — No Driver Available',i:'😔',d:'Screen shown when no driver is online near the rider. Shows retry option, switch vehicle type suggestion, and option to try again in a few minutes.',f:['Retry search button','Switch vehicle type','ETA to next driver','Notify when available'],
+h:`<div class="s">
+  <div class="tb"><span class="lm">E</span><span class="tbt">Driver Dhoond Rahe Hain...</span></div>
+  <div style="flex:1;overflow:hidden;position:relative">
+    <div class="map">
+      <div style="position:absolute;top:45%;left:0;right:0;height:11px;background:#d8d4c8"></div>
+      <div style="position:absolute;left:38%;top:0;bottom:0;width:10px;background:#d8d4c8"></div>
+      <div style="position:absolute;top:40%;left:50%;transform:translate(-50%,-50%)">
+        <div style="background:#fff5cc;border:2px solid var(--y);border-radius:50%;width:56px;height:56px;display:flex;align-items:center;justify-content:center;font-size:24px">😔</div>
+      </div>
+      <div style="position:absolute;top:8px;left:8px;right:8px;background:rgba(0,0,0,.8);border-radius:10px;padding:8px 10px;color:#fff;text-align:center">
+        <div style="font-size:12px;font-weight:700">Aapke area mein koi driver nahi</div>
+        <div style="font-size:10px;color:#aaa;margin-top:2px">Clock Tower, Chakwal · 60s dhoond liya</div>
+      </div>
+    </div>
+    <div style="position:absolute;bottom:0;left:0;right:0;background:#fff;border-radius:14px 14px 0 0;padding:12px;box-shadow:0 -3px 14px rgba(0,0,0,.1)">
+      <div style="font-size:13px;font-weight:700;margin-bottom:10px">Kya Karein?</div>
+      <div style="display:flex;flex-direction:column;gap:7px">
+        <button class="pb" style="font-size:12px;padding:11px">🔄 Dobara Try Karein</button>
+        <button style="background:#f5f5f5;border:1.5px solid var(--brd);border-radius:10px;padding:11px;font-size:12px;font-weight:700;cursor:pointer">🏍️ Bike Try Karein (Faster)</button>
+        <button style="background:#f0fdf4;border:1.5px solid #bbf7d0;border-radius:10px;padding:11px;font-size:12px;font-weight:700;cursor:pointer;color:#15803d">🔔 Driver Available hone par Notify Karein</button>
+      </div>
+    </div>
+  </div>
+</div>`},
+
+'r-saved':{l:'Rider — Saved Places',i:'📍',d:'Rider can save frequent locations: Home, Office, Family, etc. with custom names. Pinned places appear at top of destination search for quick selection.',f:['Custom labels','Home & Office shortcuts','Frequent places','Quick pin from map'],
+h:`<div class="s">
+  <div class="tb"><span class="tbt">Saved Places</span><button style="background:var(--y);color:#111;border:none;border-radius:7px;padding:4px 8px;font-size:10px;font-weight:700;cursor:pointer">+ Add New</button></div>
+  <div class="scr" style="background:#fff;padding:10px">
+    <div class="ml" style="margin-bottom:8px">Aapki Saved Jagahein</div>
+    ${[
+      {ic:'🏠',name:'Ghar',sub:'Gali No. 4, Dhok Qureshi, Chakwal',clr:'#fff5cc',brd:'var(--y)'},
+      {ic:'💼',name:'Office',sub:'Tehsil Office, Main Road Chakwal',clr:'#e6f1fb',brd:'#b5d4f4'},
+      {ic:'🎓',name:'College',sub:'GCT Chakwal, Near Bus Stand',clr:'#f0fdf4',brd:'#bbf7d0'},
+      {ic:'👨‍👩‍👧',name:'Ami ki Jagah',sub:'Mohalla Gulshan, Talagang Road',clr:'#fbeaf0',brd:'#f4c0d1'},
+    ].map(p=>`
+    <div style="display:flex;align-items:center;gap:10px;padding:11px;background:${p.clr};border:1.5px solid ${p.brd};border-radius:11px;margin-bottom:7px;cursor:pointer">
+      <span style="font-size:22px">${p.ic}</span>
+      <div style="flex:1">
+        <div style="font-size:13px;font-weight:700">${p.name}</div>
+        <div class="ms">${p.sub}</div>
+      </div>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+    </div>`).join('')}
+    <div style="border:2px dashed var(--brd);border-radius:11px;padding:14px;text-align:center;cursor:pointer;margin-top:4px">
+      <div style="font-size:20px;margin-bottom:4px">📍</div>
+      <div style="font-size:12px;font-weight:700;color:var(--t2)">New Place Add Karein</div>
+      <div class="ms">Map pe pin drop karein ya search karein</div>
+    </div>
+  </div>
+  <div class="bb">
+    <div class="bi"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg><span>Home</span></div>
+    <div class="bi"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span>History</span></div>
+    <div class="bi on"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>Profile</span><div class="bd"></div></div>
+  </div>
+</div>`},
+
+'d-chat':{l:'Driver — In-App Chat with Rider',i:'💬',d:'Driver side of the masked chat. Same privacy — no real numbers shared. Driver can send quick confirmations. Urdu keyboard-friendly.',f:['Quick driver replies','No number sharing','Urdu-friendly','Notification badge'],
+h:`<div class="s">
+  <div class="tb">
+    <div class="rw"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#aaa" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg><div style="margin-left:6px"><div class="tbt">Sana Ahmad (Rider)</div><div style="font-size:9px;color:#aaa">Ride #1042 · Active</div></div></div>
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#aaa" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07"/></svg>
+  </div>
+  <div style="background:#f0f9e8;padding:7px 10px;border-bottom:1px solid var(--brd);font-size:10px;color:#15803d;flex-shrink:0">🔒 Numbers private hain — sirf app ke zariye baat karein</div>
+  <div style="flex:1;overflow-y:auto;padding:10px;background:#f5f5f5;display:flex;flex-direction:column;gap:7px">
+    <div style="align-self:flex-end;max-width:80%">
+      <div style="background:#111;border-radius:12px 12px 3px 12px;padding:8px 10px">
+        <div style="font-size:12px;color:#fff">Assalam o Alaikum, main aapke paas aa raha hoon</div>
+        <div class="ms" style="margin-top:3px;text-align:right;color:#888">3:08 PM ✓✓</div>
+      </div>
+    </div>
+    <div style="align-self:flex-start;max-width:80%">
+      <div style="background:#fff;border-radius:12px 12px 12px 3px;padding:8px 10px;border:1px solid var(--brd)">
+        <div style="font-size:12px">Theek hai, main Clock Tower ke paas hoon</div>
+        <div class="ms" style="margin-top:3px;text-align:right">3:09 PM</div>
+      </div>
+    </div>
+    <div style="text-align:center"><span class="ms" style="background:#ebebeb;padding:3px 8px;border-radius:10px">Driver Quick Replies</span></div>
+    <div style="display:flex;flex-wrap:wrap;gap:5px;justify-content:center">
+      ${['Aaya hoon ✓','2 minute mein','Gari ka rang: White','Mujhe dekh lein'].map(t=>`<div style="background:#fff;border:1.5px solid var(--brd);border-radius:14px;padding:4px 9px;font-size:10px;font-weight:600;cursor:pointer">${t}</div>`).join('')}
+    </div>
+  </div>
+  <div style="background:#fff;border-top:1px solid var(--brd);padding:8px 10px;display:flex;gap:7px;flex-shrink:0">
+    <input class="inf" style="flex:1;margin:0;font-size:12px;padding:7px 10px" placeholder="Message..." />
+    <button style="background:var(--y);color:#111;border:none;border-radius:9px;padding:7px 11px;font-size:12px;font-weight:700;cursor:pointer">Send</button>
+  </div>
+</div>`},
+
+'d-surge':{l:'Driver — Surge Zone Map',i:'⚡',d:'Driver sees surge zones highlighted on Chakwal map. Yellow/orange zones mean higher fares. Driver moves toward surge area to earn more.',f:['Surge zone heatmap','Multiplier by area','Move toward zone hint','Live demand indicator'],
+h:`<div class="s">
+  <div class="tb"><span class="lm">E</span><span class="tbt">Surge Zones — Chakwal</span><div class="bgy">Live</div></div>
+  <div style="flex:1;position:relative;overflow:hidden">
+    <div class="map">
+      <div style="position:absolute;top:45%;left:0;right:0;height:11px;background:#d8d4c8"></div>
+      <div style="position:absolute;left:38%;top:0;bottom:0;width:10px;background:#d8d4c8"></div>
+      <div style="position:absolute;top:25%;left:0;right:0;height:8px;background:#d8d4c8;opacity:.6"></div>
+      <div style="position:absolute;top:20%;left:25%;width:80px;height:60px;background:rgba(245,196,0,.35);border-radius:50%;display:flex;align-items:center;justify-content:center">
+        <div style="background:rgba(245,196,0,.9);border-radius:8px;padding:3px 7px;font-size:11px;font-weight:800;color:#7a5800">1.4x</div>
+      </div>
+      <div style="position:absolute;top:50%;left:55%;width:60px;height:50px;background:rgba(234,88,12,.25);border-radius:50%;display:flex;align-items:center;justify-content:center">
+        <div style="background:rgba(234,88,12,.85);border-radius:8px;padding:3px 7px;font-size:11px;font-weight:800;color:#fff">1.8x</div>
+      </div>
+      <div style="position:absolute;top:68%;left:20%;transform:translate(-50%,-50%)">
+        <div style="background:#111;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center">
+          <svg width="14" height="10" viewBox="0 0 40 24" fill="none" stroke="#F5C400" stroke-width="2.5"><rect x="4" y="4" width="32" height="14" rx="3"/><circle cx="10" cy="20" r="3"/><circle cx="30" cy="20" r="3"/></svg>
+        </div>
+      </div>
+      <div style="position:absolute;top:8px;left:8px;right:8px;background:rgba(0,0,0,.82);border-radius:9px;padding:7px 10px">
+        <div style="color:#F5C400;font-size:11px;font-weight:700;margin-bottom:3px">⚡ Surge Active — Higher Earnings!</div>
+        <div style="color:#aaa;font-size:10px">Yellow zone ki taraf jayein zyada kamayi ke liye</div>
+      </div>
+    </div>
+    <div style="position:absolute;bottom:0;left:0;right:0;background:#fff;border-radius:14px 14px 0 0;padding:10px;box-shadow:0 -3px 14px rgba(0,0,0,.1)">
+      <div style="display:flex;gap:8px;margin-bottom:8px">
+        <div style="flex:1;background:#fff5cc;border:1.5px solid var(--y);border-radius:9px;padding:8px;text-align:center">
+          <div style="font-size:11px;font-weight:800;color:#7a5800">Clock Tower Area</div>
+          <div style="font-size:16px;font-weight:800">1.4x ⚡</div>
+          <div class="ms">Jumma demand</div>
+        </div>
+        <div style="flex:1;background:#fff0e6;border:1.5px solid #f97316;border-radius:9px;padding:8px;text-align:center">
+          <div style="font-size:11px;font-weight:800;color:#9a3412">Bus Stand Area</div>
+          <div style="font-size:16px;font-weight:800">1.8x 🔥</div>
+          <div class="ms">Peak demand</div>
+        </div>
+      </div>
+      <button class="yb" style="font-size:12px;padding:10px">Navigate to Bus Stand (1.8x) →</button>
+    </div>
+  </div>
+</div>`},
+
+'d-wallet':{l:'Driver — Earnings Wallet',i:'💰',d:'Driver digital wallet showing pending earnings, total balance, and withdrawal history. Withdraw to JazzCash or EasyPaisa with one tap. Minimum PKR 100 withdrawal.',f:['Pending & available balance','JazzCash/EasyPaisa withdraw','Withdrawal history','Minimum limit shown'],
+h:`<div class="s">
+  <div class="tb"><span class="tbt">Mera Wallet</span></div>
+  <div class="scr" style="background:#f5f5f5;padding:10px">
+    <div style="background:#111;border-radius:13px;padding:14px;margin-bottom:10px">
+      <div class="ms" style="color:#666;margin-bottom:4px;text-transform:uppercase;letter-spacing:.3px;font-weight:700">Available Balance</div>
+      <div style="color:var(--y);font-size:28px;font-weight:800;margin-bottom:4px">PKR 3,250</div>
+      <div style="display:flex;gap:8px">
+        <div style="background:rgba(255,255,255,.07);border-radius:8px;padding:6px 10px;text-align:center;flex:1">
+          <div style="color:#888;font-size:9px;font-weight:700">PENDING</div>
+          <div style="color:#fff;font-size:13px;font-weight:700">PKR 1,840</div>
+        </div>
+        <div style="background:rgba(255,255,255,.07);border-radius:8px;padding:6px 10px;text-align:center;flex:1">
+          <div style="color:#888;font-size:9px;font-weight:700">THIS WEEK</div>
+          <div style="color:#fff;font-size:13px;font-weight:700">PKR 12,450</div>
+        </div>
+      </div>
+    </div>
+    <div class="cd" style="margin-bottom:8px">
+      <div style="font-size:13px;font-weight:700;margin-bottom:8px">Withdraw Karein</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:8px">
+        <div style="background:#fff5cc;border:2px solid var(--y);border-radius:10px;padding:10px;text-align:center;cursor:pointer">
+          <div style="font-size:18px">📱</div>
+          <div style="font-size:11px;font-weight:700;margin-top:3px">JazzCash</div>
+        </div>
+        <div style="background:#f5f5f5;border:1.5px solid var(--brd);border-radius:10px;padding:10px;text-align:center;cursor:pointer">
+          <div style="font-size:18px">🟢</div>
+          <div style="font-size:11px;font-weight:700;color:var(--t2);margin-top:3px">EasyPaisa</div>
+        </div>
+      </div>
+      <input class="inf" value="PKR 3,250" style="text-align:center;font-size:15px;font-weight:700" />
+      <div class="ms" style="text-align:center;margin-bottom:8px">Min. PKR 100 · Max. PKR 10,000/day</div>
+      <button class="yb" style="font-size:12px;padding:10px">Withdraw to JazzCash →</button>
+    </div>
+    <div class="ml" style="margin-bottom:6px">Recent Withdrawals</div>
+    ${[['23 Jun','PKR 2,000','JazzCash','bgg'],['20 Jun','PKR 3,500','EasyPaisa','bgg'],['17 Jun','PKR 1,800','JazzCash','bgg']].map(([d,a,m,c])=>`
+    <div class="rwb" style="background:#fff;border-radius:9px;padding:9px 10px;margin-bottom:5px;border:1px solid var(--brd)">
+      <div><div style="font-size:12px;font-weight:700">${a}</div><div class="ms">${d} · ${m}</div></div>
+      <span class="${c}">Sent ✓</span>
+    </div>`).join('')}
+  </div>
+</div>`},
+
+'d-history':{l:'Driver — Trip History',i:'📋',d:'Driver sees all their completed trips with earnings, distance, and rider rating. Filter by day/week/month. Export available.',f:['All past trips','Earnings per trip','Rider rating received','Filter by period'],
+h:`<div class="s">
+  <div class="tb"><span class="tbt">Mere Trips</span>
+    <div style="display:flex;gap:4px">
+      ${['Aaj','Hafte','Mahine'].map((t,i)=>`<div style="background:${i===0?'var(--y)':'rgba(255,255,255,.1)'};color:${i===0?'#111':'#aaa'};border-radius:8px;padding:3px 7px;font-size:9px;font-weight:700;cursor:pointer">${t}</div>`).join('')}
+    </div>
+  </div>
+  <div class="scr" style="background:#f5f5f5;padding:8px">
+    <div style="background:#111;border-radius:10px;padding:10px;margin-bottom:8px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;text-align:center">
+      <div><div class="ms" style="color:#666">Trips</div><div style="color:var(--y);font-size:16px;font-weight:800">11</div></div>
+      <div><div class="ms" style="color:#666">Kamai</div><div style="color:var(--y);font-size:16px;font-weight:800">1,840</div></div>
+      <div><div class="ms" style="color:#666">Rating</div><div style="color:var(--y);font-size:16px;font-weight:800">4.9★</div></div>
+    </div>
+    ${[
+      {id:'#1042',r:'Sana A.',from:'Clock Tower',to:'GCT College',fare:'PKR 153',dist:'3.2km',rating:'5.0★',time:'3:12 PM'},
+      {id:'#1041',r:'Ali R.',from:'Bus Stand',to:'Hospital',fare:'PKR 102',dist:'2.1km',rating:'5.0★',time:'1:45 PM'},
+      {id:'#1040',r:'Fatima K.',from:'GT Road',to:'Main Bazar',fare:'PKR 80',dist:'1.8km',rating:'4.0★',time:'11:30 AM'},
+      {id:'#1039',r:'Ahmed B.',from:'Talagang Rd',to:'Home Dhok',fare:'PKR 263',dist:'6.1km',rating:'5.0★',time:'9:15 AM'},
+    ].map(t=>`
+    <div class="cd" style="margin-bottom:7px">
+      <div class="rwb" style="margin-bottom:5px">
+        <div class="rw" style="gap:6px"><div class="av" style="width:24px;height:24px;font-size:9px">${t.r.split(' ').map(x=>x[0]).join('')}</div><div style="font-size:12px;font-weight:700">${t.r}</div></div>
+        <div style="text-align:right"><div style="font-size:13px;font-weight:800">${t.fare}</div><div class="ms">${t.time}</div></div>
+      </div>
+      <div class="rw" style="gap:5px;margin-bottom:4px">
+        <div class="dg" style="background:var(--y)"></div><span class="mu">${t.from}</span>
+        <span class="ms">→</span>
+        <div class="dg" style="background:var(--grn)"></div><span class="mu">${t.to}</span>
+      </div>
+      <div class="rwb"><span class="ms">${t.dist}</span><span style="color:var(--y);font-size:11px;font-weight:700">${t.rating}</span></div>
+    </div>`).join('')}
+  </div>
+  <div class="bb">
+    <div class="bi"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg><span>Home</span></div>
+    <div class="bi on"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span>History</span><div class="bd"></div></div>
+    <div class="bi"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>Profile</span></div>
+  </div>
+</div>`},
+
+'d-support':{l:'Driver — Driver Support',i:'🆘',d:'Driver help center. FAQ for common issues, WhatsApp direct line to Easy Ride support team, and form to report a problem with a ride.',f:['WhatsApp support link','FAQ accordion','Report a problem','Response time shown'],
+h:`<div class="s">
+  <div class="tb"><span class="tbt">Help & Support</span></div>
+  <div class="scr" style="background:#fff;padding:10px">
+    <div style="background:#111;border-radius:12px;padding:12px;text-align:center;margin-bottom:12px">
+      <div style="font-size:13px;font-weight:700;color:#fff;margin-bottom:4px">Direct Support</div>
+      <div class="ms" style="color:#666;margin-bottom:8px">Usually replies in 15-30 minutes</div>
+      <button style="background:#25D366;color:#fff;border:none;border-radius:10px;padding:10px 20px;font-size:13px;font-weight:700;cursor:pointer;width:100%">📱 WhatsApp: 0310-0570499</button>
+    </div>
+    <div style="font-size:12px;font-weight:700;margin-bottom:8px">Aksar Puchhe Jaane Wale Sawal</div>
+    ${[
+      ['Paise kab milenge?','Trips ke paise agle din available hote hain. Minimum PKR 100 withdraw kar sakte hain.'],
+      ['Account suspend kyun hua?','Low rating (below 4.0) ya policy violation se suspend hota hai. Admin se contact karein.'],
+      ['Naya vehicle add karna hai?','Profile > Vehicle Info > Edit. Admin se approval leni hogi.'],
+      ['Rider ne galat location diya?','Trip ke baad report karein. Screenshot lena na bhulen.'],
+    ].map(([q,a],i)=>`
+    <div style="border:1px solid var(--brd);border-radius:10px;margin-bottom:6px;overflow:hidden">
+      <div style="padding:10px 12px;display:flex;justify-content:space-between;cursor:pointer;background:${i===0?'#fffdf0':'#fff'}">
+        <span style="font-size:12px;font-weight:600">${q}</span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="2"><path d="${i===0?'M18 15l-6-6-6 6':'M6 9l6 6 6-6'}"/></svg>
+      </div>
+      ${i===0?`<div style="padding:0 12px 10px;font-size:11px;color:var(--t2);border-top:1px solid var(--brd)">${a}</div>`:''}
+    </div>`).join('')}
+    <div style="margin-top:8px">
+      <div style="font-size:12px;font-weight:700;margin-bottom:6px">Problem Report Karein</div>
+      <select class="inf" style="margin-bottom:6px">
+        <option>Category chunein...</option>
+        <option>Payment issue</option>
+        <option>Rider complaint</option>
+        <option>App bug</option>
+      </select>
+      <textarea class="inf" style="height:60px;resize:none;font-size:11px" placeholder="Detail mein likhein..."></textarea>
+      <button class="pb" style="font-size:12px;padding:10px">Report Bhejein</button>
+    </div>
+  </div>
+</div>`},
+
+'a-search':{l:'Admin — Search Users',i:'🔍',d:'Admin can search any rider or driver by name, phone number, CNIC, or vehicle plate. View full profile, trip history, and account status.',f:['Search by phone/CNIC','Rider & driver results','Quick profile preview','Jump to trip history'],
+h:`<div class="s" style="flex-direction:row">
+  <div class="asd">
+    <div class="sl2">E</div>
+    ${[0,1,2,3,4].map(i=>`<div class="si ${i===4?'on':''}"><svg viewBox="0 0 24 24">${['<rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>','<path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/>','<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>','<polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>','<circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>'][i]}</svg></div>`).join('')}
+  </div>
+  <div class="ab">
+    <div class="ah"><div style="font-size:13px;font-weight:700">Search Users</div></div>
+    <div class="ac">
+      <div style="background:#f8f8f8;border:1.5px solid var(--y);border-radius:9px;padding:8px 10px;display:flex;gap:6px;align-items:center;margin-bottom:8px">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+        <input style="border:none;background:transparent;font-size:12px;outline:none;flex:1" value="Abdul Rehman" />
+        <div class="bgy">Driver</div>
+      </div>
+      <div style="display:flex;gap:5px;margin-bottom:8px">
+        ${['All','Riders','Drivers','Blocked'].map((t,i)=>`<div style="background:${i===0?'#111':'#f0f0f0'};color:${i===0?'var(--y)':'var(--t2)'};border-radius:7px;padding:4px 9px;font-size:10px;font-weight:700;cursor:pointer">${t}</div>`).join('')}
+      </div>
+      <div style="font-size:10px;font-weight:700;color:var(--t3);margin-bottom:5px;text-transform:uppercase;letter-spacing:.3px">3 Results Found</div>
+      ${[
+        {n:'Abdul Rehman',p:'+92 300 1234567',t:'Driver',s:'Active',trips:312,rating:'4.9★'},
+        {n:'Abdul Rauf',p:'+92 321 9876543',t:'Rider',s:'Active',trips:14,rating:'4.8★'},
+        {n:'Abdul Rehman K.',p:'+92 333 5556667',t:'Driver',s:'Pending',trips:0,rating:'New'},
+      ].map(u=>`
+      <div style="background:#fff;border:1px solid var(--brd);border-radius:9px;padding:9px;margin-bottom:5px;cursor:pointer">
+        <div class="rwb" style="margin-bottom:4px">
+          <div class="rw" style="gap:7px">
+            <div class="av" style="width:28px;height:28px;font-size:10px">${u.n.split(' ').map(x=>x[0]).join('').slice(0,2)}</div>
+            <div><div style="font-size:12px;font-weight:700">${u.n}</div><div class="ms">${u.p}</div></div>
+          </div>
+          <div style="text-align:right">
+            <span class="${u.s==='Active'?'bgg':u.s==='Pending'?'bgy':'bgr'}">${u.s}</span>
+          </div>
+        </div>
+        <div class="rwb">
+          <span class="${u.t==='Driver'?'bgb':'bga'}">${u.t}</span>
+          <span class="ms">${u.trips} trips · ${u.rating}</span>
+          <button style="background:#f8f8f8;border:1px solid var(--brd);border-radius:6px;padding:3px 8px;font-size:10px;font-weight:700;cursor:pointer">View →</button>
+        </div>
+      </div>`).join('')}
+    </div>
+  </div>
+</div>`},
+
+'a-block':{l:'Admin — Block / Suspend User',i:'🚫',d:'Admin can block or suspend a rider or driver with reason logging. Temporary suspend (24h, 7d) or permanent block. Blocked users see error on login.',f:['Temporary or permanent','Reason logged','Notify user via push','Unblock anytime'],
+h:`<div class="s" style="flex-direction:row">
+  <div class="asd">
+    <div class="sl2">E</div>
+    ${[0,1,2,3,4].map(i=>`<div class="si ${i===1?'on':''}"><svg viewBox="0 0 24 24">${['<rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>','<path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/>','<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>','<polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>','<circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>'][i]}</svg></div>`).join('')}
+  </div>
+  <div class="ab">
+    <div class="ah"><div style="font-size:13px;font-weight:700">Suspend / Block User</div><div class="bgr">Sensitive Action</div></div>
+    <div class="ac">
+      <div style="background:#fff;border:1px solid var(--brd);border-radius:10px;padding:10px;margin-bottom:10px">
+        <div class="rw" style="gap:8px;margin-bottom:6px">
+          <div class="av" style="width:36px;height:36px;font-size:13px">AR</div>
+          <div style="flex:1"><div style="font-size:13px;font-weight:700">Abdul Rehman</div><div class="ms">Driver · LZR-482 · 312 trips · 4.9★</div></div>
+          <span class="bgg">Active</span>
+        </div>
+      </div>
+      <label class="il">Suspend Duration</label>
+      <div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:9px">
+        ${['24 Hours','3 Days','7 Days','1 Month','Permanent Block'].map((t,i)=>`<div style="background:${i===4?'#fee2e2':'#f5f5f5'};border:1.5px solid ${i===4?'#fca5a5':'var(--brd)'};color:${i===4?'#dc2626':'var(--t2)'};border-radius:8px;padding:5px 9px;font-size:10px;font-weight:700;cursor:pointer">${t}</div>`).join('')}
+      </div>
+      <label class="il">Reason (Required)</label>
+      <div style="display:flex;flex-direction:column;gap:5px;margin-bottom:9px">
+        ${['Low rating (below 4.0)','Rider complaint — rude behavior','GPS spoofing detected','Fake trip reported','Policy violation'].map((r,i)=>`
+        <div style="display:flex;align-items:center;gap:8px;padding:7px 9px;border:1.5px solid ${i===2?'var(--y)':'var(--brd)'};border-radius:8px;cursor:pointer;background:${i===2?'#fffdf0':'#fff'}">
+          <div style="width:14px;height:14px;border-radius:50%;border:2px solid ${i===2?'var(--y)':'#ccc'};background:${i===2?'var(--y)':'transparent'};flex-shrink:0"></div>
+          <span style="font-size:11px;font-weight:${i===2?700:500}">${r}</span>
+        </div>`).join('')}
+      </div>
+      <textarea class="inf" style="height:48px;resize:none;font-size:11px" placeholder="Additional notes..."></textarea>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px">
+        <button style="background:#f5f5f5;border:1px solid var(--brd);border-radius:9px;padding:9px;font-size:11px;font-weight:700;cursor:pointer">Cancel</button>
+        <button style="background:#dc2626;color:#fff;border:none;border-radius:9px;padding:9px;font-size:11px;font-weight:700;cursor:pointer">Suspend Driver</button>
+      </div>
+    </div>
+  </div>
+</div>`},
+
+'a-promo':{l:'Admin — Promo Code Manager',i:'🎁',d:'Admin creates, activates, and deactivates promo codes. Set discount amount or %, usage limit, expiry date, and target audience (new riders only, all, etc.).',f:['Create promo codes','Set usage limits','Activate/deactivate','Usage tracking'],
+h:`<div class="s" style="flex-direction:row">
+  <div class="asd">
+    <div class="sl2">E</div>
+    ${[0,1,2,3,4].map(i=>`<div class="si ${i===3?'on':''}"><svg viewBox="0 0 24 24">${['<rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>','<path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/>','<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>','<path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/>','<circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>'][i]}</svg></div>`).join('')}
+  </div>
+  <div class="ab">
+    <div class="ah"><div style="font-size:13px;font-weight:700">Promo Codes</div><button style="background:#111;color:var(--y);border:none;border-radius:7px;padding:4px 9px;font-size:10px;font-weight:700;cursor:pointer">+ New Code</button></div>
+    <div class="ac">
+      <div style="background:#f8f8f8;border:1.5px solid var(--y);border-radius:10px;padding:10px;margin-bottom:8px">
+        <div style="font-size:11px;font-weight:700;margin-bottom:6px">New Promo Code Banayein</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:5px">
+          <div><div class="il">Code</div><input class="inf" style="margin:0;font-size:12px;font-weight:700;letter-spacing:1px" value="EID2026" /></div>
+          <div><div class="il">Discount</div><input class="inf" style="margin:0;font-size:12px" value="20%" /></div>
+          <div><div class="il">Max Uses</div><input class="inf" style="margin:0;font-size:12px" value="100" /></div>
+          <div><div class="il">Expires</div><input class="inf" style="margin:0;font-size:12px" value="30 Jun" /></div>
+        </div>
+        <button class="pb" style="font-size:11px;padding:8px">Create Code</button>
+      </div>
+      <div style="font-size:10px;font-weight:700;color:var(--t3);margin-bottom:5px;text-transform:uppercase;letter-spacing:.3px">Active Codes</div>
+      ${[
+        {code:'CHAKWAL20',disc:'20% off',used:'34/100',exp:'30 Jun',on:true},
+        {code:'WELCOME50',disc:'PKR 50 off',used:'89/100',exp:'31 Jul',on:true},
+        {code:'EID2026',disc:'20% off',used:'0/100',exp:'30 Jun',on:true},
+        {code:'RAMZAN30',disc:'30% off',used:'100/100',exp:'Expired',on:false},
+      ].map(p=>`
+      <div style="background:#fff;border:1px solid ${p.on?'var(--brd)':'#f0f0f0'};border-radius:9px;padding:8px 10px;margin-bottom:5px;opacity:${p.on?1:.6}">
+        <div class="rwb" style="margin-bottom:3px">
+          <div style="font-size:12px;font-weight:800;letter-spacing:1px">${p.code}</div>
+          <div style="display:flex;align-items:center;gap:5px">
+            <div style="width:28px;height:15px;background:${p.on?'#111':'#ccc'};border-radius:8px;position:relative;cursor:pointer"><div style="width:11px;height:11px;background:${p.on?'var(--y)':'#fff'};border-radius:50%;position:absolute;top:2px;${p.on?'right:2px':'left:2px'}"></div></div>
+          </div>
+        </div>
+        <div class="rwb"><span class="ms">${p.disc} · ${p.used} used</span><span class="ms">Exp: ${p.exp}</span></div>
+      </div>`).join('')}
+    </div>
+  </div>
+</div>`},
+
+'a-feedback':{l:'Admin — Feedback & Ratings Log',i:'⭐',d:'Admin sees all rider-to-driver and driver-to-rider ratings. Filter by low ratings to spot problem drivers. Flag patterns of complaints.',f:['All ratings feed','Filter low ratings','Flag driver for review','Comment search'],
+h:`<div class="s" style="flex-direction:row">
+  <div class="asd">
+    <div class="sl2">E</div>
+    ${[0,1,2,3,4].map(i=>`<div class="si ${i===0?'on':''}"><svg viewBox="0 0 24 24">${['<rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>','<path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/>','<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>','<polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>','<circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>'][i]}</svg></div>`).join('')}
+  </div>
+  <div class="ab">
+    <div class="ah"><div style="font-size:13px;font-weight:700">Feedback & Ratings</div><div class="bgy">Filter: All</div></div>
+    <div class="ac">
+      <div style="display:flex;gap:5px;margin-bottom:8px">
+        ${['All','5★','4★','3★ & Below','Flagged'].map((t,i)=>`<div style="background:${i===3?'#fee2e2':'#f0f0f0'};color:${i===3?'#dc2626':'var(--t2)'};border-radius:7px;padding:3px 7px;font-size:9px;font-weight:700;cursor:pointer;border:1px solid ${i===3?'#fca5a5':'transparent'}">${t}</div>`).join('')}
+      </div>
+      ${[
+        {r:'Sana A.',d:'Abdul R.',stars:5,comment:'Very punctual and polite. Clean car!',time:'3:15 PM today',flag:false},
+        {r:'Ali R.',d:'Tariq M.',stars:5,comment:'Good driver, knew all roads',time:'1:30 PM today',flag:false},
+        {r:'Fatima K.',d:'Bilal H.',stars:2,comment:'Rude behavior, phone pe baat karta raha',time:'11 AM today',flag:true},
+        {r:'Ahmed B.',d:'Zubair A.',stars:4,comment:'Theek tha. Thoda late aya.',time:'Yesterday',flag:false},
+      ].map(f=>`
+      <div style="background:${f.flag?'#fff8f8':'#fff'};border:1px solid ${f.flag?'#fca5a5':'var(--brd)'};border-radius:9px;padding:9px;margin-bottom:5px">
+        <div class="rwb" style="margin-bottom:4px">
+          <div class="rw" style="gap:5px">
+            <div class="av" style="width:22px;height:22px;font-size:8px">${f.r.split(' ').map(x=>x[0]).join('')}</div>
+            <span style="font-size:11px;font-weight:700">${f.r}</span>
+            <span class="ms">→</span>
+            <span style="font-size:11px;font-weight:700">${f.d}</span>
+          </div>
+          <div class="rw" style="gap:4px">
+            <span style="color:var(--y);font-size:11px">${'★'.repeat(f.stars)}${'☆'.repeat(5-f.stars)}</span>
+            ${f.flag?'<span class="bgr">Flag</span>':''}
+          </div>
+        </div>
+        <div style="font-size:11px;color:var(--t2);margin-bottom:3px;font-style:italic">"${f.comment}"</div>
+        <div class="rwb"><span class="ms">${f.time}</span>${f.flag?'<button style="background:#dc2626;color:#fff;border:none;border-radius:5px;padding:2px 7px;font-size:9px;font-weight:700;cursor:pointer">Review Driver</button>':''}</div>
+      </div>`).join('')}
+    </div>
+  </div>
+</div>`},
+
+'a-report':{l:'Admin — Daily Automated Report',i:'📊',d:'Daily summary report auto-generated at midnight. Shows key KPIs, top driver of the day, problem areas, and comparison to previous day. Sent to admin WhatsApp.',f:['Auto midnight report','Top driver award','vs yesterday %','WhatsApp auto-send'],
+h:`<div class="s" style="flex-direction:row">
+  <div class="asd">
+    <div class="sl2">E</div>
+    ${[0,1,2,3,4].map(i=>`<div class="si ${i===2?'on':''}"><svg viewBox="0 0 24 24">${['<rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>','<path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/>','<rect x="5" y="3" width="14" height="18" rx="2"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="12" y2="16"/>','<polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>','<circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>'][i]}</svg></div>`).join('')}
+  </div>
+  <div class="ab">
+    <div class="ah"><div><div style="font-size:13px;font-weight:700">Daily Report — 25 Jun 2026</div><div class="ms">Auto generated 12:01 AM</div></div><button style="background:#25D366;color:#fff;border:none;border-radius:7px;padding:4px 9px;font-size:10px;font-weight:700;cursor:pointer">Send to WhatsApp</button></div>
+    <div class="ac">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:8px">
+        ${[['Total Trips','64','+12% ↑','bgg'],['Revenue','PKR 11,450','+8% ↑','bgg'],['Active Drivers','18','same','bga'],['Cancellations','3','-1 ↓','bgg']].map(([l,v,ch,c])=>`
+        <div class="sc"><div class="ms">${l}</div><div style="font-size:15px;font-weight:800;margin:2px 0">${v}</div><span class="${c}" style="font-size:9px">${ch}</span></div>`).join('')}
+      </div>
+      <div style="background:#fffdf0;border:2px solid var(--y);border-radius:10px;padding:10px;margin-bottom:8px;text-align:center">
+        <div class="ms" style="margin-bottom:3px;color:#7a5800;font-weight:700">⭐ DRIVER OF THE DAY</div>
+        <div style="font-size:14px;font-weight:800">Abdul Rehman</div>
+        <div class="ms">11 trips · PKR 1,840 · 5.0★ all day</div>
+      </div>
+      <div style="font-size:10px;font-weight:700;color:var(--t3);margin-bottom:5px;text-transform:uppercase;letter-spacing:.3px">Hourly Activity</div>
+      <div style="background:#fff;border:1px solid var(--brd);border-radius:9px;padding:8px">
+        ${[['6AM','2',10],['8AM','8',40],['10AM','6',30],['12PM','11',55],['2PM','14',70],['4PM','12',60],['6PM','9',45],['8PM','2',10]].map(([h,t,p])=>`
+        <div class="rw" style="gap:6px;margin-bottom:4px;align-items:center">
+          <span style="font-size:9px;color:var(--t3);width:28px">${h}</span>
+          <div style="flex:1;background:#f5f5f5;border-radius:3px;height:12px;overflow:hidden"><div style="background:var(--y);height:100%;width:${p}%"></div></div>
+          <span style="font-size:9px;font-weight:700;width:16px;text-align:right">${t}</span>
+        </div>`).join('')}
+      </div>
+    </div>
+  </div>
+</div>`},
+
+'s-onboard':{l:'System — Onboarding Flow (Rider)',i:'🚀',d:'First-time user onboarding screens. 3-step walkthrough explaining how Easy Ride works before account creation. Skippable.',f:['3-step walkthrough','Skip option','Urdu illustrations','CTA to signup'],
+h:`<div class="s" style="background:#111;justify-content:space-between">
+  <div style="background:#111;padding:10px 14px;display:flex;justify-content:flex-end;flex-shrink:0">
+    <span style="color:#555;font-size:11px;cursor:pointer">Skip →</span>
+  </div>
+  <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 24px">
+    <div style="width:90px;height:90px;background:rgba(245,196,0,.12);border-radius:24px;display:flex;align-items:center;justify-content:center;font-size:42px;margin-bottom:20px">🚗</div>
+    <div style="color:#fff;font-size:17px;font-weight:800;text-align:center;margin-bottom:8px">Safe Ride, Har Baar</div>
+    <div style="color:#888;font-size:12px;text-align:center;line-height:1.6;margin-bottom:24px">Chakwal mein ab gharne baithe ride book karein — verified drivers, real-time tracking, aur affordable fares</div>
+    <div style="display:flex;gap:6px">
+      <div style="width:24px;height:6px;background:var(--y);border-radius:3px"></div>
+      <div style="width:6px;height:6px;background:#333;border-radius:3px"></div>
+      <div style="width:6px;height:6px;background:#333;border-radius:3px"></div>
+    </div>
+  </div>
+  <div style="padding:14px 20px;display:flex;flex-direction:column;gap:8px;flex-shrink:0">
+    <button style="background:var(--y);color:#111;border:none;border-radius:12px;padding:13px;font-size:14px;font-weight:800;cursor:pointer">Aage Chalein →</button>
+    <div style="text-align:center;font-size:11px;color:#555">Step 1 of 3</div>
+  </div>
+</div>`},
+
+'s-terms':{l:'System — Terms & Privacy Screen',i:'📄',d:'Shown to new users before account creation. Both Terms of Service and Privacy Policy in Urdu + English. Scroll + checkbox required to proceed.',f:['Scroll-to-bottom required','Accept checkbox','Urdu + English toggle','Privacy policy inline'],
+h:`<div class="s">
+  <div class="tb"><span class="tbt">Terms & Privacy Policy</span></div>
+  <div style="background:#fff5cc;padding:8px 12px;border-bottom:1px solid #fde68a;font-size:10px;color:#7a5800;flex-shrink:0">
+    ⚠️ Puri policy parhen aur accept karein tabhi aage ja saken ge
+  </div>
+  <div style="flex:1;overflow-y:auto;padding:12px;background:#fff">
+    <div style="display:flex;gap:6px;margin-bottom:10px">
+      ${['English','اردو'].map((l,i)=>`<div style="background:${i===0?'#111':'#f0f0f0'};color:${i===0?'var(--y)':'var(--t2)'};border-radius:7px;padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer">${l}</div>`).join('')}
+    </div>
+    <div style="font-size:13px;font-weight:700;margin-bottom:6px">Terms of Service</div>
+    <div style="font-size:11px;color:var(--t2);line-height:1.6;margin-bottom:10px">By using Easy Ride Chakwal, you agree to these terms. Easy Ride provides a platform connecting riders with drivers in Chakwal and surrounding areas. All rides are subject to availability and driver confirmation...</div>
+    <div style="font-size:13px;font-weight:700;margin-bottom:6px">Privacy Policy</div>
+    <div style="font-size:11px;color:var(--t2);line-height:1.6;margin-bottom:10px">We collect your name, phone number, and GPS location to provide ride services. Driver CNICs are verified via NADRA Verisys. Your data is encrypted and never sold to third parties...</div>
+    <div style="font-size:11px;color:var(--t2);line-height:1.6;margin-bottom:14px">You have the right to request deletion of your account and associated data at any time by contacting our support team on WhatsApp: 0310-0570499...</div>
+    <div style="display:flex;align-items:flex-start;gap:10px;background:#f8f8f8;border-radius:10px;padding:11px;margin-bottom:12px">
+      <div style="width:18px;height:18px;background:#111;border-radius:4px;flex-shrink:0;display:flex;align-items:center;justify-content:center">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#F5C400" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>
+      </div>
+      <span style="font-size:11px;font-weight:600">Main ne Terms of Service aur Privacy Policy parh liye hain aur inhein accept karta/karti hoon</span>
+    </div>
+    <button class="pb">Accept & Continue →</button>
+  </div>
+</div>`},
+
+'s-update':{l:'System — Force App Update',i:'🔄',d:'Shown when user opens an outdated app version that is incompatible with the server. Forces Play Store redirect. No skip option for major versions.',f:['Version number shown','Play Store redirect','No skip (major update)','What\'s new summary'],
+h:`<div class="s" style="background:#111;justify-content:center;align-items:center;padding:24px">
+  <div style="width:72px;height:72px;background:var(--y);border-radius:18px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:28px;color:#111;margin-bottom:20px">E</div>
+  <div style="color:#fff;font-size:17px;font-weight:800;text-align:center;margin-bottom:8px">Update Required</div>
+  <div style="color:#888;font-size:12px;text-align:center;margin-bottom:4px">Aapka app version purana hai</div>
+  <div style="color:#555;font-size:11px;text-align:center;margin-bottom:20px">v1.2.0 → v2.0.0 (Required)</div>
+  <div style="background:rgba(255,255,255,.06);border-radius:12px;padding:12px;margin-bottom:20px;width:100%">
+    <div style="color:#aaa;font-size:10px;font-weight:700;text-transform:uppercase;margin-bottom:8px">Naye Features</div>
+    ${['Real-time driver tracking improved','JazzCash payment integration','SOS emergency button added','Faster ride matching'].map(f=>`
+    <div style="display:flex;gap:8px;margin-bottom:6px;align-items:center">
+      <div style="width:6px;height:6px;background:var(--y);border-radius:50%;flex-shrink:0"></div>
+      <span style="color:#ccc;font-size:11px">${f}</span>
+    </div>`).join('')}
+  </div>
+  <button style="background:var(--y);color:#111;border:none;border-radius:12px;padding:13px;font-size:14px;font-weight:800;cursor:pointer;width:100%">Play Store par Update Karein</button>
+  <div style="color:#444;font-size:10px;margin-top:10px;text-align:center">Current: v1.2.0 · Required: v2.0.0+</div>
+</div>`},
+
+'s-maintain':{l:'System — Maintenance Mode',i:'🔧',d:'Shown when server is under scheduled maintenance. Estimated time shown, WhatsApp support available, and auto-retry timer.',f:['Maintenance ETA','WhatsApp support','Auto retry timer','Easy Ride branding'],
+h:`<div class="s" style="background:#111;justify-content:center;align-items:center;padding:24px">
+  <div style="font-size:48px;margin-bottom:16px">🔧</div>
+  <div style="color:var(--y);font-size:18px;font-weight:800;margin-bottom:6px;text-align:center">Maintenance</div>
+  <div style="color:#aaa;font-size:12px;text-align:center;margin-bottom:4px">Hum app ko update kar rahe hain</div>
+  <div style="color:#666;font-size:11px;text-align:center;margin-bottom:20px">Thori der mein wapas aayein</div>
+  <div style="background:rgba(245,196,0,.1);border:1px solid rgba(245,196,0,.3);border-radius:12px;padding:14px;width:100%;text-align:center;margin-bottom:16px">
+    <div style="color:#aaa;font-size:10px;font-weight:700;margin-bottom:4px">ESTIMATED TIME</div>
+    <div style="color:var(--y);font-size:28px;font-weight:800">00:45:22</div>
+    <div style="color:#666;font-size:10px;margin-top:3px">Countdown to service restore</div>
+  </div>
+  <div style="width:100%;margin-bottom:14px">
+    <div style="background:rgba(255,255,255,.05);border-radius:8px;height:6px;overflow:hidden">
+      <div style="background:var(--y);height:100%;width:65%;border-radius:8px"></div>
+    </div>
+    <div style="display:flex;justify-content:space-between;margin-top:4px">
+      <span style="color:#555;font-size:9px">Started 11:00 PM</span>
+      <span style="color:#555;font-size:9px">Est. done 12:30 AM</span>
+    </div>
+  </div>
+  <button style="background:#25D366;color:#fff;border:none;border-radius:11px;padding:11px;font-size:12px;font-weight:700;cursor:pointer;width:100%;margin-bottom:8px">📱 WhatsApp Support</button>
+  <div style="color:#444;font-size:10px;text-align:center">Easy Ride Chakwal — Safe Ride, Every Time!</div>
+</div>`},
+
+'s-nocoverage':{l:'System — No Coverage Area',i:'📡',d:'Shown when rider\'s GPS is outside Chakwal service radius. Map shown with service boundary highlighted. Option to request coverage expansion.',f:['Service boundary shown','Current location shown','Request coverage CTA','WhatsApp support'],
+h:`<div class="s">
+  <div class="tb"><span class="lm">E</span><span class="tbt">Service Area se Bahar</span></div>
+  <div style="flex:1;position:relative;overflow:hidden">
+    <div class="map">
+      <div style="position:absolute;top:45%;left:0;right:0;height:11px;background:#d8d4c8"></div>
+      <div style="position:absolute;left:38%;top:0;bottom:0;width:10px;background:#d8d4c8"></div>
+      <div style="position:absolute;top:35%;left:38%;transform:translate(-50%,-50%);width:100px;height:80px;border:2px dashed rgba(245,196,0,.8);border-radius:50%;background:rgba(245,196,0,.08)">
+        <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:9px;font-weight:700;color:#7a5800;text-align:center;white-space:nowrap">Chakwal<br>Service Area</div>
+      </div>
+      <div style="position:absolute;top:15%;left:70%;transform:translate(-50%,-50%)">
+        <div style="background:#dc2626;border-radius:50%;width:20px;height:20px;border:2px solid #fff;box-shadow:0 0 0 4px rgba(220,38,38,.2)"></div>
+      </div>
+      <div style="position:absolute;top:8px;left:8px;right:8px;background:rgba(0,0,0,.82);border-radius:9px;padding:8px 10px;color:#fff">
+        <div style="font-size:11px;font-weight:700;color:#F5C400">📡 Aap Service Area se Bahar Hain</div>
+        <div style="font-size:10px;color:#aaa;margin-top:2px">Aapki location: Dhok Pathan, 28km from Chakwal</div>
+      </div>
+    </div>
+    <div style="position:absolute;bottom:0;left:0;right:0;background:#fff;border-radius:14px 14px 0 0;padding:12px;box-shadow:0 -3px 14px rgba(0,0,0,.1)">
+      <div style="font-size:13px;font-weight:700;margin-bottom:4px">Abhi Service Available Nahi</div>
+      <div class="mu" style="margin-bottom:10px;font-size:11px">Easy Ride filhaal Chakwal city aur 20km radius mein available hai. Aap is area se bahar hain.</div>
+      <div style="display:flex;flex-direction:column;gap:7px">
+        <button style="background:#25D366;color:#fff;border:none;border-radius:10px;padding:10px;font-size:12px;font-weight:700;cursor:pointer">📢 Is Area mein Coverage Request Karein</button>
+        <button class="pb" style="font-size:12px;padding:10px">🔄 Location Dubara Check Karein</button>
+      </div>
+    </div>
+  </div>
+</div>`}
+
+};
+
+function show(id,el){
+  document.querySelectorAll('.pi').forEach(p=>p.classList.remove('on'));
+  if(el) el.classList.add('on');
+  const s=SC[id];
+  if(!s) return;
+  document.getElementById('pc').innerHTML=s.h;
+  document.getElementById('sd').innerHTML=`<h3>${s.i} ${s.l}</h3><p>${s.d}</p><div>${s.f.map(f=>`<span class="ft">${f}</span>`).join('')}</div>`;
+}
+show('r-chat',document.querySelector('.pi'));
+</script>

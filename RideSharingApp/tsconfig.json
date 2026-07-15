@@ -1,0 +1,31 @@
+{
+  "extends": "expo/tsconfig.base",
+  "compilerOptions": {
+    "strict": true,
+    "paths": {
+      "@/*": [
+        "./src/*"
+      ],
+      "@/assets/*": [
+        "./assets/*"
+      ],
+      "@/shared/*": [
+        "./src/shared/*"
+      ],
+      "@/auth/*": [
+        "./src/modules/auth/*"
+      ],
+      "@/rider/*": [
+        "./src/modules/rider/*"
+      ],
+      "@/driver/*": [
+        "./src/modules/driver/*"
+      ]
+    }
+  },
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    "nativewind-env.d.ts"
+  ]
+}

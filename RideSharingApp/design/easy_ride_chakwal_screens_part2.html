@@ -1,0 +1,828 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--y:#F5C400;--yd:#D4A900;--b:#111111;--bg:#F2F2F2;--card:#fff;--brd:#e5e5e5;--txt:#111;--t2:#555;--t3:#888;--green:#16a34a;--red:#dc2626;--orange:#ea580c}
+.wrap{background:var(--bg);min-height:600px;padding:16px}
+.nav{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;border-bottom:2px solid var(--y);padding-bottom:10px}
+.ng{display:flex;flex-direction:column;gap:3px}
+.nl{font-size:10px;font-weight:700;color:var(--t2);text-transform:uppercase;letter-spacing:.5px;padding-left:2px}
+.np{display:flex;gap:4px;flex-wrap:wrap}
+.pi{background:#fff;border:1.5px solid var(--brd);border-radius:20px;padding:5px 11px;font-size:11px;font-weight:600;cursor:pointer;color:var(--t2);transition:.12s;white-space:nowrap}
+.pi:hover{border-color:var(--y);color:#111}
+.pi.on{background:var(--y);border-color:var(--yd);color:#111}
+.view{display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap}
+.ph{width:272px;min-width:272px;background:#111;border-radius:34px;padding:4px;box-shadow:0 4px 20px rgba(0,0,0,.18)}
+.phi{background:#fff;border-radius:30px;overflow:hidden;min-height:556px;position:relative}
+.phb{background:#111;height:28px;display:flex;align-items:center;justify-content:center;border-radius:26px 26px 0 0}
+.phb::after{content:'';width:72px;height:5px;background:#333;border-radius:3px}
+.sd{flex:1;min-width:200px;max-width:320px}
+.sd h3{font-size:14px;font-weight:700;color:#111;margin-bottom:7px}
+.sd p{font-size:12px;color:var(--t2);line-height:1.55;margin-bottom:7px}
+.ft{display:inline-block;background:#fff5cc;color:#7a5800;border:1px solid #F5C400;border-radius:5px;font-size:10px;font-weight:600;padding:2px 7px;margin:2px}
+.s{display:flex;flex-direction:column;height:556px;font-family:'Segoe UI',sans-serif;overflow:hidden}
+.tb{background:#111;color:#fff;padding:9px 12px;display:flex;align-items:center;justify-content:space-between;font-size:11px;flex-shrink:0}
+.tbt{font-weight:700;font-size:12px;letter-spacing:.2px}
+.lm{background:var(--y);color:#111;font-weight:900;font-size:10px;padding:2px 6px;border-radius:5px;margin-right:5px}
+.scr{flex:1;overflow-y:auto;padding:11px}
+.scr::-webkit-scrollbar{width:0}
+.bb{background:#fff;border-top:1px solid var(--brd);padding:5px 0;display:flex;justify-content:space-around;flex-shrink:0}
+.bi{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:9px;color:var(--t3);padding:3px 6px;cursor:pointer}
+.bi.on{color:#111}
+.bi svg{width:17px;height:17px;stroke-width:2}
+.bd{width:4px;height:4px;background:var(--y);border-radius:50%;margin-top:1px}
+.row{display:flex;align-items:center;gap:7px}
+.rwb{display:flex;align-items:center;justify-content:space-between}
+.av{width:34px;height:34px;border-radius:50%;background:var(--y);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:12px;color:#111;flex-shrink:0}
+.bg{background:#111;color:var(--y);font-size:10px;font-weight:700;padding:2px 6px;border-radius:16px}
+.bgg{background:#dcfce7;color:#15803d;font-size:10px;font-weight:700;padding:2px 6px;border-radius:16px}
+.bgy{background:#fff5cc;color:#7a5800;font-size:10px;font-weight:700;padding:2px 6px;border-radius:16px}
+.bgr{background:#fee2e2;color:#dc2626;font-size:10px;font-weight:700;padding:2px 6px;border-radius:16px}
+.bga{background:#f1f1f1;color:#555;font-size:10px;font-weight:700;padding:2px 6px;border-radius:16px}
+.div{height:1px;background:var(--brd);margin:7px 0}
+.cd{background:#fff;border-radius:11px;padding:10px;border:1px solid var(--brd);margin-bottom:7px}
+.ml{font-size:10px;color:var(--t3);font-weight:700;text-transform:uppercase;letter-spacing:.4px;margin-bottom:2px}
+.vl{font-size:14px;font-weight:700;color:#111}
+.mu{font-size:11px;color:var(--t2)}
+.ms{font-size:10px;color:var(--t3)}
+.inf{background:#f8f8f8;border:1.5px solid var(--brd);border-radius:9px;padding:9px 11px;font-size:12px;color:#111;width:100%;outline:none;font-family:inherit;margin-bottom:9px}
+.inf:focus{border-color:var(--y);background:#fffdf0}
+.il{font-size:10px;font-weight:700;color:var(--t2);margin-bottom:3px;display:block;text-transform:uppercase;letter-spacing:.3px}
+.pb{background:#111;color:var(--y);border:none;border-radius:11px;padding:11px;font-size:13px;font-weight:700;width:100%;cursor:pointer;letter-spacing:.2px}
+.yb{background:var(--y);color:#111;border:none;border-radius:11px;padding:11px;font-size:13px;font-weight:700;width:100%;cursor:pointer}
+.pr{height:5px;background:#f0f0f0;border-radius:3px;overflow:hidden;margin:5px 0}
+.pf{height:100%;background:var(--y);border-radius:3px}
+.sg{display:grid;grid-template-columns:1fr 1fr;gap:5px}
+.sc{background:#fff;border-radius:9px;padding:8px;border:1px solid var(--brd);text-align:center}
+.sb{font-size:18px;font-weight:800;color:#111}
+.sl{font-size:9px;color:var(--t3);font-weight:600;text-transform:uppercase}
+.dg{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.map{flex:1;position:relative;overflow:hidden;background:#e8f0d8}
+.asd{width:60px;min-width:60px;background:#111;display:flex;flex-direction:column;align-items:center;padding:10px 0;gap:6px}
+.ab{flex:1;overflow:hidden;display:flex;flex-direction:column;background:#f5f5f5}
+.ah{background:#fff;padding:9px 12px;border-bottom:1px solid var(--brd);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.ac{flex:1;overflow-y:auto;padding:9px}
+.ac::-webkit-scrollbar{width:0}
+.si{width:40px;height:40px;border-radius:9px;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.si:hover,.si.on{background:rgba(245,196,0,.18)}
+.si svg{stroke:#777;stroke-width:1.7;width:18px;height:18px;fill:none}
+.si.on svg{stroke:var(--y)}
+.sl2{background:var(--y);width:40px;height:40px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:13px;color:#111;margin-bottom:6px}
+.tr{display:flex;align-items:center;gap:6px;padding:7px 8px;background:#fff;border-radius:7px;margin-bottom:3px;border:1px solid var(--brd);font-size:11px}
+.th{display:flex;align-items:center;gap:6px;padding:3px 8px;font-size:9px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.4px}
+.c1{flex:1.2;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.c2{flex:1;text-align:center}
+.c3{flex:.8;text-align:right}
+.st{color:var(--y);font-size:10px}
+.ub{border:2px dashed var(--brd);border-radius:10px;padding:13px;text-align:center;font-size:11px;color:var(--t3);background:#fafafa;display:flex;flex-direction:column;align-items:center;gap:5px;margin-bottom:7px;cursor:pointer}
+.otp-box{width:42px;height:48px;background:#f8f8f8;border:2px solid var(--brd);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800;color:#111}
+.otp-filled{border-color:var(--y);background:#fffdf0}
+.map-road-h{position:absolute;background:#d8d4c8;left:0;right:0}
+.map-road-v{position:absolute;background:#d8d4c8;top:0;bottom:0}
+.pop{background:#fff;border-radius:14px 14px 0 0;padding:12px;box-shadow:0 -3px 16px rgba(0,0,0,.1)}
+</style>
+
+<div class="wrap">
+<div class="nav">
+  <div class="ng">
+    <div class="nl">🧍 Rider (continued)</div>
+    <div class="np">
+      <div class="pi on" onclick="show('r-splash',this)">Splash</div>
+      <div class="pi" onclick="show('r-otp',this)">OTP Login</div>
+      <div class="pi" onclick="show('r-payment',this)">Payment</div>
+      <div class="pi" onclick="show('r-rate',this)">Rate Driver</div>
+      <div class="pi" onclick="show('r-receipt',this)">Receipt</div>
+      <div class="pi" onclick="show('r-sos',this)">SOS</div>
+      <div class="pi" onclick="show('r-notif',this)">Notifications</div>
+      <div class="pi" onclick="show('r-promo',this)">Promo</div>
+    </div>
+  </div>
+  <div class="ng">
+    <div class="nl">🚗 Driver (continued)</div>
+    <div class="np">
+      <div class="pi" onclick="show('d-splash',this)">Splash</div>
+      <div class="pi" onclick="show('d-otp',this)">OTP Login</div>
+      <div class="pi" onclick="show('d-trip-end',this)">Trip End</div>
+      <div class="pi" onclick="show('d-rate',this)">Rate Rider</div>
+      <div class="pi" onclick="show('d-notif',this)">Notifications</div>
+      <div class="pi" onclick="show('d-offline',this)">Go Offline</div>
+    </div>
+  </div>
+  <div class="ng">
+    <div class="nl">✅ Verification (continued)</div>
+    <div class="np">
+      <div class="pi" onclick="show('v-license',this)">License</div>
+      <div class="pi" onclick="show('v-vehicle',this)">Vehicle</div>
+      <div class="pi" onclick="show('v-selfie',this)">Selfie</div>
+      <div class="pi" onclick="show('v-approved',this)">Approved!</div>
+    </div>
+  </div>
+  <div class="ng">
+    <div class="nl">⚙️ Admin (continued)</div>
+    <div class="np">
+      <div class="pi" onclick="show('a-trips',this)">Trip Logs</div>
+      <div class="pi" onclick="show('a-revenue',this)">Revenue</div>
+      <div class="pi" onclick="show('a-sos',this)">SOS Alerts</div>
+      <div class="pi" onclick="show('a-settings',this)">Settings</div>
+      <div class="pi" onclick="show('a-notif',this)">Push Notifs</div>
+    </div>
+  </div>
+</div>
+
+<div class="view">
+  <div class="ph">
+    <div class="phb"></div>
+    <div class="phi" id="pc"></div>
+  </div>
+  <div class="sd" id="sd"></div>
+</div>
+</div>
+
+<script>
+const SC = {
+
+'r-splash':{l:'Rider — Splash Screen',i:'🌟',d:'First screen on app open. Easy Ride Chakwal brand with animated logo, tagline in Urdu & English, and CTA to login or sign up. Sets the tone of the black & gold brand.',f:['Brand splash','Urdu tagline','Login / Signup CTA','Vehicle type preview'],
+h:`<div class="s" style="background:#111;justify-content:space-between">
+  <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px">
+    <div style="width:80px;height:80px;background:var(--y);border-radius:20px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:32px;color:#111;margin-bottom:16px">E</div>
+    <div style="color:#fff;font-size:22px;font-weight:800;text-align:center;letter-spacing:.5px">Easy Ride</div>
+    <div style="color:var(--y);font-size:18px;font-weight:800;text-align:center;letter-spacing:.5px;margin-bottom:6px">Chakwal</div>
+    <div style="color:#777;font-size:12px;text-align:center">Safe Ride, Every Time!</div>
+    <div style="color:#555;font-size:11px;text-align:center;margin-top:2px">ہر سفر محفوظ، ہر بار</div>
+    <div style="display:flex;gap:16px;margin-top:28px;align-items:flex-end">
+      <div style="text-align:center"><div style="font-size:28px">🚗</div><div style="color:#555;font-size:9px;margin-top:2px">Car</div></div>
+      <div style="text-align:center"><div style="font-size:32px">🛺</div><div style="color:#555;font-size:9px;margin-top:2px">Qingqi</div></div>
+      <div style="text-align:center"><div style="font-size:26px">🏍️</div><div style="color:#555;font-size:9px;margin-top:2px">Bike</div></div>
+    </div>
+  </div>
+  <div style="padding:16px;display:flex;flex-direction:column;gap:8px">
+    <button style="background:var(--y);color:#111;border:none;border-radius:12px;padding:13px;font-size:14px;font-weight:800;cursor:pointer;width:100%">Login کریں</button>
+    <button style="background:transparent;color:#fff;border:1.5px solid #333;border-radius:12px;padding:13px;font-size:14px;font-weight:700;cursor:pointer;width:100%">New Account بنائیں</button>
+    <div style="text-align:center;font-size:10px;color:#444;margin-top:4px">By continuing you agree to Terms of Service</div>
+  </div>
+</div>`},
+
+'r-otp':{l:'Rider — OTP Login',i:'🔐',d:'Phone number entry then 4-digit OTP screen sent via SMS. Clean, large digit boxes. Auto-detect 03XX Pakistan format. Resend timer shown.',f:['Pakistan +92 prefix','4-digit OTP boxes','Resend in 30s','Auto-proceed on fill'],
+h:`<div class="s" style="background:#fff">
+  <div style="background:#111;padding:16px;display:flex;align-items:center;gap:10px">
+    <div style="background:var(--y);width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:14px;color:#111">E</div>
+    <div><div style="color:#fff;font-size:13px;font-weight:700">Easy Ride Chakwal</div><div style="color:#666;font-size:10px">Apna number darj karein</div></div>
+  </div>
+  <div class="scr" style="display:flex;flex-direction:column;align-items:center;padding:24px 16px">
+    <div style="width:64px;height:64px;background:#fffdf0;border:2px solid var(--y);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:26px;margin-bottom:16px">📱</div>
+    <div style="font-size:15px;font-weight:700;margin-bottom:4px">OTP Verify Karein</div>
+    <div class="mu" style="text-align:center;margin-bottom:20px;font-size:11px">Hum ne aapke <b style="color:#111">0310-0570499</b> par<br>4-digit code bheja hai</div>
+    <div style="display:flex;gap:10px;margin-bottom:20px">
+      <div class="otp-box otp-filled">7</div>
+      <div class="otp-box otp-filled">3</div>
+      <div class="otp-box otp-filled">4</div>
+      <div class="otp-box" style="border-color:#ddd;border-width:2px"><div style="width:2px;height:24px;background:#111;border-radius:1px;animation:blink 1s infinite"></div></div>
+    </div>
+    <style>@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}</style>
+    <div style="font-size:11px;color:var(--t2);margin-bottom:20px">Dobara bhejein: <span style="color:#111;font-weight:700">00:28</span></div>
+    <button class="yb" style="width:100%;margin-bottom:10px">Verify Karein ✓</button>
+    <div style="font-size:11px;color:var(--t3);text-align:center">Galat number? <span style="color:#111;font-weight:700;cursor:pointer">Wapas jao</span></div>
+    <div style="margin-top:20px;background:#f8f8f8;border-radius:10px;padding:10px;width:100%">
+      <div style="font-size:10px;font-weight:700;color:var(--t2);margin-bottom:4px;text-transform:uppercase;letter-spacing:.3px">Phone Number</div>
+      <div style="display:flex;gap:8px">
+        <div style="background:#fff;border:1.5px solid var(--brd);border-radius:8px;padding:8px 10px;font-size:12px;font-weight:700;white-space:nowrap">🇵🇰 +92</div>
+        <input class="inf" style="margin:0;flex:1;font-size:12px" value="310 0570499" readonly />
+      </div>
+    </div>
+  </div>
+</div>`},
+
+'r-payment':{l:'Rider — Payment Method',i:'💳',d:'Rider selects payment before confirming ride. Cash, JazzCash, EasyPaisa, or card. Cash is default and most common. Wallet balance shown for digital options.',f:['Cash default','JazzCash / EasyPaisa','Wallet balance','One-tap select'],
+h:`<div class="s">
+  <div class="tb"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#aaa" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg><span class="tbt">Payment Method</span><div></div></div>
+  <div class="scr" style="background:#fff;padding:12px">
+    <div class="ml" style="margin-bottom:8px">Apna payment choose karein</div>
+    ${[
+      {ic:'💵',name:'Cash',sub:'Seedha driver ko dein',val:'Default',sel:true,wallet:null},
+      {ic:'📱',name:'JazzCash',sub:'Wallet se pay karein',val:'PKR 340',sel:false,wallet:'PKR 340 available'},
+      {ic:'🟢',name:'EasyPaisa',sub:'Wallet se pay karein',val:'PKR 0',sel:false,wallet:'PKR 0 — Recharge first'},
+      {ic:'💳',name:'Debit/Credit Card',sub:'Visa / Mastercard',val:'Add Card',sel:false,wallet:null},
+    ].map(p=>`
+    <div style="display:flex;align-items:center;gap:10px;padding:12px;border:2px solid ${p.sel?'var(--y)':'var(--brd)'};border-radius:12px;margin-bottom:8px;background:${p.sel?'#fffdf0':'#fff'};cursor:pointer">
+      <span style="font-size:22px">${p.ic}</span>
+      <div style="flex:1">
+        <div style="font-size:13px;font-weight:700">${p.name}</div>
+        <div class="ms">${p.wallet||p.sub}</div>
+      </div>
+      <div style="width:18px;height:18px;border-radius:50%;border:2px solid ${p.sel?'var(--y)':'#ccc'};background:${p.sel?'var(--y)':'transparent'};display:flex;align-items:center;justify-content:center">
+        ${p.sel?'<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="3.5"><path d="M20 6L9 17l-5-5"/></svg>':''}
+      </div>
+    </div>`).join('')}
+    <div style="background:#fffdf0;border:1px solid #f5e090;border-radius:10px;padding:10px;margin-bottom:12px">
+      <div style="font-size:11px;font-weight:700;color:#7a5800;margin-bottom:3px">Fare Estimate</div>
+      <div class="rwb"><span style="font-size:12px;color:#555">Base + 3.2km</span><span style="font-size:16px;font-weight:800;color:#111">PKR 180</span></div>
+    </div>
+    <button class="pb">Confirm Ride → Cash Payment</button>
+  </div>
+</div>`},
+
+'r-rate':{l:'Rider — Rate Your Driver',i:'⭐',d:'Post-trip rating screen. 5-star tap, quick feedback tags, optional comment. Easy Ride brand shown. Skip option available.',f:['5-star rating','Quick tag chips','Optional comment','Skip option'],
+h:`<div class="s">
+  <div class="tb"><span class="tbt">Apna Experience Share Karein</span></div>
+  <div class="scr" style="background:#fff;padding:16px;display:flex;flex-direction:column;align-items:center">
+    <div class="bgg" style="margin-bottom:14px">Trip Complete!</div>
+    <div class="av" style="width:56px;height:56px;font-size:20px;margin-bottom:6px">AR</div>
+    <div style="font-size:15px;font-weight:700;margin-bottom:2px">Abdul Rehman</div>
+    <div class="ms" style="margin-bottom:16px">Clock Tower → GCT College</div>
+    <div style="font-size:12px;color:var(--t2);margin-bottom:8px">Ride ko rate karein</div>
+    <div style="display:flex;gap:8px;margin-bottom:16px" id="stars">
+      ${[1,2,3,4,5].map(n=>`<div onclick="rate(${n})" style="font-size:32px;cursor:pointer;opacity:${n<=4?1:.35}">${n<=4?'★':'☆'}</div>`).join('')}
+    </div>
+    <div style="font-size:12px;color:var(--t2);margin-bottom:8px;align-self:flex-start">Feedback chips</div>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;align-self:flex-start">
+      ${['Safe Driving ✓','On Time ✓','Clean Car ✓','Friendly','Knew the Route','Smooth Ride'].map((t,i)=>`<div style="background:${i<3?'#fffdf0':'#f5f5f5'};border:1.5px solid ${i<3?'var(--y)':'var(--brd)'};border-radius:20px;padding:5px 10px;font-size:11px;font-weight:600;color:${i<3?'#7a5800':'var(--t2)'};cursor:pointer">${t}</div>`).join('')}
+    </div>
+    <textarea class="inf" style="height:64px;resize:none;font-size:12px" placeholder="Koi aur baat? (Optional comment)"></textarea>
+    <button class="pb" style="margin-bottom:8px">Rating Submit Karein ★★★★</button>
+    <div style="font-size:11px;color:var(--t3);cursor:pointer">Skip karein →</div>
+  </div>
+</div>`},
+
+'r-receipt':{l:'Rider — Trip Receipt',i:'🧾',d:'Full trip receipt after payment. Breakdown of base fare, per-km charge, and any waiting. Driver info, route, timestamp, and share/download buttons.',f:['Full fare breakdown','Shareable receipt','Driver details','Download as PDF'],
+h:`<div class="s">
+  <div class="tb"><span class="tbt">Trip Receipt</span><span class="bgg">Paid</span></div>
+  <div class="scr" style="background:#f5f5f5;padding:10px">
+    <div class="cd">
+      <div style="text-align:center;border-bottom:1px solid var(--brd);padding-bottom:10px;margin-bottom:10px">
+        <div style="background:#111;width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:14px;color:var(--y);margin:0 auto 6px">E</div>
+        <div style="font-size:13px;font-weight:700">Easy Ride Chakwal</div>
+        <div class="ms">25 Jun 2026 · 3:12 PM</div>
+      </div>
+      <div class="row" style="margin-bottom:10px;background:#f8f8f8;border-radius:9px;padding:8px">
+        <div class="av" style="width:30px;height:30px;font-size:11px">AR</div>
+        <div style="flex:1"><div style="font-size:12px;font-weight:700">Abdul Rehman</div><div class="ms">Suzuki Alto · LZR-482</div></div>
+        <div class="st">★★★★★</div>
+      </div>
+      <div style="margin-bottom:10px">
+        <div class="row" style="gap:7px;margin-bottom:4px"><div class="dg" style="background:var(--y)"></div><div><div class="ms">Pickup</div><div style="font-size:12px;font-weight:600">Clock Tower, Chakwal</div></div></div>
+        <div style="border-left:2px dashed #ddd;margin-left:3px;height:8px"></div>
+        <div class="row" style="gap:7px"><div class="dg" style="background:#16a34a"></div><div><div class="ms">Drop-off</div><div style="font-size:12px;font-weight:600">GCT College, Chakwal</div></div></div>
+      </div>
+      <div class="div"></div>
+      ${[['Base Fare','PKR 50'],['Distance (3.2 km × PKR 35)','PKR 112'],['Waiting (2 min)','PKR 18'],['Platform Fee','PKR 0']].map(([l,v])=>`
+      <div class="rwb" style="margin-bottom:5px"><span style="font-size:12px;color:var(--t2)">${l}</span><span style="font-size:12px;font-weight:600">${v}</span></div>`).join('')}
+      <div class="div"></div>
+      <div class="rwb" style="margin-bottom:4px"><span style="font-size:13px;font-weight:700">Total Paid</span><span style="font-size:18px;font-weight:800;color:#111">PKR 180</span></div>
+      <div class="rwb"><span class="ms">Payment</span><span class="ms">Cash</span></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px">
+      <button style="background:#fff;border:1.5px solid var(--brd);border-radius:10px;padding:10px;font-size:11px;font-weight:700;cursor:pointer">📤 Share</button>
+      <button class="pb" style="padding:10px;font-size:11px">💾 Save PDF</button>
+    </div>
+  </div>
+</div>`},
+
+'r-sos':{l:'Rider — SOS Emergency',i:'🚨',d:'One-tap SOS screen. Sends live GPS location to 3 saved emergency contacts via WhatsApp/SMS. Also shows local emergency numbers. Critical safety feature for women riders in Chakwal.',f:['Live location share','3 emergency contacts','Rescue 1122 shortcut','Cancel SOS option'],
+h:`<div class="s">
+  <div style="background:#dc2626;padding:10px 12px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0">
+    <span style="color:#fff;font-weight:800;font-size:13px">🚨 SOS Emergency</span>
+    <span style="background:rgba(255,255,255,.2);color:#fff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px">ACTIVE</span>
+  </div>
+  <div class="scr" style="background:#fff;padding:14px">
+    <div style="background:#fee2e2;border-radius:12px;padding:14px;text-align:center;margin-bottom:14px;border:2px solid #fca5a5">
+      <div style="font-size:32px;margin-bottom:6px">🚨</div>
+      <div style="font-size:15px;font-weight:800;color:#dc2626;margin-bottom:4px">SOS Bheja Ja Raha Hai!</div>
+      <div style="font-size:11px;color:#b91c1c">Aapki live location aapke contacts ko<br>WhatsApp par share ho rahi hai</div>
+    </div>
+    <div class="ml" style="margin-bottom:7px">Emergency Contacts Ko Alert</div>
+    ${[{n:'Ami Jan',p:'Mama',s:'Sent ✓',c:'bgg'},{n:'Bhai',p:'Brother',s:'Sent ✓',c:'bgg'},{n:'Sara Ali',p:'Friend',s:'Sending...',c:'bgy'}].map(c=>`
+    <div class="cd" style="margin-bottom:7px">
+      <div class="rwb">
+        <div class="row"><div class="av" style="width:30px;height:30px;font-size:10px">${c.n.split(' ').map(x=>x[0]).join('')}</div><div><div style="font-size:12px;font-weight:700">${c.n}</div><div class="ms">${c.p}</div></div></div>
+        <span class="${c.c}">${c.s}</span>
+      </div>
+    </div>`).join('')}
+    <div class="ml" style="margin-bottom:7px;margin-top:4px">Emergency Numbers</div>
+    ${[['🚑','Rescue 1122','1122'],['👮','Police','15'],['🚒','Fire','16']].map(([ic,n,num])=>`
+    <div style="display:flex;align-items:center;gap:10px;padding:10px;background:#f8f8f8;border-radius:10px;margin-bottom:6px;cursor:pointer">
+      <span style="font-size:20px">${ic}</span>
+      <div style="flex:1"><div style="font-size:12px;font-weight:700">${n}</div></div>
+      <div style="background:#111;color:var(--y);font-size:13px;font-weight:800;padding:5px 12px;border-radius:8px">${num}</div>
+    </div>`).join('')}
+    <button style="background:#f5f5f5;color:var(--t2);border:1.5px solid var(--brd);border-radius:11px;padding:11px;font-size:13px;font-weight:700;width:100%;cursor:pointer;margin-top:8px">✕ SOS Cancel Karein (Sab Theek Hai)</button>
+  </div>
+</div>`},
+
+'r-notif':{l:'Rider — Notifications',i:'🔔',d:'Notification center for riders. Driver accepted, driver arrived, trip ended, promo offers, and system alerts — all in one feed.',f:['Driver arrival alerts','Promo notifications','Trip status updates','Read/unread states'],
+h:`<div class="s">
+  <div class="tb"><span class="tbt">Notifications</span><span style="font-size:10px;color:var(--y);cursor:pointer">Sab Parha</span></div>
+  <div class="scr" style="background:#fff;padding:10px">
+    ${[
+      {ic:'🚗',t:'Driver Aapke Pass Hai!',sub:'Abdul Rehman aapka intezar kar raha hai · Clock Tower',time:'Abhi',c:'#fffdf0',brd:'var(--y)'},
+      {ic:'✅',t:'Trip Complete',sub:'GCT College · PKR 180 · Cash paid',time:'3:15 PM',c:'#f0fdf4',brd:'#bbf7d0'},
+      {ic:'🎁',t:'Special Offer!',sub:'Agla ride 20% off · Code: CHAKWAL20',time:'Aaj',c:'#f8f8f8',brd:'var(--brd)'},
+      {ic:'🚗',t:'Driver Aapke Pass Tha',sub:'Tariq ne aapko trip di · Bus Stand → Hospital',time:'Kal',c:'#fff',brd:'var(--brd)'},
+      {ic:'⭐',t:'Rating Remind',sub:'Apni last trip ko rate karein',time:'Kal',c:'#fff',brd:'var(--brd)'},
+      {ic:'📢',t:'Easy Ride Update',sub:'Naya feature: Trip share via WhatsApp',time:'2 din pehle',c:'#fff',brd:'var(--brd)'},
+    ].map(n=>`
+    <div style="display:flex;gap:10px;padding:10px;background:${n.c};border:1px solid ${n.brd};border-radius:11px;margin-bottom:6px;cursor:pointer">
+      <span style="font-size:22px;flex-shrink:0">${n.ic}</span>
+      <div style="flex:1">
+        <div class="rwb"><div style="font-size:12px;font-weight:700">${n.t}</div><div class="ms" style="flex-shrink:0;margin-left:6px">${n.time}</div></div>
+        <div style="font-size:11px;color:var(--t2);margin-top:2px">${n.sub}</div>
+      </div>
+    </div>`).join('')}
+  </div>
+</div>`},
+
+'r-promo':{l:'Rider — Promo & Referral',i:'🎁',d:'Promo codes and referral program screen. Rider can enter promo codes, see their referral link/code, and track how many friends they have referred. PKR 50 credit per referral.',f:['Enter promo code','Referral code share','Credit balance','Track referrals'],
+h:`<div class="s">
+  <div class="tb"><span class="tbt">Offers & Referrals</span></div>
+  <div class="scr" style="background:#f5f5f5;padding:10px">
+    <div style="background:#111;border-radius:13px;padding:14px;margin-bottom:10px;text-align:center">
+      <div style="color:#888;font-size:10px;font-weight:700;text-transform:uppercase;margin-bottom:4px">Wallet Credit</div>
+      <div style="color:var(--y);font-size:28px;font-weight:800;margin-bottom:4px">PKR 150</div>
+      <div style="color:#555;font-size:11px">3 referrals × PKR 50</div>
+    </div>
+    <div class="cd" style="margin-bottom:8px">
+      <div style="font-size:13px;font-weight:700;margin-bottom:8px">Promo Code Lagayein</div>
+      <div style="display:flex;gap:7px">
+        <input class="inf" style="flex:1;margin:0;font-size:12px" placeholder="Code likho (e.g. CHAKWAL20)" />
+        <button class="pb" style="padding:9px 12px;font-size:12px;width:auto;border-radius:9px">Apply</button>
+      </div>
+    </div>
+    <div class="cd" style="margin-bottom:8px">
+      <div style="font-size:13px;font-weight:700;margin-bottom:4px">Apna Referral Code</div>
+      <div class="ms" style="margin-bottom:8px">Dost ko bhejein — aap dono ko PKR 50 milenge</div>
+      <div style="background:#f8f8f8;border:2px dashed var(--y);border-radius:10px;padding:12px;text-align:center;margin-bottom:7px">
+        <div style="font-size:18px;font-weight:800;letter-spacing:3px;color:#111">SANA50</div>
+        <div class="ms">Aapka referral code</div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px">
+        <button style="background:#25D366;color:#fff;border:none;border-radius:9px;padding:9px;font-size:11px;font-weight:700;cursor:pointer">📤 WhatsApp Share</button>
+        <button style="background:#f5f5f5;border:1px solid var(--brd);border-radius:9px;padding:9px;font-size:11px;font-weight:700;cursor:pointer">📋 Copy Code</button>
+      </div>
+    </div>
+    <div class="cd">
+      <div style="font-size:13px;font-weight:700;margin-bottom:7px">Referral History</div>
+      ${[['Ali Raza','25 Jun','PKR 50','bgg'],['Fatima K.','22 Jun','PKR 50','bgg'],['Ahmed B.','18 Jun','PKR 50','bgg']].map(([n,d,a,c])=>`
+      <div class="rwb" style="padding:6px 0;border-bottom:1px solid #f5f5f5">
+        <div class="row"><div class="av" style="width:24px;height:24px;font-size:9px">${n.split(' ').map(x=>x[0]).join('')}</div><div><div style="font-size:12px;font-weight:600">${n}</div><div class="ms">${d}</div></div></div>
+        <span class="${c}">${a}</span>
+      </div>`).join('')}
+    </div>
+  </div>
+</div>`},
+
+'d-splash':{l:'Driver — Splash Screen',i:'🌟',d:'Driver app launch screen. Same Easy Ride Chakwal brand but driver-focused. Shows "Kamai shuru karein" (Start Earning) CTA. Register or login options.',f:['Driver-focused CTA','Earning potential teaser','Brand identity','Urdu-first copy'],
+h:`<div class="s" style="background:#111;justify-content:space-between">
+  <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px">
+    <div style="width:80px;height:80px;background:var(--y);border-radius:20px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:32px;color:#111;margin-bottom:14px">E</div>
+    <div style="color:#fff;font-size:20px;font-weight:800;text-align:center">Easy Ride — Driver</div>
+    <div style="color:var(--y);font-size:13px;text-align:center;margin-top:2px;margin-bottom:20px">Chakwal کا بہترین Ride Service</div>
+    <div style="background:rgba(255,255,255,.06);border:1px solid #333;border-radius:12px;padding:14px 20px;width:100%;text-align:center;margin-bottom:10px">
+      <div style="color:#888;font-size:10px;font-weight:700;text-transform:uppercase;margin-bottom:6px">Average Driver Earns</div>
+      <div style="color:var(--y);font-size:26px;font-weight:800">PKR 2,700</div>
+      <div style="color:#666;font-size:11px">روزانہ · Per Day</div>
+    </div>
+    <div style="display:flex;gap:20px;margin-top:10px">
+      ${[['🕐','Apne waqt par kaam','Flexible Hours'],['💰','Roz kamai','Daily Earning'],['🔒','Verified riders','Safe Trips']].map(([ic,u,e])=>`
+      <div style="text-align:center"><div style="font-size:22px">${ic}</div><div style="color:#555;font-size:9px;margin-top:3px">${u}</div></div>`).join('')}
+    </div>
+  </div>
+  <div style="padding:14px;display:flex;flex-direction:column;gap:7px">
+    <button style="background:var(--y);color:#111;border:none;border-radius:12px;padding:13px;font-size:14px;font-weight:800;cursor:pointer">Driver Login Karein</button>
+    <button style="background:transparent;color:#fff;border:1.5px solid #333;border-radius:12px;padding:13px;font-size:14px;font-weight:700;cursor:pointer">Naya Driver Register Karein</button>
+  </div>
+</div>`},
+
+'d-otp':{l:'Driver — OTP Login',i:'🔐',d:'Driver login with phone OTP. Same flow as rider but driver-branded. After OTP, checks driver approval status — if pending shows status screen.',f:['Driver-specific OTP','Approval status check','Urdu prompts','Auto-redirect on approval'],
+h:`<div class="s" style="background:#fff">
+  <div style="background:#111;padding:12px 14px;display:flex;align-items:center;gap:10px;flex-shrink:0">
+    <div style="background:var(--y);width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:13px;color:#111">E</div>
+    <div style="color:#fff;font-size:13px;font-weight:700">Driver Login</div>
+  </div>
+  <div class="scr" style="display:flex;flex-direction:column;padding:20px 14px">
+    <div style="font-size:15px;font-weight:700;margin-bottom:4px">Apna Number Daalen</div>
+    <div class="mu" style="margin-bottom:16px;font-size:11px">Pakistan mobile number (03XX-XXXXXXX)</div>
+    <label class="il">Mobile Number</label>
+    <div style="display:flex;gap:7px;margin-bottom:14px">
+      <div style="background:#f8f8f8;border:1.5px solid var(--brd);border-radius:9px;padding:9px 11px;font-size:12px;font-weight:700;flex-shrink:0">🇵🇰 +92</div>
+      <input class="inf" style="margin:0;flex:1" placeholder="300 1234567" />
+    </div>
+    <button class="yb" style="margin-bottom:14px">OTP Bhejein</button>
+    <div style="background:#fffdf0;border:1.5px solid var(--y);border-radius:10px;padding:11px;margin-bottom:14px">
+      <div style="font-size:11px;font-weight:700;color:#7a5800;margin-bottom:4px">Pehli baar register kar rahe hain?</div>
+      <div style="font-size:11px;color:#7a5800">Driver App mein pehle account banayein, documents upload karein, aur admin approval ka wait karein. 24-48 ghante lagte hain.</div>
+    </div>
+    <div class="div"></div>
+    <div style="font-size:11px;color:var(--t3);text-align:center;margin-top:6px">Rider hain? <span style="color:#111;font-weight:700">Rider App download karein</span></div>
+  </div>
+</div>`},
+
+'d-trip-end':{l:'Driver — Trip Completed',i:'🏁',d:'Screen shown when driver taps "End Trip". Shows final fare, distance, time taken. Confirms payment received (cash) or digital confirmation. Prompts rate rider.',f:['Trip summary','Cash confirmed tap','Fare breakdown','Rate rider prompt'],
+h:`<div class="s">
+  <div style="background:#16a34a;padding:10px 12px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0">
+    <span style="color:#fff;font-weight:800;font-size:13px">✅ Trip Complete!</span>
+    <span style="background:rgba(255,255,255,.2);color:#fff;font-size:10px;padding:2px 8px;border-radius:10px">GCT College</span>
+  </div>
+  <div class="scr" style="background:#fff;padding:14px">
+    <div style="background:#f0fdf4;border:1.5px solid #bbf7d0;border-radius:12px;padding:14px;text-align:center;margin-bottom:12px">
+      <div class="ms" style="margin-bottom:4px">Aaj ki is trip ki Kamai</div>
+      <div style="font-size:30px;font-weight:800;color:#111;margin-bottom:4px">PKR 153</div>
+      <div class="ms">PKR 180 fare · 15% platform fee = PKR 27</div>
+    </div>
+    <div class="cd" style="margin-bottom:8px">
+      <div class="ml" style="margin-bottom:7px">Trip Summary</div>
+      ${[['Distance','3.2 km'],['Time','14 min'],['Rider','Sana Ahmad'],['Payment','Cash'],['Your cut (85%)','PKR 153']].map(([l,v])=>`
+      <div class="rwb" style="padding:5px 0;border-bottom:1px solid #f8f8f8"><span class="mu">${l}</span><span style="font-size:12px;font-weight:700">${v}</span></div>`).join('')}
+    </div>
+    <div style="background:#fff5cc;border:1.5px solid var(--y);border-radius:11px;padding:12px;margin-bottom:10px">
+      <div style="font-size:12px;font-weight:700;margin-bottom:7px">Cash Received? Confirm Karein</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px">
+        <button style="background:#fee2e2;color:#dc2626;border:1.5px solid #fca5a5;border-radius:9px;padding:9px;font-size:12px;font-weight:700;cursor:pointer">✕ Nahi Mila</button>
+        <button class="pb" style="padding:9px;font-size:12px">✓ PKR 180 Mila</button>
+      </div>
+    </div>
+    <button class="yb">Rate Rider →</button>
+  </div>
+</div>`},
+
+'d-rate':{l:'Driver — Rate Rider',i:'⭐',d:'Driver rates the rider after trip. Simple 5-star with quick tags like "On time at pickup", "Polite", "Good experience". Keeps driver feedback loop active.',f:['5-star rider rating','Pickup punctuality tag','Positive/negative tags','Quick submit'],
+h:`<div class="s">
+  <div class="tb"><span class="tbt">Rider Ko Rate Karein</span></div>
+  <div class="scr" style="background:#fff;padding:16px;display:flex;flex-direction:column;align-items:center">
+    <div class="av" style="width:52px;height:52px;font-size:18px;margin-bottom:6px">SA</div>
+    <div style="font-size:15px;font-weight:700;margin-bottom:2px">Sana Ahmad</div>
+    <div class="ms" style="margin-bottom:14px">Clock Tower → GCT College</div>
+    <div style="font-size:12px;color:var(--t2);margin-bottom:8px">Is rider ka experience kaisa raha?</div>
+    <div style="display:flex;gap:8px;margin-bottom:16px">
+      ${[1,2,3,4,5].map(n=>`<div style="font-size:30px;cursor:pointer;opacity:${n<=5?1:.35}">${n<=5?'★':'☆'}</div>`).join('')}
+    </div>
+    <div style="align-self:flex-start;font-size:12px;color:var(--t2);margin-bottom:7px">Quick Feedback</div>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;align-self:flex-start">
+      ${['Waqt par ready tha ✓','Polite tha ✓','Seedha baiitha','Address sahi tha ✓','Quickly aaya','Problem nahi ki'].map((t,i)=>`<div style="background:${i<=3?'#fffdf0':'#f5f5f5'};border:1.5px solid ${i<=3?'var(--y)':'var(--brd)'};border-radius:20px;padding:5px 9px;font-size:10px;font-weight:600;color:${i<=3?'#7a5800':'var(--t2)'};cursor:pointer">${t}</div>`).join('')}
+    </div>
+    <textarea class="inf" style="height:56px;resize:none;font-size:11px;align-self:stretch" placeholder="Optional comment..."></textarea>
+    <button class="pb" style="margin-top:10px;width:100%">Submit Rating</button>
+  </div>
+</div>`},
+
+'d-notif':{l:'Driver — Notifications',i:'🔔',d:'Driver notifications: new ride requests in area, admin messages, daily earning summaries, and verification status updates.',f:['Ride request alerts','Admin messages','Daily summary push','Verification updates'],
+h:`<div class="s">
+  <div class="tb"><span class="tbt">Notifications</span><span style="font-size:10px;color:var(--y)">Sab Parha</span></div>
+  <div class="scr" style="background:#fff;padding:10px">
+    ${[
+      {ic:'🚗',t:'Aapke Area mein Ride!',sub:'3 requests Chakwal City mein · Online rahein',time:'Abhi',c:'#fffdf0',brd:'var(--y)'},
+      {ic:'💰',t:'Aaj PKR 1,840 Kamai',sub:'11 trips · Rating 4.9 · Bohat acha!',time:'Aaj',c:'#f0fdf4',brd:'#bbf7d0'},
+      {ic:'✅',t:'Documents Approved!',sub:'Aapka account activate ho gaya hai',time:'Kal',c:'#f0fdf4',brd:'#bbf7d0'},
+      {ic:'📢',t:'Easy Ride Admin',sub:'Eid special bonus — PKR 500 agar 20 trips',time:'2 din pehle',c:'#fff',brd:'var(--brd)'},
+      {ic:'⭐',t:'New Rating Mili',sub:'Sana A. ne aapko 5 star diya',time:'3 din pehle',c:'#fff',brd:'var(--brd)'},
+    ].map(n=>`
+    <div style="display:flex;gap:10px;padding:10px;background:${n.c};border:1px solid ${n.brd};border-radius:11px;margin-bottom:6px;cursor:pointer">
+      <span style="font-size:20px;flex-shrink:0">${n.ic}</span>
+      <div style="flex:1"><div class="rwb"><div style="font-size:12px;font-weight:700">${n.t}</div><div class="ms" style="flex-shrink:0;margin-left:5px">${n.time}</div></div><div style="font-size:11px;color:var(--t2);margin-top:2px">${n.sub}</div></div>
+    </div>`).join('')}
+  </div>
+</div>`},
+
+'d-offline':{l:'Driver — Go Offline',i:'🔴',d:'Driver going offline screen. Confirms intent, shows today\'s summary before logging off. Option to set a return time.',f:['Today summary on exit','Confirm offline','Set return time','Quick logout option'],
+h:`<div class="s">
+  <div class="tb"><span class="tbt">Offline Jaana Chahte Hain?</span></div>
+  <div class="scr" style="background:#fff;padding:14px">
+    <div style="background:#f8f8f8;border-radius:13px;padding:14px;text-align:center;margin-bottom:14px">
+      <div style="font-size:13px;font-weight:700;margin-bottom:10px">Aaj ki Summary</div>
+      <div class="sg">
+        <div class="sc"><div class="sb" style="color:var(--y)">PKR 1,840</div><div class="sl">Kamai</div></div>
+        <div class="sc"><div class="sb">11</div><div class="sl">Trips</div></div>
+        <div class="sc"><div class="sb" style="color:var(--y)">4.9★</div><div class="sl">Rating</div></div>
+        <div class="sc"><div class="sb">4.2 hrs</div><div class="sl">Online</div></div>
+      </div>
+    </div>
+    <div style="font-size:13px;font-weight:700;margin-bottom:8px">Wapas kab aenge?</div>
+    <div style="display:flex;flex-wrap:wrap;gap:7px;margin-bottom:14px">
+      ${['1 ghante mein','2 ghante mein','Kal subah','Pata nahi'].map((t,i)=>`
+      <div style="background:${i===2?'#fffdf0':'#f5f5f5'};border:1.5px solid ${i===2?'var(--y)':'var(--brd)'};border-radius:9px;padding:8px 12px;font-size:11px;font-weight:600;color:${i===2?'#7a5800':'var(--t2)'};cursor:pointer">${t}</div>`).join('')}
+    </div>
+    <div class="div"></div>
+    <div style="font-size:12px;color:var(--t2);text-align:center;margin-bottom:12px">Offline jane se aapko koi nayi request nahi milegi</div>
+    <button style="background:#fee2e2;color:#dc2626;border:2px solid #fca5a5;border-radius:11px;padding:13px;font-size:14px;font-weight:800;width:100%;cursor:pointer;margin-bottom:8px">🔴 Offline Ho Jao</button>
+    <button style="background:#f5f5f5;color:var(--t2);border:1px solid var(--brd);border-radius:11px;padding:11px;font-size:13px;font-weight:600;width:100%;cursor:pointer">Wapas Online Rahein</button>
+  </div>
+</div>`},
+
+'v-license':{l:'Verification — Driving License',i:'🪪',d:'Step 3 of driver onboarding. Upload driving license front photo, enter license number for DLIMS Punjab check, and expiry date.',f:['License number entry','DLIMS Punjab check','Expiry date validation','Photo quality tips'],
+h:`<div class="s">
+  <div class="tb"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#aaa" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg><span class="tbt">Driving License</span><span class="bgy">Step 3/4</span></div>
+  <div class="scr" style="background:#fff;padding:12px">
+    <div class="pr" style="height:7px;margin-bottom:14px"><div class="pf" style="width:75%"></div></div>
+    <div style="font-size:14px;font-weight:700;margin-bottom:4px">Driving License Upload Karein</div>
+    <div class="mu" style="margin-bottom:12px;font-size:11px">Punjab DLIMS se verify hogi. License number bilkul sahi likhen.</div>
+    <label class="il">License Number</label>
+    <input class="inf" placeholder="DL-CWL-2019-XXXX" />
+    <label class="il">Expiry Date</label>
+    <input class="inf" placeholder="DD/MM/YYYY" />
+    <label class="il">License Category</label>
+    <select class="inf" style="cursor:pointer">
+      <option>LTV (Light Transport Vehicle — Car)</option>
+      <option>Motor Cycle</option>
+      <option>HTV (Heavy Transport)</option>
+    </select>
+    <div class="ub">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 12h8M12 8v8"/></svg>
+      <div style="font-size:11px;font-weight:600">License Ki Tasweer (Front)</div>
+      <div class="ms">Tamam details clearly visible honI chahiyein</div>
+    </div>
+    <div style="background:#e6f1fb;border:1px solid #b5d4f4;border-radius:9px;padding:9px;margin-bottom:12px">
+      <div style="font-size:10px;font-weight:700;color:#0c447c;margin-bottom:3px">DLIMS Punjab Check</div>
+      <div style="font-size:10px;color:#185fa5">License number enter karne ke baad hum automatically Punjab DLIMS portal par check karenge. Agar license valid hai to green tick milega.</div>
+    </div>
+    <button class="pb">Next: Vehicle Info →</button>
+  </div>
+</div>`},
+
+'v-vehicle':{l:'Verification — Vehicle Registration',i:'🚗',d:'Driver enters vehicle registration plate number. System sends SMS to 8785 (MTMIS Punjab) to verify ownership and registration status. Photo of registration book also uploaded.',f:['Plate number entry','MTMIS SMS auto-check','Reg book photo upload','Vehicle type selection'],
+h:`<div class="s">
+  <div class="tb"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#aaa" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg><span class="tbt">Vehicle Registration</span><span class="bgy">Step 4/4</span></div>
+  <div class="scr" style="background:#fff;padding:12px">
+    <div class="pr" style="height:7px;margin-bottom:14px"><div class="pf" style="width:100%"></div></div>
+    <div style="font-size:14px;font-weight:700;margin-bottom:4px">Gaadi ki Details Darj Karein</div>
+    <div class="mu" style="margin-bottom:12px;font-size:11px">MTMIS Punjab se SMS ke zariye verify hogi.</div>
+    <label class="il">Registration Plate Number</label>
+    <div style="background:#111;border-radius:10px;padding:10px;text-align:center;margin-bottom:9px">
+      <input style="background:transparent;border:none;color:var(--y);font-size:18px;font-weight:900;text-align:center;letter-spacing:4px;outline:none;width:100%" placeholder="CWL-115" />
+      <div style="color:#555;font-size:10px;margin-top:3px">Pakistan Plate Number</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:9px">
+      <div><label class="il">Vehicle Make</label><input class="inf" style="margin:0" placeholder="Suzuki" /></div>
+      <div><label class="il">Model</label><input class="inf" style="margin:0" placeholder="Alto 2020" /></div>
+    </div>
+    <label class="il">Vehicle Color</label>
+    <input class="inf" placeholder="White / Silver / Black..." />
+    <label class="il">Vehicle Type</label>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:9px">
+      ${[['🚗','Car',true],['🏍️','Bike',false],['🛺','Qingqi',false]].map(([ic,t,s])=>`
+      <div style="background:${s?'#fffdf0':'#f8f8f8'};border:2px solid ${s?'var(--y)':'var(--brd)'};border-radius:9px;padding:9px;text-align:center;cursor:pointer">
+        <div style="font-size:20px">${ic}</div>
+        <div style="font-size:11px;font-weight:700;color:${s?'#7a5800':'var(--t2)'};margin-top:3px">${t}</div>
+      </div>`).join('')}
+    </div>
+    <div class="ub">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 12h8M12 8v8"/></svg>
+      <div style="font-size:11px;font-weight:600">Registration Book Ki Tasweer</div>
+    </div>
+    <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:9px;padding:9px;margin-bottom:10px">
+      <div style="font-size:10px;font-weight:700;color:#15803d;margin-bottom:2px">Auto MTMIS Check</div>
+      <div style="font-size:10px;color:#16a34a">Plate number submit karte hi hum SMS 8785 par bhejenge — verification 1 minute mein hogi.</div>
+    </div>
+    <button class="yb">Submit All Documents 🎉</button>
+  </div>
+</div>`},
+
+'v-selfie':{l:'Verification — Live Selfie',i:'🤳',d:'Driver takes a live selfie holding their CNIC card. Camera opens in-app. Face + CNIC must both be clearly visible. Instructions in Urdu.',f:['In-app camera','CNIC in hand required','Urdu instructions','Liveness check hint'],
+h:`<div class="s">
+  <div class="tb"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#aaa" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg><span class="tbt">Live Selfie Lein</span><span class="bgy">Step 2b</span></div>
+  <div class="scr" style="background:#fff;padding:12px;display:flex;flex-direction:column;align-items:center">
+    <div class="pr" style="height:7px;margin-bottom:14px;align-self:stretch"><div class="pf" style="width:50%"></div></div>
+    <div style="width:100%;background:#111;border-radius:14px;height:200px;display:flex;align-items:center;justify-content:center;margin-bottom:12px;position:relative;overflow:hidden">
+      <div style="width:120px;height:160px;border:2px dashed rgba(245,196,0,.6);border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="rgba(245,196,0,.5)" stroke-width="1.5"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>
+        <div style="color:rgba(245,196,0,.6);font-size:10px;text-align:center">Camera yahan<br>activate hoga</div>
+      </div>
+      <div style="position:absolute;bottom:8px;left:0;right:0;text-align:center;color:rgba(255,255,255,.4);font-size:9px">Live camera preview</div>
+    </div>
+    <div style="background:#fffdf0;border:1.5px solid var(--y);border-radius:10px;padding:10px;align-self:stretch;margin-bottom:12px">
+      <div style="font-size:11px;font-weight:700;color:#7a5800;margin-bottom:6px">Selfie lene ka sahi tarika:</div>
+      ${['CNIC ko haath mein pakad kar saamne rakhein','Apka chehra aur CNIC dono clearly visible hone chahiyein','Bright jagah mein photo lein — andhera nahi hona chahiye','Sunglasses ya cap nahi — chehra clearly dikhna chahiye'].map(t=>`
+      <div class="row" style="gap:7px;margin-bottom:5px"><div class="dg" style="background:var(--y)"></div><div style="font-size:11px;color:#7a5800">${t}</div></div>`).join('')}
+    </div>
+    <button class="yb" style="align-self:stretch;margin-bottom:7px">📸 Camera Kholen</button>
+    <div class="ms" style="text-align:center">Selfie sirf verification ke liye use hogi.<br>Kisi aur se share nahi ki jayegi.</div>
+  </div>
+</div>`},
+
+'v-approved':{l:'Verification — Account Approved!',i:'🎉',d:'Congratulations screen when admin approves the driver. Shows verification badge, first tips for new drivers, and CTA to go online immediately.',f:['Approval celebration','Verification badge earned','First driver tips','Go Online CTA'],
+h:`<div class="s">
+  <div style="background:#16a34a;padding:10px 12px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+    <span style="color:#fff;font-weight:800;font-size:13px">✅ Account Activate Ho Gaya!</span>
+  </div>
+  <div class="scr" style="background:#fff;padding:16px;display:flex;flex-direction:column;align-items:center">
+    <div style="width:80px;height:80px;background:#dcfce7;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:36px;margin-bottom:12px">🎉</div>
+    <div style="font-size:17px;font-weight:800;margin-bottom:4px;text-align:center">Mubarak Ho Abdul Rehman!</div>
+    <div class="mu" style="text-align:center;margin-bottom:16px;font-size:12px">Aap ab Easy Ride Chakwal ke verified driver hain. Ride lena shuru karein!</div>
+    <div style="background:#f0fdf4;border:2px solid #16a34a;border-radius:12px;padding:12px;width:100%;text-align:center;margin-bottom:14px">
+      <div style="font-size:11px;color:#16a34a;font-weight:700;margin-bottom:4px">VERIFIED DRIVER BADGE</div>
+      <div style="font-size:22px;margin-bottom:4px">🛡️</div>
+      <div style="font-size:12px;font-weight:800;color:#15803d">Easy Ride Chakwal — Verified</div>
+      <div class="ms" style="margin-top:2px">CNIC ✓ License ✓ Vehicle ✓ Police ✓</div>
+    </div>
+    <div style="align-self:flex-start;font-size:12px;font-weight:700;margin-bottom:8px">Pehli Ride se Pehle:</div>
+    ${['App notifications on rakhein — ride requests miss na karein','App ke andar se hi rider se baat karein — number share mat karein','Har trip ke baad rating milegi — 4.5+ maintain karein','Koi problem? WhatsApp: 0310-0570499'].map(t=>`
+    <div class="row" style="gap:8px;margin-bottom:7px;align-self:flex-start"><div class="dg" style="background:var(--y)"></div><div style="font-size:11px;color:var(--t2)">${t}</div></div>`).join('')}
+    <button class="yb" style="align-self:stretch;margin-top:10px;font-size:15px;padding:14px">🟢 Online Ho Jao — Kamai Shuru!</button>
+  </div>
+</div>`},
+
+'a-trips':{l:'Admin — Trip Logs',i:'📋',d:'Full paginated log of all trips in the system. Filter by driver, date, status. Export to CSV for reporting. Each row shows trip ID, driver, rider, fare, status.',f:['Filter by date/driver','Export CSV','Trip status badges','Fare totals'],
+h:`<div class="s" style="flex-direction:row">
+  <div class="asd">
+    <div class="sl2">E</div>
+    ${[['M11 M7 M3',false],['circle cx=12 cy=12 r=10',false],['path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" M12 7 r=4',false],['rect x=3 y=3 w=7 h=7',false],['line x=8 y=6 l=21-6 line x=8 y=12 l=21-12 line x=8 y=18 l=21-18',true]].map((_,i)=>`
+    <div class="si ${i===4?'on':''}">
+      <svg viewBox="0 0 24 24">${i===0?'<rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>':i===1?'<path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/>':i===2?'<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>':i===3?'<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/>':'<line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/>'}</svg>
+    </div>`).join('')}
+  </div>
+  <div class="ab">
+    <div class="ah">
+      <div style="font-size:13px;font-weight:700">Trip Logs</div>
+      <div class="row" style="gap:6px">
+        <div style="background:#f8f8f8;border:1px solid var(--brd);border-radius:7px;padding:4px 8px;font-size:10px;font-weight:600;cursor:pointer">📅 Today</div>
+        <div style="background:#111;color:var(--y);border-radius:7px;padding:4px 8px;font-size:10px;font-weight:700;cursor:pointer">📥 Export CSV</div>
+      </div>
+    </div>
+    <div class="ac">
+      <div class="th" style="font-size:9px">
+        <div class="c1">Trip / Driver</div>
+        <div class="c2">Fare</div>
+        <div class="c3">Status</div>
+      </div>
+      ${[
+        ['#1042','Abdul R. → Sana A.','Clock Tower→GCT','PKR 180','Done'],
+        ['#1041','Tariq M. → Ali R.','Bus Stand→Hospital','PKR 120','Done'],
+        ['#1040','Zubair A. → Fatima','GT Road→Bazar','PKR 95','Cancelled'],
+        ['#1039','Abdul R. → Ahmed B.','Talagang Rd→Home','PKR 310','Done'],
+        ['#1038','Asim K. → Sara M.','Hospital→College','PKR 150','Done'],
+        ['#1037','Bilal H. → Kamran','Bazar→GT Road','PKR 80','Done'],
+      ].map(([id,dr,rt,fare,st])=>`
+      <div class="tr">
+        <div class="c1">
+          <div style="font-size:11px;font-weight:700">${id} · ${dr.split('→')[0].trim()}</div>
+          <div style="font-size:9px;color:var(--t3)">${rt}</div>
+        </div>
+        <div class="c2" style="font-size:11px;font-weight:700">${fare}</div>
+        <div class="c3"><span class="${st==='Done'?'bgg':st==='Cancelled'?'bgr':'bgy'}" style="font-size:9px">${st}</span></div>
+      </div>`).join('')}
+      <div style="background:#f8f8f8;border-radius:8px;padding:8px;margin-top:6px">
+        <div class="rwb"><span style="font-size:11px;font-weight:700">Today Total</span><span style="font-size:13px;font-weight:800">PKR 11,450</span></div>
+        <div class="rwb" style="margin-top:3px"><span class="ms">64 trips · 3 cancelled</span><span class="ms">15% = PKR 1,717 platform fee</span></div>
+      </div>
+    </div>
+  </div>
+</div>`},
+
+'a-revenue':{l:'Admin — Revenue Dashboard',i:'💰',d:'Admin financial overview. Daily and weekly revenue bars. Platform fee vs driver payout split. JazzCash/Cash breakdown. Monthly trend.',f:['Daily revenue bars','Platform fee tracking','Payment method split','Weekly totals'],
+h:`<div class="s" style="flex-direction:row">
+  <div class="asd">
+    <div class="sl2">E</div>
+    ${[0,1,2,3,4].map(i=>`<div class="si ${i===3?'on':''}"><svg viewBox="0 0 24 24">${i===0?'<rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>':i===1?'<path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/>':i===2?'<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>':i===3?'<polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>':'<line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/>'}</svg></div>`).join('')}
+  </div>
+  <div class="ab">
+    <div class="ah"><div style="font-size:13px;font-weight:700">Revenue Dashboard</div><div class="bgy">June 2026</div></div>
+    <div class="ac">
+      <div class="sg" style="margin-bottom:8px">
+        <div class="sc"><div class="sl">This Week</div><div class="sb" style="color:var(--y)">PKR 78K</div></div>
+        <div class="sc"><div class="sl">Platform Fee</div><div class="sb">PKR 11.7K</div></div>
+        <div class="sc"><div class="sl">Total Trips</div><div class="sb">432</div></div>
+        <div class="sc"><div class="sl">Avg Fare</div><div class="sb">PKR 180</div></div>
+      </div>
+      <div style="background:#fff;border:1px solid var(--brd);border-radius:10px;padding:10px;margin-bottom:8px">
+        <div class="ml" style="margin-bottom:8px">Daily Revenue (This Week)</div>
+        ${[['Mon','10,840',40],['Tue','13,200',49],['Wed','9,600',36],['Thu','15,450',57],['Fri','14,200',53],['Sat','8,320',31],['Sun','6,940',26]].map(([d,a,p])=>`
+        <div class="row" style="gap:7px;margin-bottom:5px;align-items:center">
+          <span style="font-size:9px;font-weight:700;color:var(--t3);width:26px">${d}</span>
+          <div style="flex:1;background:#f5f5f5;border-radius:3px;height:16px;overflow:hidden">
+            <div style="background:var(--y);height:100%;width:${p}%;display:flex;align-items:center;justify-content:flex-end;padding-right:4px">
+              ${p>35?`<span style="font-size:8px;font-weight:700;color:#7a5800">${a}</span>`:''}
+            </div>
+          </div>
+          <span style="font-size:10px;font-weight:700;width:44px;text-align:right">PKR ${a.split(',')[0]}K</span>
+        </div>`).join('')}
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px">
+        <div class="sc"><div class="sl">Cash</div><div style="font-size:12px;font-weight:700">72%</div></div>
+        <div class="sc"><div class="sl">JazzCash</div><div style="font-size:12px;font-weight:700">21%</div></div>
+        <div class="sc"><div class="sl">EasyPaisa</div><div style="font-size:12px;font-weight:700">7%</div></div>
+      </div>
+    </div>
+  </div>
+</div>`},
+
+'a-sos':{l:'Admin — SOS Alert Panel',i:'🚨',d:'When a rider triggers SOS, admin gets an instant alert with live GPS location, driver name, rider name, and direct call buttons. Shows SOS history log.',f:['Instant SOS alert','Live GPS location','Call driver/rider','SOS history'],
+h:`<div class="s" style="flex-direction:row">
+  <div class="asd">
+    <div class="sl2">E</div>
+    ${[0,1,2,3,4].map(i=>`<div class="si ${i===4?'on':''}"><svg viewBox="0 0 24 24">${i===0?'<rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>':i===1?'<path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/>':i===2?'<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>':i===3?'<polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>':'<path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>'}</svg></div>`).join('')}
+  </div>
+  <div class="ab">
+    <div class="ah" style="background:#fee2e2;border-bottom-color:#fca5a5">
+      <div style="font-size:13px;font-weight:700;color:#dc2626">🚨 SOS Alerts</div>
+      <div class="bgr">1 Active</div>
+    </div>
+    <div class="ac">
+      <div style="background:#fee2e2;border:2px solid #dc2626;border-radius:10px;padding:10px;margin-bottom:10px;animation:pulse 2s infinite">
+        <style>@keyframes pulse{0%,100%{opacity:1}50%{opacity:.8}}</style>
+        <div class="rwb" style="margin-bottom:7px">
+          <div style="font-size:12px;font-weight:800;color:#dc2626">🚨 ACTIVE SOS</div>
+          <div style="font-size:10px;color:#dc2626">3:42 PM — 2 min ago</div>
+        </div>
+        <div class="rwb" style="margin-bottom:6px">
+          <div><div class="ms">Rider</div><div style="font-size:12px;font-weight:700">Sana Ahmad</div></div>
+          <div><div class="ms">Driver</div><div style="font-size:12px;font-weight:700">Abdul Rehman</div></div>
+        </div>
+        <div style="background:rgba(220,38,38,.1);border-radius:8px;padding:7px;margin-bottom:8px">
+          <div style="font-size:10px;color:#b91c1c;font-weight:700;margin-bottom:2px">Last Known Location</div>
+          <div style="font-size:11px;color:#dc2626">GT Road, near Chakwal Clock Tower<br>33.1234°N, 72.8567°E</div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px">
+          <button style="background:#dc2626;color:#fff;border:none;border-radius:7px;padding:7px;font-size:10px;font-weight:700;cursor:pointer">📞 Rider</button>
+          <button style="background:#111;color:var(--y);border:none;border-radius:7px;padding:7px;font-size:10px;font-weight:700;cursor:pointer">📞 Driver</button>
+          <button style="background:#f5f5f5;color:#555;border:1px solid var(--brd);border-radius:7px;padding:7px;font-size:10px;font-weight:700;cursor:pointer">✓ Resolve</button>
+        </div>
+      </div>
+      <div class="ml" style="margin-bottom:6px">SOS History</div>
+      ${[['Fatima K.','20 Jun · 6:12 PM','Resolved · False alarm','bgg'],['Ali R.','15 Jun · 9:45 PM','Resolved · Driver assisted','bgg']].map(([n,d,s,c])=>`
+      <div class="tr">
+        <div class="av" style="width:26px;height:26px;font-size:9px;flex-shrink:0">${n.split(' ').map(x=>x[0]).join('')}</div>
+        <div class="c1"><div style="font-size:11px;font-weight:700">${n}</div><div class="ms">${d}</div></div>
+        <span class="${c}" style="font-size:9px">${s}</span>
+      </div>`).join('')}
+    </div>
+  </div>
+</div>`},
+
+'a-settings':{l:'Admin — App Settings',i:'⚙️',d:'Admin configures fare rates, surge multiplier, service radius around Chakwal, commission percentage, and OTP/notification toggles.',f:['Fare rate control','Commission %','Chakwal radius limit','Surge on/off toggle'],
+h:`<div class="s" style="flex-direction:row">
+  <div class="asd">
+    <div class="sl2">E</div>
+    ${[0,1,2,3,4].map(i=>`<div class="si ${i===2?'on':''}"><svg viewBox="0 0 24 24">${i===0?'<rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>':i===1?'<path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/>':i===2?'<circle cx="12" cy="12" r="3"/><path d="M19.07 4.93l-1.41 1.41M5.34 18.66l-1.41 1.41M2 12H1M23 12h-1M18.66 18.66l-1.41-1.41M5.34 5.34L3.93 3.93"/>':i===3?'<polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>':'<line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/>'}</svg></div>`).join('')}
+  </div>
+  <div class="ab">
+    <div class="ah"><div style="font-size:13px;font-weight:700">App Settings</div><div class="bgy">Chakwal</div></div>
+    <div class="ac">
+      <div style="font-size:11px;font-weight:700;color:var(--t2);margin-bottom:6px;text-transform:uppercase;letter-spacing:.3px">Fare Configuration</div>
+      ${[['Base Fare (PKR)','50'],['Per KM Rate (PKR)','35'],['Per Minute Waiting (PKR)','9'],['Platform Commission (%)','15'],['Cancellation Fee (PKR)','30']].map(([l,v])=>`
+      <div class="rwb" style="background:#fff;border:1px solid var(--brd);border-radius:8px;padding:8px 10px;margin-bottom:5px">
+        <span style="font-size:11px;font-weight:600">${l}</span>
+        <div style="display:flex;align-items:center;gap:6px">
+          <div style="background:#f8f8f8;border:1px solid var(--brd);border-radius:6px;padding:4px 8px;font-size:12px;font-weight:700;min-width:40px;text-align:center">${v}</div>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        </div>
+      </div>`).join('')}
+      <div style="font-size:11px;font-weight:700;color:var(--t2);margin:10px 0 6px;text-transform:uppercase;letter-spacing:.3px">Service Settings</div>
+      ${[['Surge Pricing',true],['SOS Alerts to Admin',true],['New Driver Notifications',true],['Auto MTMIS Check',false],['Driver Rating Visible to Riders',true]].map(([l,on])=>`
+      <div class="rwb" style="background:#fff;border:1px solid var(--brd);border-radius:8px;padding:8px 10px;margin-bottom:5px">
+        <span style="font-size:11px;font-weight:600">${l}</span>
+        <div style="width:36px;height:20px;background:${on?'#111':'#e0e0e0'};border-radius:10px;position:relative;cursor:pointer">
+          <div style="width:16px;height:16px;background:${on?'var(--y)':'#fff'};border-radius:50%;position:absolute;top:2px;${on?'right:2px':'left:2px'}"></div>
+        </div>
+      </div>`).join('')}
+      <button class="pb" style="margin-top:8px">Save Settings</button>
+    </div>
+  </div>
+</div>`},
+
+'a-notif':{l:'Admin — Send Push Notification',i:'📢',d:'Admin composes and sends push notifications to all riders, all drivers, or specific users. Urdu + English. Scheduled delivery option.',f:['Target: all/riders/drivers','Urdu + English compose','Schedule delivery','Preview before send'],
+h:`<div class="s" style="flex-direction:row">
+  <div class="asd">
+    <div class="sl2">E</div>
+    ${[0,1,2,3,4].map(i=>`<div class="si ${i===4?'on':''}"><svg viewBox="0 0 24 24">${i===0?'<rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>':i===1?'<path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/>':i===2?'<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>':i===3?'<circle cx="12" cy="12" r="3"/><path d="M19.07 4.93l-1.41 1.41M5.34 18.66l-1.41 1.41M2 12H1"/>':'<path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/>'}</svg></div>`).join('')}
+  </div>
+  <div class="ab">
+    <div class="ah"><div style="font-size:13px;font-weight:700">Push Notification Bhejein</div></div>
+    <div class="ac">
+      <label class="il">Send To (Kisko Bhejein)</label>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px;margin-bottom:9px">
+        ${[['Everyone','All Users',true],['Riders Only','127 riders',false],['Drivers Only','20 drivers',false]].map(([t,s,on])=>`
+        <div style="background:${on?'#fffdf0':'#f8f8f8'};border:2px solid ${on?'var(--y)':'var(--brd)'};border-radius:8px;padding:8px;text-align:center;cursor:pointer">
+          <div style="font-size:11px;font-weight:700;color:${on?'#7a5800':'var(--t2)'}">${t}</div>
+          <div style="font-size:9px;color:${on?'#ca8a04':'var(--t3)'}">${s}</div>
+        </div>`).join('')}
+      </div>
+      <label class="il">Title (English)</label>
+      <input class="inf" value="Eid Special Offer! 🎉" />
+      <label class="il">Title (Urdu)</label>
+      <input class="inf" value="عید پر خاص آفر!" />
+      <label class="il">Message</label>
+      <textarea class="inf" style="height:56px;resize:none;font-size:11px">Eid Mubarak! Use code EID2026 for 20% off your next ride. Offer valid till June 30. — Easy Ride Chakwal</textarea>
+      <div style="background:#111;border-radius:10px;padding:10px;margin-bottom:9px">
+        <div style="font-size:9px;color:#555;margin-bottom:5px;font-weight:700">PREVIEW (Phone mein dikhega)</div>
+        <div style="display:flex;gap:8px">
+          <div style="background:var(--y);width:28px;height:28px;border-radius:6px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:11px;color:#111">E</div>
+          <div><div style="color:#fff;font-size:11px;font-weight:700">Eid Special Offer! 🎉</div><div style="color:#888;font-size:10px">Eid Mubarak! Use code EID2026 for 20%...</div></div>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px">
+        <button style="background:#f5f5f5;border:1px solid var(--brd);border-radius:9px;padding:10px;font-size:11px;font-weight:700;cursor:pointer">⏰ Schedule</button>
+        <button class="yb" style="padding:10px;font-size:11px">📤 Abhi Bhejein</button>
+      </div>
+    </div>
+  </div>
+</div>`}
+
+};
+
+function show(id, el) {
+  document.querySelectorAll('.pi').forEach(p=>p.classList.remove('on'));
+  if(el) el.classList.add('on');
+  const s = SC[id];
+  if(!s) return;
+  document.getElementById('pc').innerHTML = s.h;
+  document.getElementById('sd').innerHTML = `<h3>${s.i} ${s.l}</h3><p>${s.d}</p><div>${s.f.map(f=>`<span class="ft">${f}</span>`).join('')}</div>`;
+}
+
+show('r-splash', document.querySelector('.pi'));
+</script>

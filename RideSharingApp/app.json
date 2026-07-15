@@ -1,0 +1,71 @@
+{
+  "expo": {
+    "name": "EasyRide ",
+    "slug": "EasyRide",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/logo.jpeg",
+    "scheme": "ridesharingapp",
+    "userInterfaceStyle": "automatic",
+    "ios": {
+      "icon": "./assets/images/logo.jpeg",
+      "bundleIdentifier": "easyride.chakwal",
+      "config": {
+        "googleMapsApiKey": "[GCP_API_KEY]"
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#111111",
+        "foregroundImage": "./assets/images/logo.jpeg",
+        "backgroundImage": "./assets/images/logo.jpeg",
+        "monochromeImage": "./assets/images/logo.jpeg"
+      },
+      "predictiveBackGestureEnabled": false,
+      "package": "easyride.chakwal",
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyAAxMuJ7c6OVbQp9i30gxlHixpNUZKjhew"
+        }
+      }
+    },
+    "web": {
+      "output": "single",
+      "favicon": "./assets/images/logo.jpeg"
+    },
+    "plugins": [
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#111111",
+          "android": {
+            "image": "./assets/images/logo.jpeg",
+            "imageWidth": 76
+          }
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Allow Easy Ride Chakwal to use your location for ride booking and tracking."
+        }
+      ],
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/images/logo.jpeg",
+          "color": "#F5C400",
+          "defaultChannel": "easy_ride_channel"
+        }
+      ]
+    ],
+    "experiments": {
+      "reactCompiler": false
+    },
+    "extra": {
+      "eas": {
+        "projectId": "f1dca223-b2e0-458d-9882-9c4e9defac97"
+      }
+    }
+  }
+}
