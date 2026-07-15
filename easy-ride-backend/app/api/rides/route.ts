@@ -177,7 +177,7 @@ export async function GET(req: NextRequest) {
         .skip((page - 1) * limit)
         .limit(limit)
         .populate('riderId', 'firstName lastName phone avatarInitials rating')
-        .populate('driverId', 'firstName lastName phone avatarInitials rating vehicleModel vehiclePlate'),
+        .populate('driverId', 'firstName lastName phone avatarInitials rating vehicleModel vehiclePlate currentLocation'),
       Ride.countDocuments(query),
     ]);
 

@@ -24,7 +24,7 @@ export async function GET(
       .populate('riderId', 'firstName lastName phone avatarInitials rating')
       .populate(
         'driverId',
-        'firstName lastName phone avatarInitials rating vehicleModel vehiclePlate vehicleColor'
+        'firstName lastName phone avatarInitials rating vehicleModel vehiclePlate vehicleColor currentLocation'
       );
 
     if (!ride) return notFound('Ride nahi mili');
