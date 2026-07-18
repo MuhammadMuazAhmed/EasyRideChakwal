@@ -125,7 +125,24 @@ export function RideMap({
         ) : null}
 
         {driverCoord ? (
-          <Marker coordinate={driverCoord} title="Driver">
+          <Marker
+            identifier="driver-marker"
+            coordinate={driverCoord}
+            title="Driver"
+            /**
+             * tracksViewChanges={false}: once the custom view is rendered,
+             * stop re-measuring it on every React render cycle.  Without this,
+             * react-native-maps re-creates the native marker snapshot on each
+             * coordinate update, causing a brief flicker/jump.
+             */
+            tracksViewChanges={false}
+            /**
+             * flat={true}: keeps the icon flat against the map surface so it
+             * doesn't wobble as the map tilts or the coordinate shifts.
+             */
+            flat={true}
+            anchor={{ x: 0.5, y: 0.5 }}
+          >
             <View className="h-8 w-8 items-center justify-center rounded-full bg-primary">
               <Text className="text-sm">🚗</Text>
             </View>

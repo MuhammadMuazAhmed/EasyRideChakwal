@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, Alert, Pressable, Text, View } from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import React, { useEffect, useState, useCallback } from 'react';
+import { ActivityIndicator, Alert, Pressable, Text, View, BackHandler } from 'react-native';
+import { useNavigation, useRoute, useFocusEffect } from '@react-navigation/native';
 import type { RouteProp } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useQuery } from '@tanstack/react-query';
@@ -13,6 +13,7 @@ import { DriverService } from '@/modules/driver/services/driverService';
 import { RideService } from '@/api/services/rideService';
 import { useDriverStore } from '@/modules/driver/store/driverStore';
 import { useCurrentLocation } from '@/shared/hooks';
+import { useRoutePolyline } from '@/rider/hooks/useRoutePolyline';
 import type { DriverStackParamList } from '@/navigation/types';
 
 type NavigationProp = NativeStackNavigationProp<DriverStackParamList, 'ActiveTrip'>;
@@ -28,6 +29,25 @@ export function ActiveTripScreen() {
 
   const [loading, setLoading] = useState(false);
   const { location: driverLocation } = useCurrentLocation();
+
+  // Dynamic route calculation:
+  // 1. Before pickup: from Driver's live location to Pickup location.
+  // 2. After trip starts (in_progress): from Driver's live location to Destination location.
+  const routeStart = driverLocation;
+  const routeEnd = activeRide?.status === 'in_progress'
+    ? activeRide?.destination?.coordinates
+    : activeRide?.pickup?.coordinates;
+
+  const { data: routeData } = useRoutePolyline(routeStart, routeEnd);
+
+  // Only block back when this screen is focused.
+  useFocusEffect(
+    useCallback(() => {
+      const backAction = () => true;
+      const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
+      return () => backHandler.remove();
+    }, [])
+  );
 
   // Sync / query ride status
   const { data: rideData, refetch } = useQuery({
@@ -97,6 +117,7 @@ export function ActiveTripScreen() {
         pickup={activeRide.pickup.coordinates}
         destination={activeRide.destination.coordinates}
         driverLocation={driverLocation}
+        routePolyline={routeData?.polyline}
         showRoute
       />
 

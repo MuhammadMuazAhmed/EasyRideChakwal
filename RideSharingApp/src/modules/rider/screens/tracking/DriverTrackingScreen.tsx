@@ -1,9 +1,9 @@
 import { useCallback } from 'react';
-import { View } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { View, BackHandler } from 'react-native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-import { TopBar } from '@/shared/components/common/TopBar';
+import { TopBar, BackButton } from '@/shared/components/common/TopBar';
 import { MapBottomSheet } from '@/shared/components/common/SearchBar';
 import { RideMap } from '@/rider/components/map/RideMap';
 import { DriverInfoCard } from '@/rider/components/ride/RideComponents';
@@ -27,6 +27,16 @@ export function DriverTrackingScreen() {
   const currentRide = useRideStore((s) => s.currentRide);
   const updateDriverCoordinates = useRideStore((s) => s.updateDriverCoordinates);
   const driver = currentRide?.driver;
+
+  // Only block back when this screen is focused — so CancelRideScreen
+  // (pushed on top) can use the hardware back button normally.
+  useFocusEffect(
+    useCallback(() => {
+      const backAction = () => true;
+      const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
+      return () => backHandler.remove();
+    }, [])
+  );
 
   // Subscribe to Firebase RTDB and stream live driver coordinates into the store.
   const handleLiveLocation = useCallback(
@@ -84,11 +94,16 @@ export function DriverTrackingScreen() {
     ? `${etaMinutes} min · ${distanceKm.toFixed(2)} km away`
     : 'Locating driver…';
 
+  const handleCancel = () => {
+    navigation.navigate('CancelRide');
+  };
+
   return (
     <View className="flex-1">
       <TopBar
         showLogo
         title={isArrived ? 'Driver Arrived!' : 'Driver Coming…'}
+        leftAction={<BackButton onPress={handleCancel} />}
         rightAction={<Badge label={etaBadgeLabel} variant="green" />}
       />
       <RideMap

@@ -40,7 +40,10 @@ export function useCurrentLocation() {
       }
 
       const location = await Location.getCurrentPositionAsync({
-        accuracy: Location.Accuracy.Balanced,
+        // Use GPS-grade accuracy so the initial snapshot matches the live
+        // watch updates (which use BestForNavigation).  Balanced uses
+        // fused Wi-Fi/cell positioning and can be 50-100 m off.
+        accuracy: Location.Accuracy.High,
       });
 
       setCurrentLocation({
@@ -62,7 +65,7 @@ export function useCurrentLocation() {
     // Only request once per mount. Do not include hasPermission or
     // isLoading in dependencies — those change inside the async
     // callback which would re-trigger this effect and loop forever.
-    if (!hasRequested.current && !hasPermission) {
+    if (!hasRequested.current) {
       hasRequested.current = true;
       void requestLocation();
     }

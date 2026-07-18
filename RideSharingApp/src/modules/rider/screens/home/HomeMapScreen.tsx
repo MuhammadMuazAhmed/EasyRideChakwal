@@ -25,6 +25,7 @@ export function HomeMapScreen() {
   const pickup = useRideStore((s) => s.pickup);
   const selectedVehicle = useRideStore((s) => s.selectedVehicle);
   const setSelectedVehicle = useRideStore((s) => s.setSelectedVehicle);
+  const currentRide = useRideStore((s) => s.currentRide);
 
   const { data: nearbyDriversData } = useQuery({
     queryKey: ["nearbyDrivers", location?.latitude, location?.longitude],
@@ -78,14 +79,46 @@ export function HomeMapScreen() {
           </View>
         </View>
 
-        <MapBottomSheet>
-          <SearchBar onPress={() => navigation.navigate("LocationSearch")} />
-          <VehicleTypeSelector
-            selected={selectedVehicle}
-            onSelect={setSelectedVehicle}
-          />
-          <Button title="Request Ride" onPress={handleRequestRide} />
-        </MapBottomSheet>
+        {currentRide && ['searching', 'driver_assigned', 'driver_en_route', 'driver_arrived', 'in_progress'].includes(currentRide.status) ? (
+          <MapBottomSheet>
+            <View className="items-center py-4 px-2">
+              <View className="h-1 w-12 rounded-full bg-neutral-200 mb-4" />
+              <Text className="text-sm font-bold text-text-primary mb-1">
+                Active Ride in Progress
+              </Text>
+              <Text className="text-xs text-text-secondary text-center mb-4">
+                {currentRide.status === 'searching' 
+                  ? 'Searching for nearby drivers...' 
+                  : currentRide.status === 'driver_arrived'
+                  ? 'Driver has arrived at your location!'
+                  : currentRide.status === 'in_progress'
+                  ? 'Trip in progress to destination.'
+                  : 'Driver is en-route to your pickup location.'}
+              </Text>
+              <Button 
+                title="View Active Ride" 
+                onPress={() => {
+                  if (currentRide.status === 'searching') {
+                    navigation.navigate("DriverSearching");
+                  } else if (['driver_assigned', 'driver_en_route', 'driver_arrived'].includes(currentRide.status)) {
+                    navigation.navigate("DriverTracking");
+                  } else if (currentRide.status === 'in_progress') {
+                    navigation.navigate("ActiveTrip");
+                  }
+                }} 
+              />
+            </View>
+          </MapBottomSheet>
+        ) : (
+          <MapBottomSheet>
+            <SearchBar onPress={() => navigation.navigate("LocationSearch")} />
+            <VehicleTypeSelector
+              selected={selectedVehicle}
+              onSelect={setSelectedVehicle}
+            />
+            <Button title="Request Ride" onPress={handleRequestRide} />
+          </MapBottomSheet>
+        )}
       </View>
     </View>
   );

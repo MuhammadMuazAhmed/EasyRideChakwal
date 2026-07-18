@@ -88,8 +88,13 @@ export function useActiveRideSync() {
       }
     } else if (status === 'cancelled') {
       cancelRide();
-      if (prevStatusRef.current !== 'cancelled') {
-        Alert.alert('Ride Cancelled', 'Your ride has been cancelled.', [
+      // Only show the "Ride Cancelled" alert if the rider did NOT trigger it
+      // themselves — i.e., currentRide is still set in the store, which means
+      // the cancellation came from the driver/server side, not from CancelRideScreen.
+      // When the rider cancels via CancelRideScreen, resetBooking() is called first,
+      // clearing currentRide, so we skip the alert to avoid a double-cancel loop.
+      if (prevStatusRef.current !== 'cancelled' && currentRide) {
+        Alert.alert('Ride Cancelled', 'Your ride has been cancelled by the driver.', [
           {
             text: 'OK',
             onPress: () => {

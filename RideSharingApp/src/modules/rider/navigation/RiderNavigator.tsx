@@ -45,9 +45,9 @@ export function RiderNavigator() {
       <Stack.Screen name="DestinationSelection" component={DestinationSelectionScreen} />
       <Stack.Screen name="VehicleSelection" component={VehicleSelectionScreen} />
       <Stack.Screen name="PaymentMethod" component={PaymentMethodScreen} />
-      <Stack.Screen name="DriverSearching" component={DriverSearchingScreen} />
-      <Stack.Screen name="DriverTracking" component={DriverTrackingScreen} />
-      <Stack.Screen name="ActiveTrip" component={ActiveTripScreen} />
+      <Stack.Screen name="DriverSearching" component={DriverSearchingScreen} options={{ gestureEnabled: false }} />
+      <Stack.Screen name="DriverTracking" component={DriverTrackingScreen} options={{ gestureEnabled: false }} />
+      <Stack.Screen name="ActiveTrip" component={ActiveTripScreen} options={{ gestureEnabled: false }} />
       <Stack.Screen name="TripCompleted" component={TripCompletedScreen} />
       <Stack.Screen name="Rating" component={RatingScreen} />
       <Stack.Screen name="TripReceipt" component={TripReceiptScreen} />

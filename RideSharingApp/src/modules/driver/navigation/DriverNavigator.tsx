@@ -105,7 +105,7 @@ function DriverStackNavigator() {
     >
       <Stack.Screen name="DriverTabs" component={DriverTabNavigator} />
       <Stack.Screen name="IncomingRequest" component={IncomingRequestOverlay} />
-      <Stack.Screen name="ActiveTrip" component={ActiveTripScreen} />
+      <Stack.Screen name="ActiveTrip" component={ActiveTripScreen} options={{ gestureEnabled: false }} />
       <Stack.Screen name="Chat" component={ChatScreen} />
       <Stack.Screen name="Verification" component={VerificationScreen} />
       <Stack.Screen name="TripCompleted" component={TripCompletedScreen} />

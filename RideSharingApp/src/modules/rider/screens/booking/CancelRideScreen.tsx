@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { ActivityIndicator, Alert, Pressable, ScrollView, Text, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { useQueryClient } from '@tanstack/react-query';
 
 import { TopBar } from '@/shared/components/common/TopBar';
 import { Button } from '@/shared/components/ui/Button';
@@ -9,12 +10,14 @@ import { cancelReasons } from '@/shared/constants/mockData';
 import { useRideStore } from '@/rider/store/rideStore';
 import { RideService } from '@/api/services/rideService';
 import { cn } from '@/shared/utils';
+import { QUERY_KEYS } from '@/shared/constants/queryKeys';
 import type { RiderStackParamList } from '@/navigation/types';
 
 type NavigationProp = NativeStackNavigationProp<RiderStackParamList, 'CancelRide'>;
 
 export function CancelRideScreen() {
   const navigation = useNavigation<NavigationProp>();
+  const queryClient = useQueryClient();
   const currentRide = useRideStore((s) => s.currentRide);
   const cancelRide = useRideStore((s) => s.cancelRide);
   const resetBooking = useRideStore((s) => s.resetBooking);
@@ -24,7 +27,9 @@ export function CancelRideScreen() {
   const handleCancel = async () => {
     if (!currentRide?.id) {
       resetBooking();
-      navigation.navigate('MainTabs', { screen: 'Home' });
+      // Wipe stale cache so useActiveRideSync doesn't re-navigate
+      queryClient.removeQueries({ queryKey: QUERY_KEYS.currentRide });
+      navigation.popToTop();
       return;
     }
 
@@ -33,7 +38,12 @@ export function CancelRideScreen() {
       await RideService.cancelRide(currentRide.id, selectedReason);
       cancelRide();
       resetBooking();
-      navigation.navigate('MainTabs', { screen: 'Home' });
+      // Clear the query cache immediately so useActiveRideSync sees null
+      // before the next refetch, preventing it from re-navigating to DriverSearching
+      queryClient.removeQueries({ queryKey: QUERY_KEYS.currentRide });
+      // popToTop fully unwinds the stack back to MainTabs/Home,
+      // unlike navigate() which leaves DriverSearching in history
+      navigation.popToTop();
     } catch (err: any) {
       Alert.alert('Cancel Failed', err.response?.data?.message ?? err.message);
     } finally {

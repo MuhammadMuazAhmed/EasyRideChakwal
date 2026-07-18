@@ -1,5 +1,5 @@
-import { Pressable, Text, View } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { Pressable, Text, View, BackHandler } from 'react-native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useEffect, useCallback } from 'react';
 import { useQuery } from '@tanstack/react-query';
@@ -26,6 +26,15 @@ export function ActiveTripScreen() {
   const updateCurrentFare = useRideStore((s) => s.updateCurrentFare);
   const updateDriverCoordinates = useRideStore((s) => s.updateDriverCoordinates);
   const driver = currentRide?.driver;
+
+  // Only block back when this screen is focused.
+  useFocusEffect(
+    useCallback(() => {
+      const backAction = () => true;
+      const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
+      return () => backHandler.remove();
+    }, [])
+  );
 
   // Stream live driver coordinates from Firebase RTDB during the active trip
   const handleLiveLocation = useCallback(

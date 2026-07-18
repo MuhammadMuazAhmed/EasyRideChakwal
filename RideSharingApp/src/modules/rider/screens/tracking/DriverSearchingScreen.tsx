@@ -1,10 +1,10 @@
-import { useEffect, useRef } from 'react';
-import { ActivityIndicator, Alert, Pressable, Text, View } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useRef, useCallback, useEffect } from 'react';
+import { ActivityIndicator, Alert, Pressable, Text, View, BackHandler } from 'react-native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useMutation } from '@tanstack/react-query';
 
-import { TopBar } from '@/shared/components/common/TopBar';
+import { TopBar, BackButton } from '@/shared/components/common/TopBar';
 import { MapBottomSheet } from '@/shared/components/common/SearchBar';
 import { RideMap } from '@/rider/components/map/RideMap';
 import { useRideStore } from '@/rider/store/rideStore';
@@ -46,6 +46,16 @@ export function DriverSearchingScreen() {
     },
   });
 
+  // Only block back when this screen is focused — so CancelRideScreen
+  // (pushed on top) can use the hardware back button normally.
+  useFocusEffect(
+    useCallback(() => {
+      const backAction = () => true; // consume the event
+      const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
+      return () => backHandler.remove();
+    }, [])
+  );
+
   useEffect(() => {
     if (!hasRequested.current) {
       hasRequested.current = true;
@@ -64,7 +74,11 @@ export function DriverSearchingScreen() {
 
   return (
     <View className="flex-1">
-      <TopBar showLogo title="Finding Driver..." />
+      <TopBar 
+        showLogo 
+        title="Finding Driver..." 
+        leftAction={<BackButton onPress={handleCancel} />}
+      />
       <RideMap 
         pickup={pickup?.coordinates} 
         destination={destination?.coordinates} 
