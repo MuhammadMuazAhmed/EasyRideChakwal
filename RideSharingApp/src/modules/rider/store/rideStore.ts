@@ -8,7 +8,6 @@ import type {
   RideStatus,
   VehicleType,
 } from '@/shared/types';
-import { mockLocations } from '@/shared/constants/mockData';
 
 interface RideStore {
   currentRide: Ride | null;
@@ -37,7 +36,7 @@ interface RideStore {
 export const useRideStore = create<RideStore>((set) => ({
   currentRide: null,
   selectedVehicle: 'car',
-  pickup: mockLocations.clockTower,
+  pickup: null,
   destination: null,
   paymentMethod: 'cash',
   isSearching: false,

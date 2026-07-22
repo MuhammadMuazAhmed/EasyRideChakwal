@@ -7,8 +7,8 @@ import { RideHistoryCard } from '@/rider/components/ride/RideComponents';
 import { LoadingState, EmptyState, ErrorState } from '@/shared/components/common/StateViews';
 import { useRideHistory } from '@/shared/hooks/useQueries';
 import { useRideStore } from '@/rider/store/rideStore';
-import { mockLocations } from '@/shared/constants/mockData';
 import type { RiderStackParamList } from '@/navigation/types';
+
 
 type NavigationProp = NativeStackNavigationProp<RiderStackParamList, 'MainTabs'>;
 
@@ -47,9 +47,16 @@ export function RideHistoryScreen() {
               rating={ride.driverRating}
               onPress={() => navigation.navigate('RideDetails', { rideId: ride.id })}
               onRebook={() => {
-                setPickup(mockLocations.clockTower);
-                setDestination(mockLocations.gctCollege);
-                navigation.navigate('VehicleSelection');
+                // Clear pickup so the HomeMapScreen re-initialises it from GPS.
+                // Restore the destination from this history entry.
+                setPickup(null);
+                setDestination({
+                  id: `rebook-${ride.id}`,
+                  name: ride.destination,
+                  address: ride.destination,
+                  coordinates: { latitude: 0, longitude: 0 },
+                });
+                navigation.navigate('LocationSearch');
               }}
             />
           ))}

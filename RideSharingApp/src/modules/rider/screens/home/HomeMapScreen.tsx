@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Text, View } from "react-native";
@@ -14,6 +15,8 @@ import { useCurrentLocation } from "@/shared/hooks";
 import type { RiderStackParamList } from "@/navigation/types";
 import { useRideStore } from "@/rider/store/rideStore";
 import { brand } from "@/shared/theme";
+import { GoogleMapsService } from "@/api/services/googleMapsService";
+
 type NavigationProp = NativeStackNavigationProp<
   RiderStackParamList,
   "MainTabs"
@@ -23,9 +26,31 @@ export function HomeMapScreen() {
   const navigation = useNavigation<NavigationProp>();
   const { location, hasPermission } = useCurrentLocation();
   const pickup = useRideStore((s) => s.pickup);
+  const setPickup = useRideStore((s) => s.setPickup);
   const selectedVehicle = useRideStore((s) => s.selectedVehicle);
   const setSelectedVehicle = useRideStore((s) => s.setSelectedVehicle);
   const currentRide = useRideStore((s) => s.currentRide);
+
+  // Initialise pickup to the rider's current GPS location once coords arrive,
+  // but only when no pickup has been explicitly set yet (null).
+  useEffect(() => {
+    if (pickup !== null || !location) return; // already set or no GPS yet
+    void (async () => {
+      try {
+        const address = await GoogleMapsService.fetchAddressFromCoordinates(location);
+        setPickup({
+          id: `gps-${Date.now()}`,
+          name: address,
+          address: address,
+          coordinates: location,
+        });
+      } catch {
+        // Reverse geocode failed — leave pickup as null so the rider can set it manually
+      }
+    })();
+  // Run only when location first becomes available or pickup transitions to null
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location, pickup]);
 
   const { data: nearbyDriversData } = useQuery({
     queryKey: ["nearbyDrivers", location?.latitude, location?.longitude],
