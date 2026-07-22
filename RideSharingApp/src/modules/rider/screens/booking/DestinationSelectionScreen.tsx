@@ -39,7 +39,7 @@ export function DestinationSelectionScreen() {
         routePolyline={routeData?.polyline}
         showRoute={!!destination}
         onPress={async (coords) => {
-          const { name, address } = await GoogleMapsService.fetchAddressFromCoordinates(coords);
+          const { name, address } = await GoogleMapsService.fetchAddressFromCoordinates(coords, 'Pinned Location');
           setDestination({
             id: `pinned-${Date.now()}`,
             name,

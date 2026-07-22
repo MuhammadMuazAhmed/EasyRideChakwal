@@ -6,6 +6,7 @@ import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { BackButton, TopBar, ScreenContainer } from '@/shared/components/common/TopBar';
 import { LocationRow, PlaceListItem } from '@/shared/components/common/SearchBar';
 import { useRideStore } from '@/rider/store/rideStore';
+import { useCurrentLocation } from '@/shared/hooks';
 import type { Location } from '@/shared/types';
 import type { RiderStackParamList } from '@/navigation/types';
 import { useQuery } from '@tanstack/react-query';
@@ -16,8 +17,33 @@ type NavigationProp = NativeStackNavigationProp<RiderStackParamList, 'LocationSe
 
 export function LocationSearchScreen() {
   const navigation = useNavigation<NavigationProp>();
+  const { location } = useCurrentLocation();
   const pickup = useRideStore((s) => s.pickup);
+  const setPickup = useRideStore((s) => s.setPickup);
   const setDestination = useRideStore((s) => s.setDestination);
+
+  // Initialize pickup to rider's current GPS location if null
+  useEffect(() => {
+    if (pickup !== null || !location) return;
+    void (async () => {
+      try {
+        const { name, address } = await GoogleMapsService.fetchAddressFromCoordinates(location, 'Current Location');
+        setPickup({
+          id: `gps-${Date.now()}`,
+          name,
+          address,
+          coordinates: location,
+        });
+      } catch {
+        setPickup({
+          id: `gps-${Date.now()}`,
+          name: 'Current Location',
+          address: 'Current Location',
+          coordinates: location,
+        });
+      }
+    })();
+  }, [location, pickup, setPickup]);
   
   const [query, setQuery] = useState('');
   const [debouncedQuery, setDebouncedQuery] = useState('');
@@ -77,7 +103,8 @@ export function LocationSearchScreen() {
       />
       <ScrollView className="flex-1 px-3 pt-3" keyboardShouldPersistTaps="handled">
         <LocationRow
-          label={pickup?.name ?? 'Current Location'}
+          label={pickup?.name ?? 'Locating...'}
+          sublabel={pickup && pickup.address !== pickup.name ? pickup.address : undefined}
           dotColor="green"
           highlighted
         />

@@ -37,7 +37,7 @@ export function HomeMapScreen() {
     if (pickup !== null || !location) return; // already set or no GPS yet
     void (async () => {
       try {
-        const { name, address } = await GoogleMapsService.fetchAddressFromCoordinates(location);
+        const { name, address } = await GoogleMapsService.fetchAddressFromCoordinates(location, 'Current Location');
         setPickup({
           id: `gps-${Date.now()}`,
           name,
@@ -45,7 +45,12 @@ export function HomeMapScreen() {
           coordinates: location,
         });
       } catch {
-        // Reverse geocode failed — leave pickup as null so the rider can set it manually
+        setPickup({
+          id: `gps-${Date.now()}`,
+          name: 'Current Location',
+          address: 'Current Location',
+          coordinates: location,
+        });
       }
     })();
   // Run only when location first becomes available or pickup transitions to null
@@ -83,7 +88,9 @@ export function HomeMapScreen() {
         rightAction={
           <View className="flex-row items-center gap-1.5">
             <View className="h-2 w-2 rounded-full bg-success" />
-            <Text className="text-[11px] text-[#AAAAAA]">{brand.city}</Text>
+            <Text className="text-[11px] text-[#AAAAAA]" numberOfLines={1}>
+              {pickup?.name ?? '...'}
+            </Text>
           </View>
         }
       />

@@ -95,7 +95,7 @@ interface PlaceListItemProps {
   onPress?: () => void;
 }
 
-export function PlaceListItem({ name, subtitle = 'Chakwal, Punjab', onPress }: PlaceListItemProps) {
+export function PlaceListItem({ name, subtitle, onPress }: PlaceListItemProps) {
   return (
     <Pressable
       onPress={onPress}
@@ -106,7 +106,7 @@ export function PlaceListItem({ name, subtitle = 'Chakwal, Punjab', onPress }: P
       </View>
       <View className="flex-1">
         <Text className="text-sm font-semibold text-text-primary">{name}</Text>
-        <Text className="text-[10px] text-text-tertiary">{subtitle}</Text>
+        {subtitle ? <Text className="text-[10px] text-text-tertiary">{subtitle}</Text> : null}
       </View>
       <Text className="text-text-tertiary">›</Text>
     </Pressable>

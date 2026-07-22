@@ -1,4 +1,5 @@
 import axios from 'axios';
+import * as Location from 'expo-location';
 import { env } from '@/config/env';
 import type { Coordinates } from '@/shared/types';
 
@@ -197,12 +198,14 @@ export const GoogleMapsService = {
    *             Suitable for display in compact UI rows.
    * `address` — full formatted address string for storage and driver display.
    *
-   * Falls back to 'Pinned Location' only when the API returns no results or
-   * the request fails entirely.
+   * Tries Google Maps API first, falls back to native device Geocoder,
+   * and finally falls back to `fallbackName` (default: 'Current Location').
    */
   async fetchAddressFromCoordinates(
     coords: Coordinates,
+    fallbackName: string = 'Current Location',
   ): Promise<{ name: string; address: string }> {
+    // 1. Try Google Maps Web API Geocoding
     try {
       const { data } = await googleMapsClient.get(
         'https://maps.googleapis.com/maps/api/geocode/json',
@@ -215,40 +218,68 @@ export const GoogleMapsService = {
         },
       );
 
-      if (data.status !== 'OK' || !data.results?.length) {
-        console.warn('[GoogleMapsService] Geocoding returned no results:', data.status);
-        return { name: 'Pinned Location', address: 'Pinned Location' };
-      }
+      if (data.status === 'OK' && data.results?.length > 0) {
+        const result = data.results[0];
+        const fullAddress: string = result.formatted_address ?? fallbackName;
 
-      const result = data.results[0];
-      const fullAddress: string = result.formatted_address ?? 'Pinned Location';
+        const components: { long_name: string; types: string[] }[] =
+          result.address_components ?? [];
 
-      // Extract the most useful short name from address components.
-      // Priority: premise/poi → route (street name) → sublocality → locality → area_level_2
-      const components: { long_name: string; types: string[] }[] =
-        result.address_components ?? [];
+        const pick = (...types: string[]): string | undefined => {
+          for (const type of types) {
+            const comp = components.find((c) => c.types.includes(type));
+            if (comp?.long_name) return comp.long_name;
+          }
+          return undefined;
+        };
 
-      const pick = (...types: string[]): string | undefined => {
-        for (const type of types) {
-          const comp = components.find((c) => c.types.includes(type));
-          if (comp?.long_name) return comp.long_name;
+        const shortName =
+          pick('premise', 'point_of_interest') ??
+          pick('route') ??
+          pick('sublocality_level_1', 'sublocality') ??
+          pick('locality') ??
+          pick('administrative_area_level_2') ??
+          fullAddress.split(',')[0].trim();
+
+        if (shortName) {
+          return { name: shortName, address: fullAddress };
         }
-        return undefined;
-      };
-
-      const shortName =
-        pick('premise', 'point_of_interest') ??
-        pick('route') ??
-        pick('sublocality_level_1', 'sublocality') ??
-        pick('locality') ??
-        pick('administrative_area_level_2') ??
-        // Last resort: first segment of the full address (before first comma)
-        fullAddress.split(',')[0].trim();
-
-      return { name: shortName, address: fullAddress };
+      } else {
+        console.warn('[GoogleMapsService] Geocoding API returned status:', data.status);
+      }
     } catch (error) {
-      console.error('[GoogleMapsService] Geocoding Error:', error);
-      return { name: 'Pinned Location', address: 'Pinned Location' };
+      console.warn('[GoogleMapsService] Google Geocoding API Error:', error);
     }
+
+    // 2. Try native device geocoder via Expo Location as fallback
+    try {
+      const nativeResults = await Location.reverseGeocodeAsync(coords);
+      if (nativeResults && nativeResults.length > 0) {
+        const item = nativeResults[0];
+        const shortName =
+          item.street ||
+          item.name ||
+          item.subregion ||
+          item.district ||
+          item.city ||
+          fallbackName;
+
+        const addressParts = [
+          item.streetNumber,
+          item.street || item.name,
+          item.subregion || item.district || item.city,
+          item.region || item.country,
+        ].filter(Boolean);
+
+        const fullAddress = addressParts.length > 0 ? addressParts.join(', ') : shortName;
+
+        return { name: shortName, address: fullAddress };
+      }
+    } catch (nativeErr) {
+      console.warn('[GoogleMapsService] Native Geocoder Error:', nativeErr);
+    }
+
+    // 3. Fallback if both primary and secondary geocoders fail
+    return { name: fallbackName, address: fallbackName };
   },
 };
