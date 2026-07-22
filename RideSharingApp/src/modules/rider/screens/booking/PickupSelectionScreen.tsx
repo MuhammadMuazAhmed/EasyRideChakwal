@@ -35,11 +35,11 @@ export function PickupSelectionScreen() {
         userLocation={location}
         pickup={pickup?.coordinates ?? location}
         onPress={async (coords) => {
-          const address = await GoogleMapsService.fetchAddressFromCoordinates(coords);
+          const { name, address } = await GoogleMapsService.fetchAddressFromCoordinates(coords);
           setPickup({
             id: `pinned-${Date.now()}`,
-            name: address,
-            address: address,
+            name,
+            address,
             coordinates: coords,
           });
         }}

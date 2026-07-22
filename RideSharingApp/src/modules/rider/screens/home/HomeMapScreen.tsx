@@ -37,11 +37,11 @@ export function HomeMapScreen() {
     if (pickup !== null || !location) return; // already set or no GPS yet
     void (async () => {
       try {
-        const address = await GoogleMapsService.fetchAddressFromCoordinates(location);
+        const { name, address } = await GoogleMapsService.fetchAddressFromCoordinates(location);
         setPickup({
           id: `gps-${Date.now()}`,
-          name: address,
-          address: address,
+          name,
+          address,
           coordinates: location,
         });
       } catch {

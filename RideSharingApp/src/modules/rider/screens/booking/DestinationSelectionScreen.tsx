@@ -39,11 +39,11 @@ export function DestinationSelectionScreen() {
         routePolyline={routeData?.polyline}
         showRoute={!!destination}
         onPress={async (coords) => {
-          const address = await GoogleMapsService.fetchAddressFromCoordinates(coords);
+          const { name, address } = await GoogleMapsService.fetchAddressFromCoordinates(coords);
           setDestination({
             id: `pinned-${Date.now()}`,
-            name: address,
-            address: address,
+            name,
+            address,
             coordinates: coords,
           });
         }}

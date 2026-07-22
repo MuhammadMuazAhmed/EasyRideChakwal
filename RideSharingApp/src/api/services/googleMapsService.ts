@@ -190,22 +190,65 @@ export const GoogleMapsService = {
     return poly;
   },
 
-  async fetchAddressFromCoordinates(coords: Coordinates): Promise<string> {
+  /**
+   * Reverse-geocode coordinates into a { name, address } pair.
+   *
+   * `name`    — short, human-readable label (road/sublocality/locality).
+   *             Suitable for display in compact UI rows.
+   * `address` — full formatted address string for storage and driver display.
+   *
+   * Falls back to 'Pinned Location' only when the API returns no results or
+   * the request fails entirely.
+   */
+  async fetchAddressFromCoordinates(
+    coords: Coordinates,
+  ): Promise<{ name: string; address: string }> {
     try {
-      const { data } = await googleMapsClient.get('https://maps.googleapis.com/maps/api/geocode/json', {
-        params: {
-          latlng: `${coords.latitude},${coords.longitude}`,
-          key: env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY,
+      const { data } = await googleMapsClient.get(
+        'https://maps.googleapis.com/maps/api/geocode/json',
+        {
+          params: {
+            latlng: `${coords.latitude},${coords.longitude}`,
+            key: env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY,
+            language: 'en',
+          },
         },
-      });
+      );
 
-      if (data.status === 'OK' && data.results.length > 0) {
-        return data.results[0].formatted_address;
+      if (data.status !== 'OK' || !data.results?.length) {
+        console.warn('[GoogleMapsService] Geocoding returned no results:', data.status);
+        return { name: 'Pinned Location', address: 'Pinned Location' };
       }
-      return 'Pinned Location';
+
+      const result = data.results[0];
+      const fullAddress: string = result.formatted_address ?? 'Pinned Location';
+
+      // Extract the most useful short name from address components.
+      // Priority: premise/poi → route (street name) → sublocality → locality → area_level_2
+      const components: { long_name: string; types: string[] }[] =
+        result.address_components ?? [];
+
+      const pick = (...types: string[]): string | undefined => {
+        for (const type of types) {
+          const comp = components.find((c) => c.types.includes(type));
+          if (comp?.long_name) return comp.long_name;
+        }
+        return undefined;
+      };
+
+      const shortName =
+        pick('premise', 'point_of_interest') ??
+        pick('route') ??
+        pick('sublocality_level_1', 'sublocality') ??
+        pick('locality') ??
+        pick('administrative_area_level_2') ??
+        // Last resort: first segment of the full address (before first comma)
+        fullAddress.split(',')[0].trim();
+
+      return { name: shortName, address: fullAddress };
     } catch (error) {
-      console.error('Google Maps Geocoding Error:', error);
-      return 'Pinned Location';
+      console.error('[GoogleMapsService] Geocoding Error:', error);
+      return { name: 'Pinned Location', address: 'Pinned Location' };
     }
   },
 };
