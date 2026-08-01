@@ -31,6 +31,7 @@ const PUBLIC_ROUTES = [
   '/api/auth/send-otp',
   '/api/auth/verify-otp',
   '/api/health',
+  '/api/admin/auth/login', // SPA admin login — issues Bearer token, must not require one
 ];
 
 export function middleware(request: NextRequest) {

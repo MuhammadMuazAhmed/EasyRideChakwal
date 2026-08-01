@@ -48,8 +48,9 @@ export async function POST(
 
     const isRider = auth.role === 'rider' && riderId === auth.userId;
     const isDriver = auth.role === 'driver' && driverId === auth.userId;
+    const isAdmin = auth.role === 'admin';
 
-    if (!isRider && !isDriver) {
+    if (!isRider && !isDriver && !isAdmin) {
       return unauthorized('Is ride ko cancel karne ka haq nahi');
     }
 
@@ -58,8 +59,8 @@ export async function POST(
       return badRequest('Yeh ride already complete ya cancel ho chuki hai');
     }
 
-    // Cannot cancel in_progress ride
-    if (ride.status === 'in_progress') {
+    // Riders cannot cancel an in_progress ride (admins can force-cancel any status)
+    if (!isAdmin && ride.status === 'in_progress') {
       return badRequest('Trip chal rahi hai — cancel nahi ho sakti');
     }
 

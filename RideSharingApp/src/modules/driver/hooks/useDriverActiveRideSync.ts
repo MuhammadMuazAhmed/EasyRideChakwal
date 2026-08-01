@@ -25,6 +25,10 @@ export function useDriverActiveRideSync() {
 
   useEffect(() => {
     if (!currentRide) {
+      if (activeRide?.status === 'completed') {
+        // Ride completed cleanly; TripCompletedScreen will handle state transition
+        return;
+      }
       if (activeRide && prevStatusRef.current && !['completed', 'cancelled'].includes(prevStatusRef.current)) {
         setActiveRide(null);
       }

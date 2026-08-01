@@ -9,7 +9,7 @@ import { useLocationStore } from '@/store/locationStore';
  * Maximum GPS horizontal accuracy (in metres) to accept.
  * Fixes with a reported accuracy radius above this are discarded as noise.
  */
-const MAX_ACCURACY_METRES = 25;
+const MAX_ACCURACY_METRES = 50;
 
 /**
  * Minimum change in degrees before we treat a new fix as a real movement.
@@ -20,13 +20,15 @@ const MIN_MOVEMENT_DEGREES = 0.00001;
 
 export function useDriverLocationSync() {
   const isOnline = useDriverStore((s) => s.isOnline);
+  const activeRide = useDriverStore((s) => s.activeRide);
   const driverId = useAuthStore((s) => s.driverId);
 
   /** Last accepted { latitude, longitude, timestamp } */
   const lastRef = useRef<{ latitude: number; longitude: number; timestamp: number } | null>(null);
 
   useEffect(() => {
-    if (!isOnline || !driverId) return;
+    const isTrackingActive = isOnline || !!activeRide;
+    if (!isTrackingActive || !driverId) return;
 
     let subscription: Location.LocationSubscription | null = null;
 
@@ -63,27 +65,21 @@ export function useDriverLocationSync() {
             const fixTime: number = loc.timestamp ?? Date.now();
 
             // ── 1. Accuracy filter ────────────────────────────────────────
-            // Reject fixes whose reported horizontal-error radius exceeds the
-            // threshold.  A high value means the GPS chip hasn't locked yet
-            // (e.g., cold start, poor sky view, heavy indoor signal) and the
-            // coordinate could be off by tens of metres.
+            // Reject fixes whose reported horizontal-error radius exceeds threshold.
             if (accuracy != null && accuracy > MAX_ACCURACY_METRES) {
               return;
             }
 
             // ── 2. Timestamp monotonicity guard ──────────────────────────
-            // Android's fused provider occasionally delivers buffered / cached
-            // fixes whose timestamp is older than the last accepted fix.
-            // Accepting them would temporarily move the marker backward.
+            // Reject strictly older fixes to prevent backward jumps, but allow
+            // fixes with identical timestamps if position has changed.
             const prev = lastRef.current;
-            if (prev && fixTime <= prev.timestamp) {
+            if (prev && fixTime < prev.timestamp) {
               return;
             }
 
             // ── 3. Movement threshold ─────────────────────────────────────
             // Ignore updates that represent GPS dither while stationary.
-            // We compare Manhattan distance in degrees; MIN_MOVEMENT_DEGREES
-            // (~1 m) is the minimum displacement we consider meaningful.
             const moved = prev
               ? Math.abs(prev.latitude - latitude) + Math.abs(prev.longitude - longitude)
               : Infinity;
@@ -93,7 +89,8 @@ export function useDriverLocationSync() {
             }
 
             // ── 4. Accept & propagate ─────────────────────────────────────
-            lastRef.current = { latitude, longitude, timestamp: fixTime };
+            const acceptedTime = prev ? Math.max(fixTime, prev.timestamp + 1) : fixTime;
+            lastRef.current = { latitude, longitude, timestamp: acceptedTime };
 
             // Mirror into local store → driver's own map marker updates live.
             useLocationStore.getState().setCurrentLocation({ latitude, longitude });
@@ -114,5 +111,5 @@ export function useDriverLocationSync() {
     return () => {
       subscription?.remove();
     };
-  }, [isOnline, driverId]);
+  }, [isOnline, activeRide, driverId]);
 }

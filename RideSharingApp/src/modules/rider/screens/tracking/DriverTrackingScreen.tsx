@@ -52,15 +52,13 @@ export function DriverTrackingScreen() {
   const firebaseDriverId = driver?.id ?? null;
   useDriverLocationListener(firebaseDriverId, handleLiveLocation);
 
-  const { data: routeData } = useRoutePolyline(
-    currentRide?.pickup?.coordinates,
-    currentRide?.destination?.coordinates
-  );
+  const driverCoord = driver?.coordinates;
+  const pickupCoord = currentRide?.pickup?.coordinates;
+  const destCoord = currentRide?.destination?.coordinates;
+
+  const { data: routeData } = useRoutePolyline(pickupCoord, destCoord);
 
   if (!driver || !currentRide) return null;
-
-  const driverCoord = driver.coordinates;
-  const pickupCoord = currentRide.pickup.coordinates;
 
   // Only compute ETA / distance when we have a real live fix.
   // Without this guard, a { lat:0, lng:0 } fallback produces ~8400 km.

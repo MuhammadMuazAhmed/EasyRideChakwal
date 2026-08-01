@@ -46,9 +46,8 @@ export function useDriverLocationListener(
       const incomingTs: number =
         typeof data.updatedAt === 'number' ? data.updatedAt : 0;
 
-      if (incomingTs > 0 && incomingTs <= lastTimestampRef.current) {
-        // This snapshot is older than or equal to the last accepted one —
-        // discard it to prevent backward jumps.
+      if (incomingTs > 0 && incomingTs < lastTimestampRef.current) {
+        // Discard strictly older snapshots to prevent backward jumps.
         return;
       }
 

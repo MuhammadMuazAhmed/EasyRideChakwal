@@ -66,7 +66,7 @@ export async function POST(
           { latitude, longitude },
           activeRide.pickup.coordinates
         );
-        if (distanceKm <= 0.05) { // 50 meters
+        if (distanceKm <= 0.15) { // 150 meters
           activeRide.status = 'driver_arrived';
           await activeRide.save();
 
@@ -87,7 +87,7 @@ export async function POST(
           { latitude, longitude },
           activeRide.destination.coordinates
         );
-        if (distanceKm <= 0.05) { // 50 meters
+        if (distanceKm <= 0.15) { // 150 meters
           const PLATFORM_COMMISSION = 0.15;
           const finalFare = activeRide.estimatedFare;
           const driverEarning = Math.round(finalFare * (1 - PLATFORM_COMMISSION));

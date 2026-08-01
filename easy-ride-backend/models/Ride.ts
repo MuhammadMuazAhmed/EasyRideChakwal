@@ -34,7 +34,7 @@ export interface IRide extends Document {
   driverRating?: number;
   riderComment?: string;
   driverComment?: string;
-  cancelledBy?: 'rider' | 'driver';
+  cancelledBy?: 'rider' | 'driver' | 'admin';
   cancellationReason?: string;
   completedAt?: Date;
   createdAt: Date;
@@ -96,7 +96,7 @@ const RideSchema = new Schema<IRide>(
     driverRating: { type: Number, min: 1, max: 5 },
     riderComment: { type: String },
     driverComment: { type: String },
-    cancelledBy: { type: String, enum: ['rider', 'driver'] },
+    cancelledBy: { type: String, enum: ['rider', 'driver', 'admin'] },
     cancellationReason: { type: String },
     completedAt: { type: Date },
   },

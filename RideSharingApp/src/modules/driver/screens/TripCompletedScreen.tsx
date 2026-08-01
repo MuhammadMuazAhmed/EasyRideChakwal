@@ -12,12 +12,16 @@ import { useDriverStore } from '@/modules/driver/store/driverStore';
 import { formatCurrency } from '@/shared/utils';
 import type { DriverStackParamList } from '@/navigation/types';
 
+import { useQueryClient } from '@tanstack/react-query';
+import { QUERY_KEYS } from '@/shared/constants/queryKeys';
+
 type NavigationProp = NativeStackNavigationProp<DriverStackParamList, 'TripCompleted'>;
 type RouteProps = RouteProp<DriverStackParamList, 'TripCompleted'>;
 
 export function TripCompletedScreen() {
   const navigation = useNavigation<NavigationProp>();
   const route = useRoute<RouteProps>();
+  const queryClient = useQueryClient();
   const { rideId, finalFare, driverEarning, pickupName, destinationName, paymentMethod, riderName } =
     route.params;
   const setDriverProfile = useDriverStore((s) => s.setDriverProfile);
@@ -25,10 +29,12 @@ export function TripCompletedScreen() {
 
   useEffect(() => {
     setActiveRide(null);
+    void queryClient.invalidateQueries({ queryKey: QUERY_KEYS.currentRide });
+    void queryClient.invalidateQueries({ queryKey: ['rideDetails', rideId] });
     void DriverService.getProfile()
       .then(setDriverProfile)
       .catch(() => {});
-  }, [setActiveRide, setDriverProfile]);
+  }, [setActiveRide, setDriverProfile, queryClient, rideId]);
 
   return (
     <ScreenContainer className="bg-white">

@@ -47,6 +47,7 @@ export function ActiveTripScreen() {
   const firebaseDriverId = driver?.id ?? null;
   useDriverLocationListener(firebaseDriverId, handleLiveLocation);
 
+  const driverCoord = driver?.coordinates;
   const { data: routeData } = useRoutePolyline(currentRide?.pickup?.coordinates, currentRide?.destination?.coordinates);
 
   const { data: rideData } = useQuery({
@@ -70,8 +71,6 @@ export function ActiveTripScreen() {
   if (!currentRide || !driver) return null;
 
   const displayFare = currentRide.fare || currentRide.estimatedFare || 0;
-
-  const driverCoord = driver.coordinates;
   const destCoord = currentRide.destination.coordinates;
 
   const hasLiveFix = driverCoord && (driverCoord.latitude !== 0 || driverCoord.longitude !== 0) &&

@@ -14,6 +14,7 @@ import { RideService } from '@/api/services/rideService';
 import { useDriverStore } from '@/modules/driver/store/driverStore';
 import { useCurrentLocation } from '@/shared/hooks';
 import { useRoutePolyline } from '@/rider/hooks/useRoutePolyline';
+import { calculateDistance } from '@/shared/utils';
 import type { DriverStackParamList } from '@/navigation/types';
 
 type NavigationProp = NativeStackNavigationProp<DriverStackParamList, 'ActiveTrip'>;
@@ -30,15 +31,21 @@ export function ActiveTripScreen() {
   const [loading, setLoading] = useState(false);
   const { location: driverLocation } = useCurrentLocation();
 
-  // Dynamic route calculation:
-  // 1. Before pickup: from Driver's live location to Pickup location.
-  // 2. After trip starts (in_progress): from Driver's live location to Destination location.
-  const routeStart = driverLocation;
-  const routeEnd = activeRide?.status === 'in_progress'
+  // Stable route calculation per ride:
+  const routeStart = activeRide?.pickup?.coordinates;
+  const routeEnd = activeRide?.destination?.coordinates;
+
+  const { data: routeData } = useRoutePolyline(routeStart, routeEnd);
+
+  // Live distance and ETA calculation:
+  const targetEnd = activeRide?.status === 'in_progress'
     ? activeRide?.destination?.coordinates
     : activeRide?.pickup?.coordinates;
 
-  const { data: routeData } = useRoutePolyline(routeStart, routeEnd);
+  const distanceKm = (driverLocation && targetEnd)
+    ? calculateDistance(driverLocation.latitude, driverLocation.longitude, targetEnd.latitude, targetEnd.longitude)
+    : null;
+  const etaMinutes = distanceKm != null ? Math.max(1, Math.ceil((distanceKm / 25) * 60)) : null;
 
   // Only block back when this screen is focused.
   useFocusEffect(
@@ -62,10 +69,10 @@ export function ActiveTripScreen() {
       if (rideData.status === 'completed') {
         navigation.replace('TripCompleted', {
           rideId,
-          finalFare: rideData.fare || rideData.estimatedFare,
-          driverEarning: Math.round((rideData.fare || rideData.estimatedFare) * 0.85),
-          pickupName: rideData.pickup.name,
-          destinationName: rideData.destination.name,
+          finalFare: rideData.fare || rideData.estimatedFare || 0,
+          driverEarning: Math.round((rideData.fare || rideData.estimatedFare || 0) * 0.85),
+          pickupName: rideData.pickup?.name ?? 'Pickup',
+          destinationName: rideData.destination?.name ?? 'Destination',
           paymentMethod: rideData.paymentMethod ?? 'cash',
           riderName: rideData.riderId?.firstName
             ? `${rideData.riderId.firstName} ${rideData.riderId.lastName ?? ''}`.trim()
@@ -82,6 +89,8 @@ export function ActiveTripScreen() {
       </View>
     );
   }
+
+  const showStartButton = activeRide?.status === 'driver_arrived';
 
   const handleStart = async () => {
     setLoading(true);
@@ -100,8 +109,6 @@ export function ActiveTripScreen() {
     navigation.navigate('Chat', { rideId });
   };
 
-  const showStartButton = activeRide.status === 'driver_arrived';
-
   return (
     <View className="flex-1">
       <TopBar
@@ -114,8 +121,8 @@ export function ActiveTripScreen() {
       />
 
       <RideMap
-        pickup={activeRide.pickup.coordinates}
-        destination={activeRide.destination.coordinates}
+        pickup={activeRide?.pickup?.coordinates}
+        destination={activeRide?.destination?.coordinates}
         driverLocation={driverLocation}
         routePolyline={routeData?.polyline}
         showRoute
@@ -138,6 +145,9 @@ export function ActiveTripScreen() {
           <View className="items-center py-4 bg-neutral-50 rounded-xl mb-2 border border-neutral-100">
             <Text className="text-xs font-semibold text-text-secondary">
               Driving to pickup location...
+            </Text>
+            <Text className="text-[11px] font-bold text-accent mt-1">
+              {distanceKm != null ? `${distanceKm.toFixed(2)} km away · ~${etaMinutes} min` : 'Locating...'}
             </Text>
             <Text className="text-[10px] text-text-tertiary mt-1">
               Trip starting button will appear automatically upon arrival.
@@ -164,6 +174,9 @@ export function ActiveTripScreen() {
           <View className="items-center py-4 bg-success/5 rounded-xl border border-success/10">
             <Text className="text-xs font-semibold text-success">
               Trip in Progress...
+            </Text>
+            <Text className="text-[11px] font-bold text-accent mt-1">
+              {distanceKm != null ? `${distanceKm.toFixed(2)} km remaining · ~${etaMinutes} min` : 'Locating...'}
             </Text>
             <Text className="text-[10px] text-text-tertiary mt-1">
               Trip will complete automatically when you reach the destination.
