@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ActivityIndicator, Alert, Pressable, Text, View } from 'react-native';
+import { ActivityIndicator, Alert, Image, Pressable, Text, View } from 'react-native';
 import { useAuthStore } from '@/store/authStore';
 import { syncFcmTokenWithBackend } from '@/shared/services/pushNotifications';
 import { ScreenContainer } from '@/shared/components/common/TopBar';
@@ -35,9 +35,11 @@ export function RoleSelectionScreen() {
     <ScreenContainer className="bg-white">
       <View className="bg-primary px-4 pb-4 pt-12">
         <View className="flex-row items-center gap-2.5">
-          <View className="h-9 w-9 items-center justify-center rounded-lg bg-accent">
-            <Text className="text-sm font-black text-primary">E</Text>
-          </View>
+          <Image
+            source={require('@/assets/images/logo.jpeg')}
+            style={{ width: 36, height: 36, borderRadius: 8 }}
+            resizeMode="cover"
+          />
           <View className="flex-1">
             <Text className="text-sm font-bold text-white">Easy Ride Chakwal</Text>
             <Text className="text-[10px] text-[#666666]">Apna role select karein</Text>

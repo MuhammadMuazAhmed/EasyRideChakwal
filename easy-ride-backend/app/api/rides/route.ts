@@ -85,6 +85,18 @@ export async function POST(req: NextRequest) {
 
     const rideId = (ride._id as string).toString();
 
+    // Concurrency check: Ensure rider did not trigger two creation requests in parallel
+    const activeRiderRides = await Ride.countDocuments({
+      riderId: auth.userId,
+      status: { $in: ['searching', 'driver_assigned', 'driver_en_route', 'driver_arrived', 'in_progress'] },
+    });
+
+    if (activeRiderRides > 1) {
+      // Remove duplicate ride document
+      await Ride.findByIdAndDelete(rideId);
+      return badRequest('Aapki pehle se ek active ride hai');
+    }
+
     // Create Firebase realtime node for live tracking
     await updateRideStatus(rideId, 'searching', {
       riderId: auth.userId,

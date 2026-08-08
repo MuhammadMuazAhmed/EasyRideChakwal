@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Alert, Text, View } from 'react-native';
+import { Alert, Image, Text, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useForm, Controller } from 'react-hook-form';
@@ -61,9 +61,11 @@ export function PhoneNumberScreen() {
     <ScreenContainer className="bg-white">
       <View className="bg-primary px-4 pb-4 pt-12">
         <View className="flex-row items-center gap-2.5">
-          <View className="h-9 w-9 items-center justify-center rounded-lg bg-accent">
-            <Text className="text-sm font-black text-primary">E</Text>
-          </View>
+          <Image
+            source={require('@/assets/images/logo.jpeg')}
+            style={{ width: 36, height: 36, borderRadius: 8 }}
+            resizeMode="cover"
+          />
           <View>
             <Text className="text-sm font-bold text-white">Easy Ride Chakwal</Text>
             <Text className="text-[10px] text-[#666666]">Apna number darj karein</Text>

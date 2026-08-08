@@ -1,4 +1,4 @@
-import { Pressable, Text, View } from 'react-native';
+import { Image, Pressable, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { cn } from '@/shared/utils';
@@ -32,9 +32,11 @@ export function TopBar({
         {leftAction}
         {showLogo ? (
           <View className="flex-row items-center gap-1.5">
-            <View className="rounded-md bg-accent px-1.5 py-0.5">
-              <Text className="text-[11px] font-black text-primary">E</Text>
-            </View>
+            <Image
+              source={require('@/assets/images/logo.jpeg')}
+              style={{ width: 28, height: 28, borderRadius: 6 }}
+              resizeMode="cover"
+            />
             {title ? (
               <Text className="text-[13px] font-bold tracking-wide text-white">{title}</Text>
             ) : null}

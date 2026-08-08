@@ -45,9 +45,20 @@ export async function POST(
       return badRequest('Aapke paas pehle se ek active ride hai');
     }
 
+    // Check ride vehicle type matching before locking
+    const targetRide = await Ride.findById(rideId);
+    if (!targetRide) {
+      return notFound('Ride nahi mili');
+    }
+
+    if (targetRide.vehicleType !== driver.vehicleType) {
+      return badRequest(`Aap sirf ${driver.vehicleType} vehicle type ki rides accept kar sakte hain`);
+    }
+
     // Find and lock the ride atomically — prevents two drivers accepting simultaneously
+    // and enforces vehicleType match at database query level
     const ride = await Ride.findOneAndUpdate(
-      { _id: rideId, status: 'searching' },
+      { _id: rideId, status: 'searching', vehicleType: driver.vehicleType },
       {
         status: 'driver_assigned',
         driverId: auth.userId,
@@ -57,6 +68,22 @@ export async function POST(
 
     if (!ride) {
       return badRequest('Yeh ride available nahi — kisi aur driver ne le li');
+    }
+
+    // Guard against race condition where driver accepted 2 rides in parallel requests:
+    // Verify driver only has 1 active ride total after atomic update.
+    const activeRidesCount = await Ride.countDocuments({
+      driverId: auth.userId,
+      status: { $in: ['driver_assigned', 'driver_en_route', 'driver_arrived', 'in_progress'] },
+    });
+
+    if (activeRidesCount > 1) {
+      // Rollback this acceptance to preserve 1 active ride rule
+      await Ride.findByIdAndUpdate(rideId, {
+        status: 'searching',
+        $unset: { driverId: 1 },
+      });
+      return badRequest('Aapke paas pehle se ek active ride hai');
     }
 
     // Update Firebase realtime for live tracking

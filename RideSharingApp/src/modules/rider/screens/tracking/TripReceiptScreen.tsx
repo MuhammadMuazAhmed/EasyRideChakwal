@@ -1,4 +1,4 @@
-import { ScrollView, Text, View } from 'react-native';
+import { Image, ScrollView, Text, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
@@ -35,9 +35,11 @@ export function TripReceiptScreen() {
       <ScrollView className="flex-1 p-2.5">
         <Card className="mb-2">
           <View className="mb-2.5 items-center border-b border-border pb-2.5">
-            <View className="mb-1.5 h-9 w-9 items-center justify-center rounded-lg bg-primary">
-              <Text className="text-sm font-black text-accent">E</Text>
-            </View>
+            <Image
+              source={require('@/assets/images/logo.jpeg')}
+              style={{ width: 36, height: 36, borderRadius: 8 }}
+              resizeMode="cover"
+            />
             <Text className="text-sm font-bold text-text-primary">Easy Ride Chakwal</Text>
             <Text className="text-[10px] text-text-tertiary">25 Jun 2026 · 3:12 PM</Text>
           </View>
