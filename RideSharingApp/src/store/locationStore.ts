@@ -1,7 +1,6 @@
 import { create } from 'zustand';
 
 import type { Coordinates } from '@/shared/types';
-import { CHAKWAL_REGION } from '@/shared/theme';
 
 interface LocationStore {
   currentLocation: Coordinates | null;
@@ -16,10 +15,7 @@ interface LocationStore {
 }
 
 export const useLocationStore = create<LocationStore>((set) => ({
-  currentLocation: {
-    latitude: CHAKWAL_REGION.latitude,
-    longitude: CHAKWAL_REGION.longitude,
-  },
+  currentLocation: null,
   hasPermission: false,
   isLoading: false,
   error: null,
@@ -29,10 +25,7 @@ export const useLocationStore = create<LocationStore>((set) => ({
   setError: (error) => set({ error }),
   reset: () =>
     set({
-      currentLocation: {
-        latitude: CHAKWAL_REGION.latitude,
-        longitude: CHAKWAL_REGION.longitude,
-      },
+      currentLocation: null,
       hasPermission: false,
       isLoading: false,
       error: null,

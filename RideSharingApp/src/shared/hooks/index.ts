@@ -2,7 +2,6 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import * as Location from 'expo-location';
 
 import { useLocationStore } from '@/store/locationStore';
-import { CHAKWAL_REGION } from '@/shared/theme';
 
 export function useCurrentLocation() {
   const {
@@ -32,10 +31,6 @@ export function useCurrentLocation() {
 
       if (!granted) {
         setError('Location permission denied');
-        setCurrentLocation({
-          latitude: CHAKWAL_REGION.latitude,
-          longitude: CHAKWAL_REGION.longitude,
-        });
         return;
       }
 
@@ -52,10 +47,6 @@ export function useCurrentLocation() {
       });
     } catch {
       setError('Unable to get location');
-      setCurrentLocation({
-        latitude: CHAKWAL_REGION.latitude,
-        longitude: CHAKWAL_REGION.longitude,
-      });
     } finally {
       setLoading(false);
     }

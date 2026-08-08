@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Text, View } from "react-native";
@@ -31,8 +31,48 @@ export function HomeMapScreen() {
   const setSelectedVehicle = useRideStore((s) => s.setSelectedVehicle);
   const currentRide = useRideStore((s) => s.currentRide);
 
-  // Initialise pickup to the rider's current GPS location once coords arrive,
-  // but only when no pickup has been explicitly set yet (null).
+  // Separate state for the current-location label shown in the top bar.
+  // This is independent of `pickup` and is reverse-geocoded from real GPS.
+  const [currentLocationName, setCurrentLocationName] = useState<string | null>(null);
+  // Track the last coordinates we reverse-geocoded for the top bar so we
+  // only re-geocode after the device has moved meaningfully (~200 m).
+  const lastGeocodedRef = useRef<{ lat: number; lng: number } | null>(null);
+
+  // -----------------------------------------------------------------------
+  // TOP-BAR: reverse-geocode the REAL current GPS position independently.
+  // Only fires when `location` first becomes non-null (real GPS) and then
+  // only again after the user moves ~200 m or more from the last geocode.
+  // -----------------------------------------------------------------------
+  useEffect(() => {
+    if (!location) return; // wait for real GPS — do not use null/Chakwal default
+
+    const { latitude: lat, longitude: lng } = location;
+    const prev = lastGeocodedRef.current;
+
+    // Approx distance check (1 degree lat ≈ 111 km, 1 degree lng ≈ 111 km at equator).
+    // Threshold: 0.002 degrees ≈ ~200 m — avoid re-geocoding on every tiny jitter.
+    if (prev) {
+      const dLat = Math.abs(lat - prev.lat);
+      const dLng = Math.abs(lng - prev.lng);
+      if (dLat < 0.002 && dLng < 0.002) return;
+    }
+
+    lastGeocodedRef.current = { lat, lng };
+
+    void (async () => {
+      try {
+        const { name } = await GoogleMapsService.fetchAddressFromCoordinates(location);
+        setCurrentLocationName(name);
+      } catch {
+        // Keep the last valid name; don't overwrite with an error state.
+      }
+    })();
+  }, [location]);
+
+  // -----------------------------------------------------------------------
+  // PICKUP: initialise to the rider's current GPS location once coords
+  // arrive, but only when no pickup has been explicitly set yet (null).
+  // -----------------------------------------------------------------------
   useEffect(() => {
     if (pickup !== null || !location) return; // already set or no GPS yet
     void (async () => {
@@ -89,7 +129,7 @@ export function HomeMapScreen() {
           <View className="flex-row items-center gap-1.5">
             <View className="h-2 w-2 rounded-full bg-success" />
             <Text className="text-[11px] text-[#AAAAAA]" numberOfLines={1}>
-              {pickup?.name ?? '...'}
+              {currentLocationName ?? '...'}
             </Text>
           </View>
         }
