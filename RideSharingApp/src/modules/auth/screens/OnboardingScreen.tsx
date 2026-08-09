@@ -92,6 +92,19 @@ export function OnboardingScreen() {
         style={{ height: CONTAINER_HEIGHT, width: CAR_WIDTH }}
       >
         <Animated.View style={[{ width: CAR_WIDTH, height: CONTAINER_HEIGHT }, carAnimatedStyle]}>
+          {/* Car Body Base Layer */}
+          <Image
+            source={require('@/assets/images/car-body.png')}
+            style={{
+              position: 'absolute',
+              left: 0,
+              top: 0,
+              width: CAR_WIDTH,
+              height: CAR_HEIGHT,
+            }}
+            resizeMode="contain"
+          />
+
           {/* Rear Wheel */}
           <Animated.View
             style={[
@@ -101,6 +114,7 @@ export function OnboardingScreen() {
                 top: WHEEL_TOP,
                 width: WHEEL_SIZE,
                 height: WHEEL_SIZE,
+                zIndex: 10,
               },
               wheelAnimatedStyle,
             ]}
@@ -121,6 +135,7 @@ export function OnboardingScreen() {
                 top: WHEEL_TOP,
                 width: WHEEL_SIZE,
                 height: WHEEL_SIZE,
+                zIndex: 10,
               },
               wheelAnimatedStyle,
             ]}
@@ -131,19 +146,6 @@ export function OnboardingScreen() {
               resizeMode="contain"
             />
           </Animated.View>
-
-          {/* Car Body */}
-          <Image
-            source={require('@/assets/images/car-body.png')}
-            style={{
-              position: 'absolute',
-              left: 0,
-              top: 0,
-              width: CAR_WIDTH,
-              height: CAR_HEIGHT,
-            }}
-            resizeMode="contain"
-          />
         </Animated.View>
       </View>
 
