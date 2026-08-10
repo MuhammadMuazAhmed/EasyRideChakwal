@@ -1,28 +1,42 @@
 import React, { useState } from 'react';
-import { Alert, Image, ScrollView, Text, View } from 'react-native';
+import {
+  Alert,
+  Image,
+  KeyboardAvoidingView,
+  Platform,
+  Pressable,
+  ScrollView,
+  Text,
+  View,
+} from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import * as ImagePicker from 'expo-image-picker';
 
-import { ScreenContainer, TopBar, BackButton } from '@/shared/components/common/TopBar';
-import { Button } from '@/shared/components/ui/Button';
+import { ScreenContainer, BackButton } from '@/shared/components/common/TopBar';
 import { useDriverRegistrationStore } from '@/store/driverRegistrationStore';
 import type { DriverRegistrationStackParamList } from '@/navigation/types';
 
 type NavigationProp = NativeStackNavigationProp<DriverRegistrationStackParamList, 'Selfie'>;
 
-function StepHeader({ current, total = 6 }: { current: number; total?: number }) {
+function StepHeader({ current = 2, total = 6 }: { current?: number; total?: number }) {
   return (
-    <View className="mb-6 px-4">
-      <Text className="text-[10px] font-bold uppercase tracking-widest text-accent">
-        Step {current} of {total}
-      </Text>
-      <View className="mt-2 flex-row gap-1.5 h-1">
+    <View className="mb-6">
+      <View className="flex-row items-center justify-between mb-2">
+        <Text className="text-[11px] font-bold uppercase tracking-wider text-[#6B7280]">
+          Step {current} of {total}
+        </Text>
+        <Text className="text-[11px] font-bold text-[#F5C400]">
+          Live Selfie
+        </Text>
+      </View>
+      <View className="flex-row gap-2 h-1.5">
         {Array.from({ length: total }).map((_, i) => (
           <View
             key={i}
             className={`flex-1 rounded-full ${
-              i < current ? 'bg-accent' : 'bg-neutral-800'
+              i < current ? 'bg-[#F5C400]' : 'bg-[#E5E7EB]'
             }`}
           />
         ))}
@@ -32,6 +46,7 @@ function StepHeader({ current, total = 6 }: { current: number; total?: number })
 }
 
 export function SelfieScreen() {
+  const insets = useSafeAreaInsets();
   const navigation = useNavigation<NavigationProp>();
   const selfieUri = useDriverRegistrationStore((s) => s.selfieUri);
   const setField = useDriverRegistrationStore((s) => s.setField);
@@ -70,54 +85,101 @@ export function SelfieScreen() {
   };
 
   return (
-    <ScreenContainer className="bg-primary">
-      <TopBar
-        title="Live Selfie"
-        leftAction={<BackButton onPress={() => navigation.goBack()} color="#FFFFFF" />}
-      />
-      <ScrollView className="flex-1 px-4 pt-4">
-        <StepHeader current={2} />
-
-        <Text className="mb-2 text-lg font-extrabold text-white">
-          Live Selfie capture karein
+    <ScreenContainer className="bg-white">
+      {/* Refined Branded Header */}
+      <View
+        className="bg-primary px-5 pb-4 flex-row items-center gap-3"
+        style={{ paddingTop: Math.max(insets.top + 12, 44) }}
+      >
+        <BackButton onPress={() => navigation.goBack()} color="#FFFFFF" />
+        <Text className="text-[18px] font-bold text-white tracking-tight">
+          Live Selfie
         </Text>
-        <Text className="mb-6 text-xs text-neutral-400 font-semibold text-accent">
-          {"\"CNIC haath mein pakad kar live selfie lein\""}
-        </Text>
+      </View>
 
-        <View className="mb-6 items-center justify-center">
-          {localUri ? (
-            <View className="relative w-full aspect-square max-w-[280px] rounded-2xl overflow-hidden border-2 border-accent">
-              <Image source={{ uri: localUri }} className="w-full h-full" resizeMode="cover" />
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        className="flex-1"
+      >
+        <ScrollView
+          className="flex-1"
+          contentContainerStyle={{ flexGrow: 1, paddingHorizontal: 20, paddingTop: 24, paddingBottom: 24 }}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
+          {/* Step Indicator */}
+          <StepHeader current={2} total={6} />
+
+          {/* Heading & Instructions */}
+          <Text className="text-[24px] font-bold text-[#111111] tracking-tight mb-1">
+            Live Selfie capture karein
+          </Text>
+          <Text className="text-[14px] text-[#666666] mb-6 leading-5">
+            CNIC haath mein pakad kar live selfie lein taake aap ki identity verify ho sake.
+          </Text>
+
+          {/* Selfie Capture Framing Card */}
+          <View className="mb-6 items-center justify-center">
+            <View className="w-full aspect-[4/4.5] max-w-[290px] rounded-2xl bg-[#F9FAFB] border-[1.5px] border-[#E5E7EB] overflow-hidden items-center justify-center relative shadow-sm">
+              {localUri ? (
+                <>
+                  <Image source={{ uri: localUri }} className="w-full h-full" resizeMode="cover" />
+                  <View className="absolute top-3 right-3 bg-[#10B981] px-3 py-1 rounded-full flex-row items-center">
+                    <Text className="text-white text-[11px] font-bold">Captured ✓</Text>
+                  </View>
+                </>
+              ) : (
+                <View className="items-center justify-center px-6 py-8 w-full h-full">
+                  {/* Oval Face Silhouette Guide */}
+                  <View className="w-36 h-44 rounded-[70px] border-2 border-dashed border-[#F5C400] items-center justify-center bg-white/80 mb-4 p-2">
+                    <View className="w-14 h-14 rounded-full bg-[#E5E7EB] mb-2 items-center justify-center">
+                      <View className="w-7 h-7 rounded-full bg-[#9CA3AF]" />
+                    </View>
+                    <View className="w-20 h-8 rounded-t-full bg-[#D1D5DB]" />
+                  </View>
+
+                  <Text className="text-[13px] font-bold text-[#111111] text-center mb-1">
+                    Position your face & CNIC
+                  </Text>
+                  <Text className="text-[11px] text-[#6B7280] text-center leading-4">
+                    Frame ke andar apna chehra aur CNIC saaf dikhayen
+                  </Text>
+                </View>
+              )}
             </View>
-          ) : (
-            <View className="w-full aspect-square max-w-[280px] rounded-2xl bg-[#1E1E1E] border border-dashed border-neutral-800 items-center justify-center">
-              <Text className="text-4xl mb-3">🤳</Text>
-              <Text className="text-[11px] text-neutral-500 text-center px-4">
-                Selfie capture karne ke liye niche button tap karein
+          </View>
+
+          {/* Action Buttons */}
+          <View className="mt-auto gap-3">
+            <Pressable
+              onPress={handleCapture}
+              className={`h-[54px] rounded-xl items-center justify-center flex-row active:opacity-90 ${
+                localUri ? 'bg-[#F3F4F6] border border-[#D1D5DB]' : 'bg-[#F5C400]'
+              }`}
+            >
+              <Text
+                className={`text-[16px] font-bold tracking-wide ${
+                  localUri ? 'text-[#111111]' : 'text-primary'
+                }`}
+              >
+                {localUri ? 'Retake Selfie' : 'Take Selfie'}
               </Text>
-            </View>
-          )}
-        </View>
+            </Pressable>
 
-        <View className="gap-3 mt-4">
-          <Button
-            title={localUri ? "Retake Selfie 📸" : "Take Selfie 📸"}
-            variant={localUri ? "outline" : "yellow"}
-            onPress={handleCapture}
-            className={`py-4 rounded-xl ${localUri ? 'border-neutral-700 bg-transparent text-white' : ''}`}
-            textClassName={localUri ? 'text-white' : ''}
-          />
-          {localUri && (
-            <Button
-              title="Agla Step →"
-              variant="yellow"
-              onPress={handleNext}
-              className="py-4 rounded-xl"
-            />
-          )}
-        </View>
-      </ScrollView>
+            {localUri && (
+              <Pressable
+                onPress={handleNext}
+                className="h-[54px] rounded-xl items-center justify-center flex-row active:opacity-90 bg-[#F5C400]"
+              >
+                <Text className="text-[16px] font-bold text-primary tracking-wide">
+                  Agla Step →
+                </Text>
+              </Pressable>
+            )}
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </ScreenContainer>
   );
 }
+

@@ -1,29 +1,42 @@
-import React, { useState } from 'react';
-import { ScrollView, Text, View } from 'react-native';
+import React, { useCallback, useEffect, useState } from 'react';
+import {
+  BackHandler,
+  KeyboardAvoidingView,
+  Platform,
+  Pressable,
+  ScrollView,
+  Text,
+  TextInput,
+  View,
+} from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-import { ScreenContainer, TopBar, BackButton } from '@/shared/components/common/TopBar';
-import { Input } from '@/shared/components/ui/Input';
-import { Button } from '@/shared/components/ui/Button';
+import { ScreenContainer, BackButton } from '@/shared/components/common/TopBar';
 import { useDriverRegistrationStore } from '@/store/driverRegistrationStore';
 import { useAuthStore } from '@/store/authStore';
 import type { DriverRegistrationStackParamList } from '@/navigation/types';
 
 type NavigationProp = NativeStackNavigationProp<DriverRegistrationStackParamList, 'PersonalDetails'>;
 
-function StepHeader({ current, total = 6 }: { current: number; total?: number }) {
+function StepHeader({ current = 1, total = 6 }: { current?: number; total?: number }) {
   return (
-    <View className="mb-6 px-4">
-      <Text className="text-[10px] font-bold uppercase tracking-widest text-accent">
-        Step {current} of {total}
-      </Text>
-      <View className="mt-2 flex-row gap-1.5 h-1">
+    <View className="mb-6">
+      <View className="flex-row items-center justify-between mb-2">
+        <Text className="text-[11px] font-bold uppercase tracking-wider text-[#6B7280]">
+          Step {current} of {total}
+        </Text>
+        <Text className="text-[11px] font-bold text-[#F5C400]">
+          Personal Details
+        </Text>
+      </View>
+      <View className="flex-row gap-2 h-1.5">
         {Array.from({ length: total }).map((_, i) => (
           <View
             key={i}
             className={`flex-1 rounded-full ${
-              i < current ? 'bg-accent' : 'bg-neutral-800'
+              i < current ? 'bg-[#F5C400]' : 'bg-[#E5E7EB]'
             }`}
           />
         ))}
@@ -33,8 +46,10 @@ function StepHeader({ current, total = 6 }: { current: number; total?: number })
 }
 
 export function PersonalDetailsScreen() {
+  const insets = useSafeAreaInsets();
   const navigation = useNavigation<NavigationProp>();
   const authPhone = useAuthStore((s) => s.phone);
+  const logout = useAuthStore((s) => s.logout);
   
   const firstName = useDriverRegistrationStore((s) => s.firstName);
   const lastName = useDriverRegistrationStore((s) => s.lastName);
@@ -45,7 +60,23 @@ export function PersonalDetailsScreen() {
 
   const [localFirstName, setLocalFirstName] = useState(firstName);
   const [localLastName, setLocalLastName] = useState(lastName);
+  const [firstNameFocused, setFirstNameFocused] = useState(false);
+  const [lastNameFocused, setLastNameFocused] = useState(false);
   const [errors, setErrors] = useState<{ firstName?: string; lastName?: string }>({});
+
+  const handleBack = useCallback(() => {
+    // Reset auth state to return safely to PhoneNumber screen without stale registration state
+    logout();
+  }, [logout]);
+
+  useEffect(() => {
+    const onBackPress = () => {
+      handleBack();
+      return true;
+    };
+    const subscription = BackHandler.addEventListener('hardwareBackPress', onBackPress);
+    return () => subscription.remove();
+  }, [handleBack]);
 
   const handleNext = () => {
     const newErrors: typeof errors = {};
@@ -70,73 +101,140 @@ export function PersonalDetailsScreen() {
     navigation.navigate('Selfie');
   };
 
+  const isFormValid = localFirstName.trim().length >= 2 && localLastName.trim().length >= 2;
+
   return (
-    <ScreenContainer className="bg-primary">
-      <TopBar
-        title="Personal Details"
-        leftAction={<BackButton onPress={() => navigation.goBack()} color="#FFFFFF" />}
-      />
-      <ScrollView className="flex-1 px-4 pt-4">
-        <StepHeader current={1} />
-        
-        <Text className="mb-2 text-lg font-extrabold text-white">
-          Apni details enter karein
+    <ScreenContainer className="bg-white">
+      {/* Refined Branded Header */}
+      <View
+        className="bg-primary px-5 pb-4 flex-row items-center gap-3"
+        style={{ paddingTop: Math.max(insets.top + 12, 44) }}
+      >
+        <BackButton onPress={handleBack} color="#FFFFFF" />
+        <Text className="text-[18px] font-bold text-white tracking-tight">
+          Personal Details
         </Text>
-        <Text className="mb-6 text-xs text-neutral-400">
-          Apna sahi naam likhein jo aapke CNIC par darj hai.
-        </Text>
+      </View>
 
-        <View className="mb-4">
-          <Text className="text-[10px] font-bold uppercase tracking-wide text-neutral-400 mb-1">
-            Mobile Number (Read-only)
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        className="flex-1"
+      >
+        <ScrollView
+          className="flex-1"
+          contentContainerStyle={{ flexGrow: 1, paddingHorizontal: 20, paddingTop: 24, paddingBottom: 24 }}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
+          {/* Step Indicator */}
+          <StepHeader current={1} total={6} />
+          
+          {/* Heading & Subtitle */}
+          <Text className="text-[24px] font-bold text-[#111111] tracking-tight mb-1">
+            Apni details enter karein
           </Text>
-          <Input
-            value={displayPhone}
-            editable={false}
-            selectTextOnFocus={false}
-            className="bg-[#1A1A1A] border-neutral-800 text-neutral-500 font-bold"
-          />
-        </View>
+          <Text className="text-[14px] text-[#666666] mb-6 leading-5">
+            Apna sahi naam likhein jo aapke CNIC par darj hai.
+          </Text>
 
-        <View className="mb-4">
-          <Text className="text-[10px] font-bold uppercase tracking-wide text-neutral-400 mb-1">
-            First Name
-          </Text>
-          <Input
-            placeholder="e.g. Ali"
-            value={localFirstName}
-            onChangeText={(text) => {
-              setLocalFirstName(text);
-              if (errors.firstName) setErrors((prev) => ({ ...prev, firstName: undefined }));
+          {/* Read-Only Mobile Number */}
+          <View className="mb-5">
+            <Text className="text-[12px] font-bold uppercase tracking-wider text-[#6B7280] mb-2">
+              Mobile Number (Read-only)
+            </Text>
+            <View className="flex-row items-center border-[1.5px] border-[#E5E7EB] rounded-xl bg-[#F9FAFB] px-3.5 h-[54px]">
+              <Text className="text-[15px] font-bold text-[#4B5563]">
+                {displayPhone}
+              </Text>
+            </View>
+          </View>
+
+          {/* First Name Input */}
+          <View className="mb-5">
+            <Text className="text-[12px] font-bold uppercase tracking-wider text-[#6B7280] mb-2">
+              First Name
+            </Text>
+            <View
+              className={`flex-row items-center border-[1.5px] rounded-xl bg-white px-3.5 h-[54px] ${
+                errors.firstName
+                  ? 'border-danger'
+                  : firstNameFocused
+                  ? 'border-[#F5C400]'
+                  : 'border-[#E5E7EB]'
+              }`}
+            >
+              <TextInput
+                placeholder="e.g. Ali"
+                placeholderTextColor="#9CA3AF"
+                value={localFirstName}
+                onChangeText={(text) => {
+                  setLocalFirstName(text);
+                  if (errors.firstName) setErrors((prev) => ({ ...prev, firstName: undefined }));
+                }}
+                onFocus={() => setFirstNameFocused(true)}
+                onBlur={() => setFirstNameFocused(false)}
+                className="flex-1 text-[16px] font-medium text-[#111111] p-0"
+                selectionColor="#F5C400"
+              />
+            </View>
+            {errors.firstName && (
+              <Text className="text-xs text-danger font-medium mt-1.5 ml-1">
+                {errors.firstName}
+              </Text>
+            )}
+          </View>
+
+          {/* Last Name Input */}
+          <View className="mb-7">
+            <Text className="text-[12px] font-bold uppercase tracking-wider text-[#6B7280] mb-2">
+              Last Name
+            </Text>
+            <View
+              className={`flex-row items-center border-[1.5px] rounded-xl bg-white px-3.5 h-[54px] ${
+                errors.lastName
+                  ? 'border-danger'
+                  : lastNameFocused
+                  ? 'border-[#F5C400]'
+                  : 'border-[#E5E7EB]'
+              }`}
+            >
+              <TextInput
+                placeholder="e.g. Khan"
+                placeholderTextColor="#9CA3AF"
+                value={localLastName}
+                onChangeText={(text) => {
+                  setLocalLastName(text);
+                  if (errors.lastName) setErrors((prev) => ({ ...prev, lastName: undefined }));
+                }}
+                onFocus={() => setLastNameFocused(true)}
+                onBlur={() => setLastNameFocused(false)}
+                className="flex-1 text-[16px] font-medium text-[#111111] p-0"
+                selectionColor="#F5C400"
+              />
+            </View>
+            {errors.lastName && (
+              <Text className="text-xs text-danger font-medium mt-1.5 ml-1">
+                {errors.lastName}
+              </Text>
+            )}
+          </View>
+
+          {/* Agla Step Button */}
+          <Pressable
+            onPress={handleNext}
+            className="mt-auto h-[54px] rounded-xl items-center justify-center flex-row active:opacity-90 bg-accent"
+            style={{
+              opacity: isFormValid ? 1 : 0.5,
+              width: '100%',
             }}
-            error={errors.firstName}
-            className="bg-[#1F1F1F] border-neutral-800 text-white"
-          />
-        </View>
-
-        <View className="mb-6">
-          <Text className="text-[10px] font-bold uppercase tracking-wide text-neutral-400 mb-1">
-            Last Name
-          </Text>
-          <Input
-            placeholder="e.g. Khan"
-            value={localLastName}
-            onChangeText={(text) => {
-              setLocalLastName(text);
-              if (errors.lastName) setErrors((prev) => ({ ...prev, lastName: undefined }));
-            }}
-            error={errors.lastName}
-            className="bg-[#1F1F1F] border-neutral-800 text-white"
-          />
-        </View>
-
-        <Button
-          title="Agla Step →"
-          variant="yellow"
-          onPress={handleNext}
-          className="mt-4 py-4 rounded-xl"
-        />
-      </ScrollView>
+          >
+            <Text className="text-[16px] font-bold text-primary tracking-wide">
+              Agla Step →
+            </Text>
+          </Pressable>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </ScreenContainer>
   );
 }
+
