@@ -6,6 +6,8 @@ import * as ImagePicker from 'expo-image-picker';
 
 import { ScreenContainer, TopBar, BackButton } from '@/shared/components/common/TopBar';
 import { Button } from '@/shared/components/ui/Button';
+import { Badge } from '@/shared/components/ui/Badge';
+import DocumentIcon from '@/shared/components/icons/DocumentIcon';
 import { DriverService } from '@/modules/driver/services/driverService';
 import { useDriverRegistrationStore } from '@/store/driverRegistrationStore';
 import { useAuthStore } from '@/store/authStore';
@@ -24,9 +26,7 @@ function StepHeader({ current, total = 6 }: { current: number; total?: number })
         {Array.from({ length: total }).map((_, i) => (
           <View
             key={i}
-            className={`flex-1 rounded-full ${
-              i < current ? 'bg-accent' : 'bg-neutral-800'
-            }`}
+            className={`flex-1 rounded-full ${i < current ? 'bg-accent' : 'bg-surface-muted'}`}
           />
         ))}
       </View>
@@ -173,15 +173,13 @@ export function VehicleRegScreen() {
 
   if (uploading) {
     return (
-      <ScreenContainer className="bg-primary justify-center items-center px-6">
+      <ScreenContainer className="bg-white justify-center items-center px-6">
         <ActivityIndicator size="large" color="#F5C400" className="mb-6" />
-        <Text className="text-lg font-black text-white text-center mb-2">
+        <Text className="text-lg font-black text-neutral-900 text-center mb-2">
           Documents upload ho rahe hain...
         </Text>
-        <Text className="text-xs text-neutral-400 text-center mb-6 px-4">
-          {currentDoc}
-        </Text>
-        <View className="w-full bg-neutral-800 h-2.5 rounded-full overflow-hidden mb-2">
+        <Text className="text-xs text-neutral-600 text-center mb-6 px-4">{currentDoc}</Text>
+        <View className="w-full bg-surface-muted h-2.5 rounded-full overflow-hidden mb-2">
           <View className="bg-accent h-full rounded-full" style={{ width: `${progress}%` }} />
         </View>
         <Text className="text-sm font-bold text-accent">{progress}%</Text>
@@ -190,36 +188,37 @@ export function VehicleRegScreen() {
   }
 
   return (
-    <ScreenContainer className="bg-primary">
+    <ScreenContainer className="bg-white">
       <TopBar
         title="Vehicle Documents"
-        leftAction={<BackButton onPress={() => navigation.goBack()} color="#FFFFFF" />}
+        variant="light"
+        leftAction={<BackButton onPress={() => navigation.goBack()} color="#111827" />}
       />
       <ScrollView className="flex-1 px-4 pt-4 pb-8">
         <StepHeader current={6} />
 
-        <Text className="mb-2 text-lg font-extrabold text-white">
-          Documents ki verification
-        </Text>
-        <Text className="mb-5 text-xs text-neutral-400">
-          Gari ke registration documents submit karein.
-        </Text>
+        <Text className="mb-2 text-lg font-extrabold text-neutral-900">Documents ki verification</Text>
+        <Text className="mb-5 text-xs text-neutral-600">Apni gari ke registration documents submit karein.</Text>
 
         {/* Vehicle Registration Book Card */}
         <View className="mb-4">
-          <Text className="text-[10px] font-bold uppercase tracking-wide text-neutral-400 mb-1.5">
-            Vehicle Registration Book (Required)
-          </Text>
-          <Pressable
-            onPress={() => void handleCapture('reg')}
-            className="w-full aspect-[1.6] rounded-xl bg-[#1E1E1E] border border-neutral-800 overflow-hidden items-center justify-center"
-          >
+          <View className="flex-row justify-between items-center mb-2">
+            <Text className="text-sm font-bold text-neutral-900">Vehicle Registration Book</Text>
+            <Badge label="Required" variant="yellow" />
+          </View>
+
+          <Pressable onPress={() => void handleCapture('reg')} className="w-full rounded-xl border border-neutral-200 shadow-sm overflow-hidden">
             {regUri ? (
-              <Image source={{ uri: regUri }} className="w-full h-full" resizeMode="cover" />
+              <View className="w-full aspect-[1.6]">
+                <Image source={{ uri: regUri }} className="w-full h-full" resizeMode="cover" />
+                <Pressable onPress={() => void handleCapture('reg')} className="absolute right-3 bottom-3 bg-white/90 px-3 py-1 rounded-full">
+                  <Text className="text-xs font-bold text-neutral-900">Retake</Text>
+                </Pressable>
+              </View>
             ) : (
-              <View className="items-center">
-                <Text className="text-3xl mb-1">📄</Text>
-                <Text className="text-xs font-semibold text-accent">Capture Registration Book</Text>
+              <View className="p-6 items-center">
+                <DocumentIcon width={52} height={52} />
+                <Text className="mt-3 text-xs font-semibold text-neutral-700">Tap to capture or upload</Text>
               </View>
             )}
           </Pressable>
@@ -227,35 +226,28 @@ export function VehicleRegScreen() {
 
         {/* Police Clearance Certificate Card (Optional) */}
         <View className="mb-6">
-          <View className="flex-row justify-between mb-1.5">
-            <Text className="text-[10px] font-bold uppercase tracking-wide text-neutral-400">
-              Police Clearance Certificate
-            </Text>
-            <Text className="text-[10px] font-bold uppercase text-accent">
-              Optional — bohat important hai, jald verify hogi
-            </Text>
+          <View className="flex-row justify-between items-center mb-2">
+            <Text className="text-sm font-bold text-neutral-900">Police Clearance Certificate</Text>
+            <Badge label="Optional" variant="gray" />
           </View>
-          <Pressable
-            onPress={() => void handleCapture('clearance')}
-            className="w-full aspect-[1.6] rounded-xl bg-[#1E1E1E] border border-neutral-800 overflow-hidden items-center justify-center"
-          >
+          <Pressable onPress={() => void handleCapture('clearance')} className="w-full rounded-xl border border-neutral-200 shadow-sm overflow-hidden">
             {clearanceUri ? (
-              <Image source={{ uri: clearanceUri }} className="w-full h-full" resizeMode="cover" />
+              <View className="w-full aspect-[1.6]">
+                <Image source={{ uri: clearanceUri }} className="w-full h-full" resizeMode="cover" />
+                <Pressable onPress={() => void handleCapture('clearance')} className="absolute right-3 bottom-3 bg-white/90 px-3 py-1 rounded-full">
+                  <Text className="text-xs font-bold text-neutral-900">Change</Text>
+                </Pressable>
+              </View>
             ) : (
-              <View className="items-center">
-                <Text className="text-3xl mb-1">📜</Text>
-                <Text className="text-xs font-semibold text-accent">Capture Clearance (Optional)</Text>
+              <View className="p-6 items-center">
+                <DocumentIcon width={48} height={48} color="#9CA3AF" />
+                <Text className="mt-3 text-xs font-semibold text-neutral-700">Recommended for verification</Text>
               </View>
             )}
           </Pressable>
         </View>
 
-        <Button
-          title="Submit Registration ✓"
-          variant="yellow"
-          onPress={handleSubmit}
-          className="mt-2 py-4 rounded-xl"
-        />
+        <Button title="Submit Registration ✓" variant="yellow" onPress={handleSubmit} className="mt-2 py-4 rounded-xl" />
       </ScrollView>
     </ScreenContainer>
   );

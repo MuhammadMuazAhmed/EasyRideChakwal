@@ -5,6 +5,7 @@ import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { TopBar } from '@/shared/components/common/TopBar';
 import { Button } from '@/shared/components/ui/Button';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useCurrentLocation } from '@/shared/hooks';
 import { DriverService } from '@/modules/driver/services/driverService';
 import { useDriverStore } from '@/modules/driver/store/driverStore';
@@ -26,6 +27,8 @@ export function DashboardScreen() {
 
   const [loading, setLoading] = useState(true);
   const [toggling, setToggling] = useState(false);
+  const [stats, setStats] = useState<any | null>(null);
+  const [statsLoading, setStatsLoading] = useState(false);
 
   // Fetch driver profile on mount and verify registration/verification status
   useEffect(() => {
@@ -93,6 +96,25 @@ export function DashboardScreen() {
     void loadProfile();
   }, [setDriverProfile, setOnline, navigation]);
 
+  useEffect(() => {
+    let mounted = true;
+    async function loadStats() {
+      setStatsLoading(true);
+      try {
+        const s = await DriverService.getStats();
+        if (mounted) setStats(s);
+      } catch (err) {
+        // ignore — dashboard will show fallbacks
+      } finally {
+        if (mounted) setStatsLoading(false);
+      }
+    }
+    void loadStats();
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
 
 
   const handleToggleOnline = async () => {
@@ -110,63 +132,54 @@ export function DashboardScreen() {
 
   if (loading) {
     return (
-      <View className="flex-1 bg-primary items-center justify-center">
+      <View className="flex-1 bg-white items-center justify-center">
         <ActivityIndicator size="large" color="#F5C400" />
-        <Text className="text-white text-xs mt-3">Profile loading...</Text>
+        <Text className="text-neutral-700 text-xs mt-3">Profile loading...</Text>
       </View>
     );
   }
 
-  // hardcoded/calculated metrics
-  const todayEarnings = 0;
-  const tripsCount = driverProfile?.totalTrips ?? 0;
+  // metrics from profile / stats
+  const todayEarnings = stats?.todayEarnings ?? 0;
+  const tripsCount = stats?.totalTrips ?? driverProfile?.totalTrips ?? 0;
   const dailyAverage = 2700;
   const progressPct = Math.min((todayEarnings / dailyAverage) * 100, 100);
 
   return (
-    <View className="flex-1 bg-[#111111]">
+    <View className="flex-1 bg-white">
       <TopBar
+        variant="light"
         showLogo
-        title="Driver Panel"
+        title="Easy Ride"
+        subtitle="Driver Panel"
         rightAction={
-          <View className="flex-row items-center gap-1.5 rounded-full bg-[#1F1F1F] px-2.5 py-1">
-            <View className={`h-2 w-2 rounded-full ${isOnline ? 'bg-success' : 'bg-neutral-500'}`} />
-            <Text className="text-[10px] font-bold text-white">
-              {isOnline ? 'آن لائن' : 'آف لائن'}
-            </Text>
-          </View>
+          <Pressable onPress={() => void handleToggleOnline()} className="flex-row items-center gap-2 rounded-full bg-white border border-neutral-200 px-3 py-1">
+            <View className={`h-2.5 w-2.5 rounded-full ${isOnline ? 'bg-success' : 'bg-neutral-300'}`} />
+            <Text className="text-[11px] font-bold text-neutral-900">{isOnline ? 'Online' : 'Offline'}</Text>
+          </Pressable>
         }
       />
 
       <ScrollView className="flex-1 px-4 pt-4">
         {/* SECTION 2 — Earnings card */}
-        <View className="mb-5 rounded-2xl bg-[#1A1A1A] border border-neutral-800 p-5">
-          <View className="flex-row justify-between items-center mb-1">
-            <Text className="text-xs text-neutral-400 font-bold uppercase tracking-wide">
-              Aaj ki Kamai
-            </Text>
-            <Text className="text-xs text-neutral-400 font-bold uppercase tracking-wide">
-              Trips
-            </Text>
-          </View>
-          <View className="flex-row justify-between items-baseline mb-4">
-            <Text className="text-2xl font-black text-accent">
-              PKR {todayEarnings}
-            </Text>
-            <Text className="text-xl font-black text-accent">
-              {tripsCount}
-            </Text>
+        <View className="mb-5 rounded-2xl bg-white border border-neutral-200 p-4 shadow-sm">
+          <View className="flex-row justify-between items-center mb-2">
+            <View>
+              <Text className="text-xs text-neutral-500 font-bold uppercase tracking-wide">Today's Earnings</Text>
+              <Text className="text-2xl font-extrabold text-accent">PKR {todayEarnings}</Text>
+            </View>
+            <View className="items-end">
+              <Text className="text-xs text-neutral-500 font-bold uppercase tracking-wide">Trips</Text>
+              <Text className="text-2xl font-extrabold text-neutral-900">{tripsCount}</Text>
+            </View>
           </View>
 
-          {/* Earnings Progress Bar vs 2700 average */}
-          <View className="mt-1">
-            <View className="flex-row justify-between text-[10px] mb-1.5">
-              <Text className="text-[10px] text-neutral-400">Target Progress</Text>
-              <Text className="text-[10px] text-accent font-bold">
-                {todayEarnings} / {dailyAverage} PKR
-              </Text>
+          <View className="mt-3">
+            <View className="flex-row justify-between mb-2">
+              <Text className="text-[12px] text-neutral-500">Target Progress</Text>
+              <Text className="text-[12px] text-accent font-bold">{todayEarnings} / {dailyAverage} PKR</Text>
             </View>
-            <View className="w-full bg-neutral-800 h-1.5 rounded-full overflow-hidden">
+            <View className="w-full bg-neutral-100 h-2.5 rounded-full overflow-hidden">
               <View className="bg-accent h-full rounded-full" style={{ width: `${progressPct}%` }} />
             </View>
           </View>
@@ -177,57 +190,36 @@ export function DashboardScreen() {
           {toggling ? (
             <ActivityIndicator size="small" color="#F5C400" className="py-4" />
           ) : isOnline ? (
-            <Button
-              title="🔴 Offline Ho Jao"
-              variant="outline"
-              onPress={handleToggleOnline}
-              className="py-4 rounded-xl border border-danger bg-transparent"
-              textClassName="text-danger font-bold text-sm"
-            />
+            <Pressable onPress={handleToggleOnline} className="w-full bg-neutral-100 py-3 rounded-xl items-center justify-center border border-neutral-200">
+              <Text className="text-neutral-900 font-bold">Go Offline</Text>
+            </Pressable>
           ) : (
-            <Pressable
-              onPress={handleToggleOnline}
-              className="w-full bg-success active:opacity-90 py-4 rounded-xl items-center justify-center"
-            >
-              <Text className="text-white font-black text-sm">
-                🟢 Online Ho Jao — Kamai Shuru!
-              </Text>
+            <Pressable onPress={handleToggleOnline} className="w-full bg-accent py-3 rounded-xl items-center justify-center">
+              <Text className="text-white font-black">Go Online — Start Earning</Text>
             </Pressable>
           )}
         </View>
 
         {/* SECTION 4 — Stats grid (2×2) */}
-        <Text className="mb-2 text-[10px] font-bold uppercase tracking-widest text-neutral-400">
-          Performance Stats
-        </Text>
+        <Text className="mb-2 text-[10px] font-bold uppercase tracking-widest text-neutral-500">Performance Stats</Text>
         <View className="flex-row gap-3 mb-3">
-          <View className="flex-1 bg-[#1A1A1A] border border-neutral-850 p-4 rounded-xl">
-            <Text className="text-[10px] font-bold text-neutral-500 uppercase tracking-wide mb-1">
-              Nearby Requests
-            </Text>
-            <Text className="text-lg font-black text-white">0</Text>
+          <View className="flex-1 bg-white border border-neutral-200 p-4 rounded-xl items-start shadow-sm">
+            <Text className="text-[10px] font-bold text-neutral-500 uppercase tracking-wide mb-1">Nearby Requests</Text>
+            <Text className="text-2xl font-extrabold text-neutral-900">0</Text>
           </View>
-          <View className="flex-1 bg-[#1A1A1A] border border-neutral-850 p-4 rounded-xl">
-            <Text className="text-[10px] font-bold text-neutral-500 uppercase tracking-wide mb-1">
-              My Rating
-            </Text>
-            <Text className="text-lg font-black text-accent">
-              ⭐ {driverProfile?.rating?.toFixed(1) ?? '5.0'}
-            </Text>
+          <View className="flex-1 bg-white border border-neutral-200 p-4 rounded-xl items-start shadow-sm">
+            <Text className="text-[10px] font-bold text-neutral-500 uppercase tracking-wide mb-1">My Rating</Text>
+            <Text className="text-2xl font-extrabold text-accent">{statsLoading ? '—' : stats?.rating != null ? `★ ${Number(stats.rating).toFixed(1)}` : '—'}</Text>
           </View>
         </View>
         <View className="flex-row gap-3 mb-6">
-          <View className="flex-1 bg-[#1A1A1A] border border-neutral-850 p-4 rounded-xl">
-            <Text className="text-[10px] font-bold text-neutral-500 uppercase tracking-wide mb-1">
-              Accept Rate
-            </Text>
-            <Text className="text-lg font-black text-white">100%</Text>
+          <View className="flex-1 bg-white border border-neutral-200 p-4 rounded-xl items-start shadow-sm">
+            <Text className="text-[10px] font-bold text-neutral-500 uppercase tracking-wide mb-1">Accept Rate</Text>
+            <Text className="text-2xl font-extrabold text-neutral-900">{statsLoading ? '—' : stats?.acceptRate != null ? `${stats.acceptRate}%` : '—'}</Text>
           </View>
-          <View className="flex-1 bg-[#1A1A1A] border border-neutral-850 p-4 rounded-xl">
-            <Text className="text-[10px] font-bold text-neutral-500 uppercase tracking-wide mb-1">
-              Total Trips
-            </Text>
-            <Text className="text-lg font-black text-white">{tripsCount}</Text>
+          <View className="flex-1 bg-white border border-neutral-200 p-4 rounded-xl items-start shadow-sm">
+            <Text className="text-[10px] font-bold text-neutral-500 uppercase tracking-wide mb-1">Total Trips</Text>
+            <Text className="text-2xl font-extrabold text-neutral-900">{tripsCount}</Text>
           </View>
         </View>
 
@@ -236,16 +228,16 @@ export function DashboardScreen() {
           Ride Requests
         </Text>
         {isOnline ? (
-          <View className="items-center py-8 border border-dashed border-neutral-800 bg-[#151515] rounded-xl mb-8">
-            <Text className="text-xs text-neutral-500 text-center font-semibold">
-              Koi request nahi abhi — intezar karein...
-            </Text>
+          <View className="items-center py-8 border border-dashed border-neutral-200 bg-white rounded-xl mb-8">
+            <Ionicons name="inbox-outline" size={36} color="#F5C400" />
+            <Text className="text-sm text-neutral-700 text-center font-semibold mt-3">No requests right now</Text>
+            <Text className="text-xs text-neutral-500 text-center mt-1">We'll notify you when nearby riders request a ride.</Text>
           </View>
         ) : (
-          <View className="items-center py-8 border border-neutral-800 bg-[#151515] rounded-xl mb-8">
-            <Text className="text-xs text-neutral-500 text-center">
-              Rides receive karne ke liye online ho jao.
-            </Text>
+          <View className="items-center py-8 border border-neutral-200 bg-white rounded-xl mb-8">
+            <Ionicons name="notifications-off-outline" size={36} color="#9CA3AF" />
+            <Text className="text-sm text-neutral-700 text-center font-semibold mt-3">You're offline</Text>
+            <Text className="text-xs text-neutral-500 text-center mt-1">Go online to receive ride requests.</Text>
           </View>
         )}
       </ScrollView>

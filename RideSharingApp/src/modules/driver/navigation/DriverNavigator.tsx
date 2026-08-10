@@ -2,7 +2,8 @@ import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { useAuthStore } from '@/store/authStore';
-import { Text, View } from 'react-native';
+import { Text, View, Pressable } from 'react-native';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import { DashboardScreen } from '../screens/DashboardScreen';
 import { EarningsScreen } from '../screens/EarningsScreen';
@@ -30,7 +31,7 @@ const Stack = createNativeStackNavigator<DriverStackParamList>();
 function TabIcon({ icon, label, focused }: { icon: string; label: string; focused: boolean }) {
   return (
     <View className="items-center py-1">
-      <Text className="text-base">{icon}</Text>
+      <Ionicons name={icon} size={20} color={focused ? '#F5C400' : '#9CA3AF'} />
       <Text
         className={`text-[9px] ${focused ? 'font-semibold text-primary' : 'text-text-tertiary'}`}
       >
@@ -57,7 +58,7 @@ function DriverTabNavigator() {
         headerShown: false,
         tabBarStyle: {
           backgroundColor: '#FFFFFF',
-          borderTopColor: '#E5E5E5',
+          borderTopColor: '#E5E7EB',
           height: 60,
           paddingBottom: 8,
         },
@@ -69,7 +70,7 @@ function DriverTabNavigator() {
         component={DashboardScreen}
         options={{
           tabBarIcon: ({ focused }) => (
-            <TabIcon icon="🏠" label="Dashboard" focused={focused} />
+            <TabIcon icon="home-outline" label="Dashboard" focused={focused} />
           ),
         }}
       />
@@ -78,7 +79,7 @@ function DriverTabNavigator() {
         component={EarningsScreen}
         options={{
           tabBarIcon: ({ focused }) => (
-            <TabIcon icon="💵" label="Earnings" focused={focused} />
+            <TabIcon icon="wallet-outline" label="Earnings" focused={focused} />
           ),
         }}
       />
@@ -87,7 +88,7 @@ function DriverTabNavigator() {
         component={ProfileScreen}
         options={{
           tabBarIcon: ({ focused }) => (
-            <TabIcon icon="👤" label="Profile" focused={focused} />
+            <TabIcon icon="person-outline" label="Profile" focused={focused} />
           ),
         }}
       />

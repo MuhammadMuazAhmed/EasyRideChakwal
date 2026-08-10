@@ -92,6 +92,12 @@ export const DriverService = {
     return data.data ?? [];
   },
 
+  async getStats(): Promise<any> {
+    const driverId = getDriverId();
+    const { data } = await apiClient.get<ApiResponse<any>>(`/drivers/${driverId}/stats`);
+    return data.data;
+  },
+
   async acceptRide(rideId: string): Promise<any> {
     getDriverId();
     const { data } = await apiClient.post<ApiResponse<any>>(`/rides/${rideId}/accept`);
