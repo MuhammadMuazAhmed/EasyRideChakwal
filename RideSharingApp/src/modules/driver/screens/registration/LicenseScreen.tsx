@@ -1,29 +1,43 @@
 import React, { useState } from 'react';
-import { Alert, Image, Pressable, ScrollView, Text, View } from 'react-native';
+import {
+  Alert,
+  Image,
+  KeyboardAvoidingView,
+  Platform,
+  Pressable,
+  ScrollView,
+  Text,
+  TextInput,
+  View,
+} from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import * as ImagePicker from 'expo-image-picker';
 
-import { ScreenContainer, TopBar, BackButton } from '@/shared/components/common/TopBar';
-import { Input } from '@/shared/components/ui/Input';
-import { Button } from '@/shared/components/ui/Button';
+import { ScreenContainer, BackButton } from '@/shared/components/common/TopBar';
 import { useDriverRegistrationStore } from '@/store/driverRegistrationStore';
 import type { DriverRegistrationStackParamList } from '@/navigation/types';
 
 type NavigationProp = NativeStackNavigationProp<DriverRegistrationStackParamList, 'License'>;
 
-function StepHeader({ current, total = 6 }: { current: number; total?: number }) {
+function StepHeader({ current = 4, total = 6 }: { current?: number; total?: number }) {
   return (
-    <View className="mb-6 px-4">
-      <Text className="text-[10px] font-bold uppercase tracking-widest text-accent">
-        Step {current} of {total}
-      </Text>
-      <View className="mt-2 flex-row gap-1.5 h-1">
+    <View className="mb-6">
+      <View className="flex-row items-center justify-between mb-2">
+        <Text className="text-[11px] font-bold uppercase tracking-wider text-[#6B7280]">
+          Step {current} of {total}
+        </Text>
+        <Text className="text-[11px] font-bold text-[#F5C400]">
+          Driving License
+        </Text>
+      </View>
+      <View className="flex-row gap-2 h-1.5">
         {Array.from({ length: total }).map((_, i) => (
           <View
             key={i}
             className={`flex-1 rounded-full ${
-              i < current ? 'bg-accent' : 'bg-neutral-800'
+              i < current ? 'bg-[#F5C400]' : 'bg-[#E5E7EB]'
             }`}
           />
         ))}
@@ -33,6 +47,7 @@ function StepHeader({ current, total = 6 }: { current: number; total?: number })
 }
 
 export function LicenseScreen() {
+  const insets = useSafeAreaInsets();
   const navigation = useNavigation<NavigationProp>();
   const licenseUri = useDriverRegistrationStore((s) => s.licenseUri);
   const licenseNumber = useDriverRegistrationStore((s) => s.licenseNumber);
@@ -42,6 +57,8 @@ export function LicenseScreen() {
   const [localUri, setLocalUri] = useState<string | null>(licenseUri);
   const [number, setNumber] = useState(licenseNumber);
   const [expiry, setExpiry] = useState(licenseExpiry);
+  const [numberFocused, setNumberFocused] = useState(false);
+  const [expiryFocused, setExpiryFocused] = useState(false);
   const [errors, setErrors] = useState<{ number?: string; expiry?: string }>({});
 
   const handleCapture = async () => {
@@ -135,82 +152,163 @@ export function LicenseScreen() {
     navigation.navigate('VehicleDetails');
   };
 
+  const isFormValid = !!localUri && number.trim().length >= 5 && validateFutureDate(expiry);
+
   return (
-    <ScreenContainer className="bg-primary">
-      <TopBar
-        title="Driving License"
-        leftAction={<BackButton onPress={() => navigation.goBack()} color="#FFFFFF" />}
-      />
-      <ScrollView className="flex-1 px-4 pt-4 pb-8">
-        <StepHeader current={4} />
-
-        <Text className="mb-2 text-lg font-extrabold text-white">
-          License details enter karein
+    <ScreenContainer className="bg-white">
+      {/* Refined Branded Header */}
+      <View
+        className="bg-primary px-5 pb-4 flex-row items-center gap-3"
+        style={{ paddingTop: Math.max(insets.top + 12, 44) }}
+      >
+        <BackButton onPress={() => navigation.goBack()} color="#FFFFFF" />
+        <Text className="text-[18px] font-bold text-white tracking-tight">
+          Driving License
         </Text>
-        <Text className="mb-5 text-xs text-neutral-400">
-          Apne driving license ki picture aur details upload karein.
-        </Text>
+      </View>
 
-        {/* License Photo Card */}
-        <View className="mb-5">
-          <Text className="text-[10px] font-bold uppercase tracking-wide text-neutral-400 mb-1.5">
-            Driving License Photo
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        className="flex-1"
+      >
+        <ScrollView
+          className="flex-1"
+          contentContainerStyle={{ flexGrow: 1, paddingHorizontal: 20, paddingTop: 24, paddingBottom: 24 }}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
+          {/* Step Indicator */}
+          <StepHeader current={4} total={6} />
+
+          {/* Heading & Subtitle */}
+          <Text className="text-[24px] font-bold text-[#111111] tracking-tight mb-1">
+            License details enter karein
           </Text>
-          <Pressable
-            onPress={handleCapture}
-            className="w-full aspect-[1.6] rounded-xl bg-[#1E1E1E] border border-neutral-800 overflow-hidden items-center justify-center"
-          >
-            {localUri ? (
-              <Image source={{ uri: localUri }} className="w-full h-full" resizeMode="cover" />
-            ) : (
-              <View className="items-center">
-                <Text className="text-3xl mb-1">🪪</Text>
-                <Text className="text-xs font-semibold text-accent">Capture License Photo</Text>
-              </View>
+          <Text className="text-[14px] text-[#666666] mb-6 leading-5">
+            Apne driving license ki picture aur details upload karein.
+          </Text>
+
+          {/* License Photo Card */}
+          <View className="mb-5">
+            <Text className="text-[12px] font-bold uppercase tracking-wider text-[#6B7280] mb-2">
+              Driving License Photo
+            </Text>
+            <Pressable
+              onPress={handleCapture}
+              className={`w-full aspect-[2/1] rounded-2xl bg-[#F9FAFB] border-[1.5px] overflow-hidden items-center justify-center relative active:opacity-90 ${
+                localUri ? 'border-[#F5C400]' : 'border-[#E5E7EB]'
+              }`}
+            >
+              {localUri ? (
+                <>
+                  <Image source={{ uri: localUri }} className="w-full h-full" resizeMode="cover" />
+                  <View className="absolute top-2.5 right-2.5 bg-[#10B981] px-2.5 py-0.5 rounded-full">
+                    <Text className="text-white text-[10px] font-bold">License Captured ✓</Text>
+                  </View>
+                </>
+              ) : (
+                <View className="items-center justify-center px-4 py-3">
+                  <View className="w-10 h-10 rounded-full bg-[#FEF3C7] items-center justify-center mb-2">
+                    <View className="w-5 h-3.5 border-2 border-[#D97706] rounded-sm items-center justify-center">
+                      <View className="w-2 h-0.5 bg-[#D97706]" />
+                    </View>
+                  </View>
+                  <Text className="text-[14px] font-bold text-[#111111] mb-0.5">
+                    Capture License Photo
+                  </Text>
+                  <Text className="text-[11px] text-[#6B7280]">
+                    Tap to capture or upload
+                  </Text>
+                </View>
+              )}
+            </Pressable>
+          </View>
+
+          {/* License Number Input */}
+          <View className="mb-5">
+            <Text className="text-[12px] font-bold uppercase tracking-wider text-[#6B7280] mb-2">
+              License Number
+            </Text>
+            <View
+              className={`flex-row items-center border-[1.5px] rounded-xl bg-white px-3.5 h-[54px] ${
+                errors.number
+                  ? 'border-danger'
+                  : numberFocused
+                  ? 'border-[#F5C400]'
+                  : 'border-[#E5E7EB]'
+              }`}
+            >
+              <TextInput
+                placeholder="e.g. DL-12345"
+                placeholderTextColor="#9CA3AF"
+                value={number}
+                onChangeText={(text) => {
+                  setNumber(text);
+                  if (errors.number) setErrors((prev) => ({ ...prev, number: undefined }));
+                }}
+                onFocus={() => setNumberFocused(true)}
+                onBlur={() => setNumberFocused(false)}
+                className="flex-1 text-[16px] font-medium text-[#111111] p-0"
+                selectionColor="#F5C400"
+              />
+            </View>
+            {errors.number && (
+              <Text className="text-xs text-danger font-medium mt-1.5 ml-1">
+                {errors.number}
+              </Text>
             )}
-          </Pressable>
-        </View>
+          </View>
 
-        {/* License Number Input */}
-        <View className="mb-4">
-          <Text className="text-[10px] font-bold uppercase tracking-wide text-neutral-400 mb-1">
-            License Number
-          </Text>
-          <Input
-            placeholder="e.g. DL-12345"
-            value={number}
-            onChangeText={(text) => {
-              setNumber(text);
-              if (errors.number) setErrors((prev) => ({ ...prev, number: undefined }));
+          {/* License Expiry Date Input */}
+          <View className="mb-7">
+            <Text className="text-[12px] font-bold uppercase tracking-wider text-[#6B7280] mb-2">
+              License Expiry Date
+            </Text>
+            <View
+              className={`flex-row items-center border-[1.5px] rounded-xl bg-white px-3.5 h-[54px] ${
+                errors.expiry
+                  ? 'border-danger'
+                  : expiryFocused
+                  ? 'border-[#F5C400]'
+                  : 'border-[#E5E7EB]'
+              }`}
+            >
+              <TextInput
+                placeholder="DD/MM/YYYY"
+                placeholderTextColor="#9CA3AF"
+                value={expiry}
+                onChangeText={handleExpiryChange}
+                onFocus={() => setExpiryFocused(true)}
+                onBlur={() => setExpiryFocused(false)}
+                keyboardType="numeric"
+                maxLength={10}
+                className="flex-1 text-[16px] font-medium text-[#111111] p-0"
+                selectionColor="#F5C400"
+              />
+            </View>
+            {errors.expiry && (
+              <Text className="text-xs text-danger font-medium mt-1.5 ml-1">
+                {errors.expiry}
+              </Text>
+            )}
+          </View>
+
+          {/* Agla Step Button */}
+          <Pressable
+            onPress={handleNext}
+            className="mt-auto h-[54px] rounded-xl items-center justify-center flex-row active:opacity-90 bg-accent"
+            style={{
+              opacity: isFormValid ? 1 : 0.5,
+              width: '100%',
             }}
-            error={errors.number}
-            className="bg-[#1F1F1F] border-neutral-800 text-white"
-          />
-        </View>
-
-        {/* License Expiry Date Input */}
-        <View className="mb-6">
-          <Text className="text-[10px] font-bold uppercase tracking-wide text-neutral-400 mb-1">
-            License Expiry Date
-          </Text>
-          <Input
-            placeholder="DD/MM/YYYY"
-            value={expiry}
-            onChangeText={handleExpiryChange}
-            keyboardType="numeric"
-            maxLength={10}
-            error={errors.expiry}
-            className="bg-[#1F1F1F] border-neutral-800 text-white"
-          />
-        </View>
-
-        <Button
-          title="Agla Step →"
-          variant="yellow"
-          onPress={handleNext}
-          className="mt-2 py-4 rounded-xl"
-        />
-      </ScrollView>
+          >
+            <Text className="text-[16px] font-bold text-primary tracking-wide">
+              Agla Step →
+            </Text>
+          </Pressable>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </ScreenContainer>
   );
 }
+
