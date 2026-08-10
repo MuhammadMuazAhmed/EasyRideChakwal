@@ -16,13 +16,18 @@ import type { AuthStackParamList } from '@/navigation/types';
 type NavigationProp = NativeStackNavigationProp<AuthStackParamList, 'Onboarding'>;
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
-const CAR_WIDTH = Math.min(SCREEN_WIDTH * 0.82, 300);
+
+const CAR_WIDTH = Math.min(SCREEN_WIDTH * 1.05, 460);
 const CAR_HEIGHT = CAR_WIDTH * (836 / 1881);
-const WHEEL_SIZE = CAR_WIDTH * 0.24;
-const REAR_WHEEL_LEFT = CAR_WIDTH * 0.14;
-const FRONT_WHEEL_LEFT = CAR_WIDTH * 0.62;
-const WHEEL_TOP = CAR_HEIGHT * 0.42;
-const CONTAINER_HEIGHT = CAR_HEIGHT + WHEEL_SIZE * 0.3;
+
+const WHEEL_SIZE = CAR_WIDTH * 0.13;
+
+const REAR_WHEEL_LEFT = CAR_WIDTH * 0.24;
+const FRONT_WHEEL_LEFT = CAR_WIDTH * 0.629;
+
+const WHEEL_TOP = CAR_HEIGHT * 0.497;
+
+const CONTAINER_HEIGHT = CAR_HEIGHT + WHEEL_SIZE * 0.2;
 
 const START_X = SCREEN_WIDTH + CAR_WIDTH;
 const END_X = -(SCREEN_WIDTH + CAR_WIDTH);
@@ -35,14 +40,14 @@ export function OnboardingScreen() {
   const rotation = useSharedValue(0);
 
   useEffect(() => {
-    // Drive in from right (START_X) to center (translateX = 0) with smooth deceleration
+    // Drive in from right (START_X) to center (translateX = 0) with smooth deceleration (slower)
     translateX.value = withTiming(0, {
-      duration: 1400,
+      duration: 2200,
       easing: Easing.out(Easing.cubic),
     });
     // Rotate wheels counter-clockwise (car moving right to left)
     rotation.value = withTiming(-720, {
-      duration: 1400,
+      duration: 2200,
       easing: Easing.out(Easing.cubic),
     });
   }, [translateX, rotation]);
@@ -55,11 +60,11 @@ export function OnboardingScreen() {
       navigation.navigate('PhoneNumber');
     };
 
-    // Drive out off-screen to the left (END_X) with smooth acceleration
+    // Drive out off-screen to the left (END_X) with smooth acceleration (slower)
     translateX.value = withTiming(
       END_X,
       {
-        duration: 900,
+        duration: 1500,
         easing: Easing.in(Easing.quad),
       },
       (finished) => {
@@ -71,7 +76,7 @@ export function OnboardingScreen() {
 
     // Continue wheel rotation to the left
     rotation.value = withTiming(-1440, {
-      duration: 900,
+      duration: 1500,
       easing: Easing.in(Easing.quad),
     });
   };
