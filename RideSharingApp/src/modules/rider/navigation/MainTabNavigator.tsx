@@ -1,5 +1,6 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Text, View } from 'react-native';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import { HomeMapScreen } from '@/rider/screens/home/HomeMapScreen';
 import { RideHistoryScreen } from '@/rider/screens/history/RideHistoryScreen';
@@ -12,7 +13,7 @@ const Tab = createBottomTabNavigator<MainTabParamList>();
 function TabIcon({ icon, label, focused }: { icon: string; label: string; focused: boolean }) {
   return (
     <View className="items-center py-1">
-      <Text className="text-base">{icon}</Text>
+      <Ionicons name={icon as any} size={20} color={focused ? '#F5C400' : '#9CA3AF'} />
       <Text
         className={`text-[9px] ${focused ? 'font-semibold text-primary' : 'text-text-tertiary'}`}
       >
@@ -50,7 +51,7 @@ export function MainTabNavigator() {
         component={HomeMapScreen}
         options={{
           tabBarIcon: ({ focused }) => (
-            <TabIcon icon="🏠" label="Home" focused={focused} />
+            <TabIcon icon="home-outline" label="Home" focused={focused} />
           ),
         }}
       />
@@ -59,7 +60,7 @@ export function MainTabNavigator() {
         component={RideHistoryScreen}
         options={{
           tabBarIcon: ({ focused }) => (
-            <TabIcon icon="🕐" label="History" focused={focused} />
+            <TabIcon icon="time-outline" label="History" focused={focused} />
           ),
         }}
       />
@@ -68,7 +69,7 @@ export function MainTabNavigator() {
         component={ProfileScreen}
         options={{
           tabBarIcon: ({ focused }) => (
-            <TabIcon icon="👤" label="Profile" focused={focused} />
+            <TabIcon icon="person-outline" label="Profile" focused={focused} />
           ),
         }}
       />

@@ -21,19 +21,22 @@ export function DriverSettingsScreen() {
   const navigation = useNavigation<NavigationProp>();
 
   return (
-    <ScreenContainer className="bg-surface-background">
+    <ScreenContainer className="bg-white">
       <TopBar
-        title="Settings"
+        variant="light"
+        showLogo
+        title="Easy Ride"
+        subtitle="Settings"
         leftAction={<BackButton onPress={() => navigation.goBack()} />}
       />
-      <ScrollView className="flex-1 px-3" contentContainerClassName="pb-10">
+      <ScrollView className="flex-1 px-4" contentContainerClassName="pb-10">
         <SectionLabel label="Preferences" />
-        <ProfileMenuItem icon="🌐" label="Language" value="Urdu / English" />
-        <ProfileMenuItem icon="🔔" label="Push Notifications" value="Enabled" />
-        <ProfileMenuItem icon="📍" label="Location Services" value="Always" />
+        <ProfileMenuItem icon="globe-outline" label="Language" value="Urdu / English" />
+        <ProfileMenuItem icon="notifications-outline" label="Push Notifications" value="Enabled" />
+        <ProfileMenuItem icon="location-outline" label="Location Services" value="Always" />
 
         <SectionLabel label="About" />
-        <ProfileMenuItem icon="ℹ️" label="App Version" value="1.0.0" />
+        <ProfileMenuItem icon="information-circle-outline" label="App Version" value="1.0.0" />
       </ScrollView>
     </ScreenContainer>
   );

@@ -38,46 +38,17 @@ export function ProfileScreen() {
 
   return (
     <View className="flex-1 bg-white">
-      <TopBar title="Driver Profile" />
+      <TopBar variant="light" showLogo title="Easy Ride" subtitle="Driver Profile" />
       <ScrollView className="flex-1">
-        <ProfileHeader
-          initials={initials}
-          name={name}
-          phone={driverProfile?.phone ?? ''}
-          badge="Verified Partner"
-        />
+        <ProfileHeader initials={initials} name={name} phone={driverProfile?.phone ?? ''} badge="Verified Partner" />
         <ProfileStats totalRides={totalTrips} rating={rating} />
         
         <View className="px-3">
-          <ProfileMenuItem
-            icon="🔄"
-            label="Switch to Rider Mode (سواری)"
-            value="Change Mode"
-            onPress={() => void handleSwitchToRider()}
-          />
-          <ProfileMenuItem
-            icon="🚗"
-            label="Vehicle Details"
-            value={driverProfile ? `${driverProfile.vehicleModel} (${driverProfile.vehiclePlate})` : ''}
-            onPress={() => navigation.navigate('VehicleDetails')}
-          />
-          <ProfileMenuItem
-            icon="⚙️"
-            label="Settings"
-            onPress={() => navigation.navigate('Settings')}
-          />
-          <ProfileMenuItem
-            icon="📞"
-            label="Driver Support"
-            value={brand.supportPhone}
-            onPress={() => navigation.navigate('Support')}
-          />
-          <ProfileMenuItem
-            icon="🚪"
-            label="Logout"
-            destructive
-            onPress={logout}
-          />
+          <ProfileMenuItem icon="swap-horizontal" label="Switch to Rider Mode (سواری)" value="Change Mode" onPress={() => void handleSwitchToRider()} />
+          <ProfileMenuItem icon="car-outline" label="Vehicle Details" value={driverProfile ? `${driverProfile.vehicleModel} (${driverProfile.vehiclePlate})` : ''} onPress={() => navigation.navigate('VehicleDetails')} />
+          <ProfileMenuItem icon="settings-outline" label="Settings" onPress={() => navigation.navigate('Settings')} />
+          <ProfileMenuItem icon="call-outline" label="Driver Support" value={brand.supportPhone} onPress={() => navigation.navigate('Support')} />
+          <ProfileMenuItem icon="log-out-outline" label="Logout" destructive onPress={logout} />
         </View>
       </ScrollView>
     </View>

@@ -1,8 +1,15 @@
-import { Pressable, Text, View } from 'react-native';
+import { Image, Pressable, Text, View } from 'react-native';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import { cn, formatCurrency } from '@/shared/utils';
 import type { VehicleType } from '@/shared/types';
 import { vehicleOptions } from '@/shared/constants/mockData';
+
+const vehicleImages: Record<VehicleType, any> = {
+  car: require('@/assets/images/car.png'),
+  bike: require('@/assets/images/bike.png'),
+  qingqi: require('@/assets/images/qingqi.png'),
+};
 
 interface VehicleTypeSelectorProps {
   selected: VehicleType;
@@ -10,6 +17,12 @@ interface VehicleTypeSelectorProps {
 }
 
 export function VehicleTypeSelector({ selected, onSelect }: VehicleTypeSelectorProps) {
+  const iconName = (type: VehicleType) => {
+    if (type === 'car') return 'car-outline';
+    if (type === 'bike') return 'bicycle-outline';
+    return 'bus-outline';
+  };
+
   return (
     <View className="mb-2.5 flex-row gap-2">
       {vehicleOptions.map((vehicle) => {
@@ -19,16 +32,21 @@ export function VehicleTypeSelector({ selected, onSelect }: VehicleTypeSelectorP
             key={vehicle.type}
             onPress={() => onSelect(vehicle.type)}
             className={cn(
-              'flex-1 items-center rounded-lg border-2 px-2 py-2',
+              'flex-1 items-center rounded-xl border-2 px-3 py-3',
               isSelected
                 ? 'border-accent bg-accent-light'
-                : 'border-transparent bg-surface-muted',
+                : 'border-transparent bg-white',
             )}
           >
-            <Text className="mb-0.5 text-lg">{vehicle.icon}</Text>
+            <View className="mb-1 h-14 w-14 items-center justify-center rounded-full bg-surface-muted p-2">
+              <Image
+                source={vehicleImages[vehicle.type]}
+                style={{ width: 40, height: 40, resizeMode: 'contain' }}
+              />
+            </View>
             <Text
               className={cn(
-                'text-[11px] font-semibold',
+                'text-sm font-semibold',
                 isSelected ? 'text-[#7A5800]' : 'text-text-primary',
               )}
             >
@@ -67,7 +85,9 @@ export function VehicleOptionCard({
         selected ? 'border-accent bg-accent-light' : 'border-border bg-white',
       )}
     >
-      <Text className="text-2xl">{vehicle.icon}</Text>
+      <View className="h-14 w-14 items-center justify-center rounded-2xl bg-surface-muted p-2">
+        <Image source={vehicleImages[vehicle.type]} style={{ width: 44, height: 44, resizeMode: 'contain' }} />
+      </View>
       <View className="flex-1">
         <Text className="text-sm font-bold text-text-primary">{vehicle.label}</Text>
         <Text className="text-[11px] text-text-tertiary">{eta} min away</Text>

@@ -15,7 +15,8 @@ import { useCurrentLocation } from "@/shared/hooks";
 import type { RiderStackParamList } from "@/navigation/types";
 import { useRideStore } from "@/rider/store/rideStore";
 import { brand } from "@/shared/theme";
-import { GoogleMapsService } from "@/api/services/googleMapsService";
+import { GoogleMapsService } from '@/api/services/googleMapsService';
+
 
 type NavigationProp = NativeStackNavigationProp<
   RiderStackParamList,
@@ -123,13 +124,14 @@ export function HomeMapScreen() {
   return (
     <View className="flex-1">
       <TopBar
+        variant="light"
         showLogo
         title={brand.name}
         rightAction={
-          <View className="flex-row items-center gap-1.5">
-            <View className="h-2 w-2 rounded-full bg-success" />
-            <Text className="text-[11px] text-[#AAAAAA]" numberOfLines={1}>
-              {currentLocationName ?? '...'}
+          <View className="flex-row items-center gap-2 rounded-full border border-border bg-white px-3 py-1.5">
+            <View className="h-2.5 w-2.5 rounded-full bg-success" />
+            <Text className="text-[12px] text-neutral-600" numberOfLines={1}>
+              {currentLocationName ?? 'Locating...'}
             </Text>
           </View>
         }
@@ -143,13 +145,7 @@ export function HomeMapScreen() {
           permissionGranted={hasPermission}
         />
 
-        <View className="absolute left-0 right-0 top-4 items-center">
-          <View className="rounded-full bg-black/75 px-3 py-1">
-            <Text className="text-[11px] font-bold text-accent">
-              📍 Tap map to set pickup
-            </Text>
-          </View>
-        </View>
+        
 
         {currentRide && ['searching', 'driver_assigned', 'driver_en_route', 'driver_arrived', 'in_progress'].includes(currentRide.status) ? (
           <MapBottomSheet>
@@ -188,7 +184,13 @@ export function HomeMapScreen() {
               selected={selectedVehicle}
               onSelect={setSelectedVehicle}
             />
-            <Button title="Request Ride" onPress={handleRequestRide} />
+            <Button
+              title="Request Ride"
+              variant="yellow"
+              size="lg"
+              onPress={handleRequestRide}
+              className="mt-3"
+            />
           </MapBottomSheet>
         )}
       </View>

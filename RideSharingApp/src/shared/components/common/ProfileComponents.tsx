@@ -1,4 +1,5 @@
 import { Pressable, Text, View } from 'react-native';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import { Avatar } from '@/shared/components/ui/Avatar';
 import { StatCard } from '@/shared/components/ui/Card';
@@ -13,16 +14,19 @@ interface ProfileHeaderProps {
 
 export function ProfileHeader({ initials, name, phone, badge }: ProfileHeaderProps) {
   return (
-    <View className="flex-row items-center gap-3.5 bg-primary px-4 py-5">
+    <View className="flex-row items-center gap-4 bg-white px-4 py-4">
       <Avatar initials={initials} size="xl" />
-      <View>
-        <Text className="text-[15px] font-bold text-white">{name}</Text>
-        <Text className="text-xs text-[#AAAAAA]">{phone}</Text>
+      <View className="flex-1">
+        <Text className="text-[17px] font-semibold text-neutral-900">{name}</Text>
+        <Text className="text-[13px] text-neutral-500 mt-0.5">{phone}</Text>
         {badge ? (
-          <View className="mt-1 self-start">
+          <View className="mt-2">
             <Badge label={badge} variant="yellow" />
           </View>
         ) : null}
+      </View>
+      <View className="items-end">
+        <Ionicons name="checkmark-circle" size={28} color="#F5C400" />
       </View>
     </View>
   );
@@ -35,9 +39,9 @@ interface ProfileStatsProps {
 
 export function ProfileStats({ totalRides, rating }: ProfileStatsProps) {
   return (
-    <View className="flex-row gap-2 bg-surface-muted p-2.5">
+    <View className="flex-row gap-3 px-4 mt-3">
       <StatCard value={String(totalRides)} label="Total Rides" />
-      <StatCard value={`${rating}★`} label="Your Rating" valueClassName="text-accent" />
+      <StatCard value={`${Number(rating).toFixed(1)} ★`} label="Your Rating" valueClassName="text-accent" />
     </View>
   );
 }
@@ -60,16 +64,17 @@ export function ProfileMenuItem({
   return (
     <Pressable
       onPress={onPress}
-      className="flex-row items-center gap-2.5 border-b border-surface-muted px-1 py-3 active:bg-surface-muted"
+      className="flex-row items-center gap-3 border-b border-neutral-100 px-3 py-4 active:opacity-90 bg-white"
     >
-      <Text className="text-lg">{icon}</Text>
-      <Text
-        className={`flex-1 text-sm font-semibold ${destructive ? 'text-danger' : 'text-text-primary'}`}
-      >
-        {label}
-      </Text>
-      {value ? <Text className="text-xs text-text-tertiary">{value}</Text> : null}
-      <Text className="text-text-tertiary">›</Text>
+      {/** Prefer icon names (Ionicons) when provided, otherwise render the emoji/text */}
+      {icon && icon.length <= 2 ? (
+        <Text className="text-lg">{icon}</Text>
+      ) : (
+        <Ionicons name={icon as any} size={20} color={destructive ? '#DC2626' : '#374151'} />
+      )}
+      <Text className={`flex-1 text-sm font-semibold ${destructive ? 'text-danger' : 'text-neutral-900'}`}>{label}</Text>
+      {value ? <Text className="text-xs text-neutral-500 mr-2">{value}</Text> : null}
+      <Ionicons name="chevron-forward" size={18} color="#9CA3AF" />
     </Pressable>
   );
 }

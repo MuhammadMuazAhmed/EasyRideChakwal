@@ -1,5 +1,6 @@
 import { Pressable, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import { cn } from '@/shared/utils';
 
@@ -23,11 +24,11 @@ export function SearchBar({
   const content = (
     <View
       className={cn(
-        'flex-row items-center gap-2 rounded-xl border-[1.5px] border-border bg-surface-muted px-3.5 py-2.5',
+        'flex-row items-center gap-3 rounded-2xl border border-border bg-white px-4 py-3 shadow-sm',
         className,
       )}
     >
-      <Text className="text-base text-text-tertiary">🔍</Text>
+      <Ionicons name="search-outline" size={20} color="#9CA3AF" />
       {editable ? (
         <Text
           className="flex-1 text-sm text-text-primary"
