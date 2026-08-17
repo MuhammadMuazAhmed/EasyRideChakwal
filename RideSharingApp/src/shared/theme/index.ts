@@ -60,3 +60,6 @@ export const CHAKWAL_REGION = {
   latitudeDelta: 0.05,
   longitudeDelta: 0.05,
 } as const;
+
+export * from './useTheme';
+

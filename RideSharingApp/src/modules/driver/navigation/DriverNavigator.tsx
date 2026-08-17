@@ -23,17 +23,22 @@ import { useDriverLocationSync } from '../hooks/useDriverLocationSync';
 import { DriverRegistrationNavigator } from './DriverRegistrationNavigator';
 import { DriverPendingScreen } from '../screens/registration/DriverPendingScreen';
 
+import { useTheme } from '@/shared/theme';
+
 import type { DriverStackParamList, DriverTabParamList } from '@/navigation/types';
 
 const Tab = createBottomTabNavigator<DriverTabParamList>();
 const Stack = createNativeStackNavigator<DriverStackParamList>();
 
 function TabIcon({ icon, label, focused }: { icon: string; label: string; focused: boolean }) {
+  const { theme } = useTheme();
+
   return (
     <View className="items-center py-1">
-      <Ionicons name={icon} size={20} color={focused ? '#F5C400' : '#9CA3AF'} />
+      <Ionicons name={icon} size={20} color={focused ? '#F5C400' : theme.tabInactive} />
       <Text
-        className={`text-[9px] ${focused ? 'font-semibold text-primary' : 'text-text-tertiary'}`}
+        style={{ color: focused ? '#F5C400' : theme.tabInactive }}
+        className="text-[9px] font-semibold"
       >
         {label}
       </Text>
@@ -43,22 +48,18 @@ function TabIcon({ icon, label, focused }: { icon: string; label: string; focuse
 }
 
 function DriverTabNavigator() {
-  // These hooks must run inside DriverTabNavigator — it is rendered as a screen
-  // *within* the DriverStackNavigator, so useNavigation() here correctly resolves
-  // to the DriverStack context that contains IncomingRequest, ActiveTrip, etc.
-  // Placing them in DriverStackNavigator itself (the creator of the stack) caused
-  // useNavigation() to resolve to the parent navigator, which had no such screens.
   useDriverActiveRideSync();
   useIncomingRidesPoller();
   useDriverLocationSync();
+  const { theme } = useTheme();
 
   return (
     <Tab.Navigator
       screenOptions={{
         headerShown: false,
         tabBarStyle: {
-          backgroundColor: '#FFFFFF',
-          borderTopColor: '#E5E7EB',
+          backgroundColor: theme.tabBg,
+          borderTopColor: theme.tabBorder,
           height: 60,
           paddingBottom: 8,
         },

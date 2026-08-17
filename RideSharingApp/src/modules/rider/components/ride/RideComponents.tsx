@@ -2,6 +2,7 @@ import { Image, Pressable, Text, View } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import { cn, formatCurrency } from '@/shared/utils';
+import { useTheme } from '@/shared/theme';
 import type { VehicleType } from '@/shared/types';
 import { vehicleOptions } from '@/shared/constants/mockData';
 
@@ -74,20 +75,20 @@ export function VehicleOptionCard({
   selected,
   onSelect,
 }: VehicleOptionCardProps) {
+  const { theme } = useTheme();
   const vehicle = vehicleOptions.find((v) => v.type === type);
   if (!vehicle) return null;
 
   return (
     <Pressable
       onPress={onSelect}
-      className={cn(
-        'mb-2.5 flex-row items-center gap-3.5 rounded-2xl border-[1.5px] p-3.5 active:opacity-90',
-        selected
-          ? 'border-[#F5C400] bg-[#FFFBEB]'
-          : 'border-[#E5E7EB] bg-white',
-      )}
+      style={{
+        backgroundColor: selected ? theme.accentLight : theme.card,
+        borderColor: selected ? '#F5C400' : theme.cardBorder,
+      }}
+      className="mb-2.5 flex-row items-center gap-3.5 rounded-2xl border-[1.5px] p-3.5 active:opacity-90"
     >
-      <View className="h-14 w-16 items-center justify-center rounded-xl bg-[#F9FAFB] p-1">
+      <View style={{ backgroundColor: theme.surface }} className="h-14 w-16 items-center justify-center rounded-xl p-1">
         <Image
           source={vehicleImages[vehicle.type]}
           style={{ width: 48, height: 48, resizeMode: 'contain' }}
@@ -95,14 +96,14 @@ export function VehicleOptionCard({
       </View>
       <View className="flex-1">
         <View className="flex-row items-center gap-1.5">
-          <Text className="text-[15px] font-bold text-[#111111]">{vehicle.label}</Text>
+          <Text style={{ color: theme.textPrimary }} className="text-[15px] font-bold">{vehicle.label}</Text>
           {selected && (
             <Ionicons name="checkmark-circle" size={16} color="#F5C400" />
           )}
         </View>
-        <Text className="text-[12px] text-[#6B7280] mt-0.5">{eta} min away</Text>
+        <Text style={{ color: theme.textSecondary }} className="text-[12px] mt-0.5">{eta} min away</Text>
       </View>
-      <Text className="text-[16px] font-extrabold text-[#111111]">
+      <Text style={{ color: theme.textPrimary }} className="text-[16px] font-extrabold">
         {formatCurrency(fare)}
       </Text>
     </Pressable>

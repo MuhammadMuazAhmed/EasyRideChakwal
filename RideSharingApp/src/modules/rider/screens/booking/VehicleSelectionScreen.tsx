@@ -13,6 +13,7 @@ import { useQuery } from '@tanstack/react-query';
 import { BackButton, TopBar, ScreenContainer } from '@/shared/components/common/TopBar';
 import { VehicleOptionCard } from '@/rider/components/ride/RideComponents';
 import { useRideStore } from '@/rider/store/rideStore';
+import { useTheme } from '@/shared/theme';
 import { vehicleOptions } from '@/shared/constants/mockData';
 import { calculateEstimatedFare, formatCurrency } from '@/shared/utils';
 import { RideService } from '@/api/services/rideService';
@@ -51,15 +52,17 @@ export function VehicleSelectionScreen() {
     navigation.navigate('PaymentMethod');
   };
 
+  const { theme } = useTheme();
+
   return (
-    <ScreenContainer className="bg-white">
+    <ScreenContainer>
       {/* Header with Logo, Title, and Subtitle */}
       <TopBar
         variant="light"
         showLogo
-        title="Easy Ride"
+        title="Easy Ride Chakwal"
         subtitle="Choose Vehicle"
-        leftAction={<BackButton onPress={() => navigation.goBack()} color="#111111" />}
+        leftAction={<BackButton onPress={() => navigation.goBack()} />}
       />
 
       <ScrollView
@@ -68,16 +71,19 @@ export function VehicleSelectionScreen() {
         contentContainerStyle={{ paddingBottom: 32 }}
       >
         {/* Compact Route Summary Card */}
-        <View className="mb-5 rounded-2xl border border-[#E5E7EB] bg-white p-3.5 shadow-sm">
+        <View
+          style={{ backgroundColor: theme.card, borderColor: theme.cardBorder }}
+          className="mb-5 rounded-2xl border p-3.5 shadow-sm"
+        >
           {/* Pickup Row */}
           <View className="flex-row items-center gap-3">
             <View className="h-2.5 w-2.5 rounded-full bg-[#F5C400]" />
             <View className="flex-1">
-              <Text className="text-[13px] font-bold text-[#111111]" numberOfLines={1}>
+              <Text style={{ color: theme.textPrimary }} className="text-[13px] font-bold" numberOfLines={1}>
                 {pickup?.name ?? 'Pickup Location'}
               </Text>
               {pickup?.address && pickup.address !== pickup.name ? (
-                <Text className="text-[11px] text-[#6B7280] mt-0.5" numberOfLines={1}>
+                <Text style={{ color: theme.textSecondary }} className="text-[11px] mt-0.5" numberOfLines={1}>
                   {pickup.address}
                 </Text>
               ) : null}
@@ -85,17 +91,17 @@ export function VehicleSelectionScreen() {
           </View>
 
           {/* Dashed Connecting Line */}
-          <View className="ml-[4px] my-1 h-3.5 border-l-2 border-dashed border-[#D1D5DB]" />
+          <View style={{ borderColor: theme.border }} className="ml-[4px] my-1 h-3.5 border-l-2 border-dashed" />
 
           {/* Destination Row */}
           <View className="flex-row items-center gap-3">
             <View className="h-2.5 w-2.5 rounded-full bg-[#10B981]" />
             <View className="flex-1">
-              <Text className="text-[13px] font-bold text-[#111111]" numberOfLines={1}>
+              <Text style={{ color: theme.textPrimary }} className="text-[13px] font-bold" numberOfLines={1}>
                 {destination?.name ?? 'Destination'}
               </Text>
               {destination?.address && destination.address !== destination.name ? (
-                <Text className="text-[11px] text-[#6B7280] mt-0.5" numberOfLines={1}>
+                <Text style={{ color: theme.textSecondary }} className="text-[11px] mt-0.5" numberOfLines={1}>
                   {destination.address}
                 </Text>
               ) : null}
@@ -104,7 +110,7 @@ export function VehicleSelectionScreen() {
         </View>
 
         {/* Section Heading */}
-        <Text className="text-[11px] font-bold uppercase tracking-wider text-[#6B7280] mb-2.5">
+        <Text style={{ color: theme.textMuted }} className="text-[11px] font-bold uppercase tracking-wider mb-2.5">
           Select Ride Type
         </Text>
 
@@ -123,18 +129,21 @@ export function VehicleSelectionScreen() {
         </View>
 
         {/* Fare Estimate Card */}
-        <View className="mb-6 rounded-2xl border border-[#F5E090] bg-[#FFFBEB] p-4 shadow-sm">
-          <Text className="text-[11px] font-bold uppercase tracking-wider text-[#7A5800] mb-1">
+        <View
+          style={{ backgroundColor: theme.accentLight, borderColor: theme.accentBorder }}
+          className="mb-6 rounded-2xl border p-4 shadow-sm"
+        >
+          <Text style={{ color: theme.accentText }} className="text-[11px] font-bold uppercase tracking-wider mb-1">
             Fare Estimate
           </Text>
           <View className="flex-row items-center justify-between">
-            <Text className="text-[13px] font-medium text-[#6B7280]">
+            <Text style={{ color: theme.textSecondary }} className="text-[13px] font-medium">
               Base + {distanceText}
             </Text>
             {isLoading ? (
-              <ActivityIndicator color="#111111" size="small" />
+              <ActivityIndicator color={theme.textPrimary} size="small" />
             ) : (
-              <Text className="text-[18px] font-extrabold text-[#111111]">
+              <Text style={{ color: theme.textPrimary }} className="text-[18px] font-extrabold">
                 {formatCurrency(estimatedFare)}
               </Text>
             )}
@@ -166,4 +175,5 @@ export function VehicleSelectionScreen() {
     </ScreenContainer>
   );
 }
+
 

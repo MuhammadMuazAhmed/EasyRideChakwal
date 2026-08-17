@@ -6,16 +6,20 @@ import { HomeMapScreen } from '@/rider/screens/home/HomeMapScreen';
 import { RideHistoryScreen } from '@/rider/screens/history/RideHistoryScreen';
 import { ProfileScreen } from '@/rider/screens/profile/ProfileScreen';
 import { useActiveRideSync } from '@/rider/hooks/useActiveRideSync';
+import { useTheme } from '@/shared/theme';
 import type { MainTabParamList } from '@/navigation/types';
 
 const Tab = createBottomTabNavigator<MainTabParamList>();
 
 function TabIcon({ icon, label, focused }: { icon: string; label: string; focused: boolean }) {
+  const { theme } = useTheme();
+
   return (
     <View className="items-center py-1">
-      <Ionicons name={icon as any} size={20} color={focused ? '#F5C400' : '#9CA3AF'} />
+      <Ionicons name={icon as any} size={20} color={focused ? '#F5C400' : theme.tabInactive} />
       <Text
-        className={`text-[9px] ${focused ? 'font-semibold text-primary' : 'text-text-tertiary'}`}
+        style={{ color: focused ? '#F5C400' : theme.tabInactive }}
+        className="text-[9px] font-semibold"
       >
         {label}
       </Text>
@@ -25,21 +29,16 @@ function TabIcon({ icon, label, focused }: { icon: string; label: string; focuse
 }
 
 export function MainTabNavigator() {
-  // This hook must run inside MainTabNavigator — it is rendered as a screen
-  // *within* the RiderNavigator stack, so useNavigation() here correctly resolves
-  // to the RiderStack context (DriverTracking, ActiveTrip, TripCompleted, etc.).
-  // It was previously in RiderNavigator itself (the creator of that stack),
-  // where useNavigation() resolved to the parent root stack — causing all
-  // navigation.navigate() calls to silently fail.
   useActiveRideSync();
+  const { theme } = useTheme();
 
   return (
     <Tab.Navigator
       screenOptions={{
         headerShown: false,
         tabBarStyle: {
-          backgroundColor: '#FFFFFF',
-          borderTopColor: '#E5E5E5',
+          backgroundColor: theme.tabBg,
+          borderTopColor: theme.tabBorder,
           height: 60,
           paddingBottom: 8,
         },
@@ -76,3 +75,4 @@ export function MainTabNavigator() {
     </Tab.Navigator>
   );
 }
+

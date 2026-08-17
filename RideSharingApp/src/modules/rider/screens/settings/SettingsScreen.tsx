@@ -1,16 +1,20 @@
+import { useState } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { BackButton, TopBar, ScreenContainer } from '@/shared/components/common/TopBar';
 import { ProfileMenuItem } from '@/shared/components/common/ProfileComponents';
+import { AppearanceModal } from '@/shared/components/common/AppearanceModal';
+import { useTheme } from '@/shared/theme';
 import type { RiderStackParamList } from '@/navigation/types';
 
 type NavigationProp = NativeStackNavigationProp<RiderStackParamList, 'Settings'>;
 
 function SectionLabel({ label }: { label: string }) {
+  const { theme } = useTheme();
   return (
-    <Text className="mb-1 mt-5 px-1 text-[10px] font-bold uppercase tracking-widest text-text-tertiary">
+    <Text style={{ color: theme.textMuted }} className="mb-1 mt-5 px-1 text-[10px] font-bold uppercase tracking-widest">
       {label}
     </Text>
   );
@@ -27,20 +31,27 @@ function DemoButton({
   onPress: () => void;
   accent?: string;
 }) {
+  const { theme } = useTheme();
   return (
     <Pressable
       onPress={onPress}
-      className="mb-2 flex-row items-center gap-3 rounded-2xl border border-border bg-white px-4 py-3.5 active:opacity-75"
+      style={{ backgroundColor: theme.card, borderColor: theme.cardBorder }}
+      className="mb-2 flex-row items-center gap-3 rounded-2xl border px-4 py-3.5 active:opacity-75"
     >
       <Text style={{ fontSize: 18 }}>{icon}</Text>
-      <Text className={`flex-1 text-sm font-semibold ${accent ?? 'text-text-primary'}`}>{label}</Text>
-      <Text className="text-text-tertiary">›</Text>
+      <Text style={{ color: accent ? undefined : theme.textPrimary }} className={`flex-1 text-sm font-semibold ${accent ?? ''}`}>{label}</Text>
+      <Text style={{ color: theme.textMuted }}>›</Text>
     </Pressable>
   );
 }
 
 export function SettingsScreen() {
   const navigation = useNavigation<NavigationProp>();
+  const { preference } = useTheme();
+  const [modalVisible, setModalVisible] = useState(false);
+
+  const appearanceLabel =
+    preference === 'light' ? '☀️ Light' : preference === 'dark' ? '🌙 Dark' : '⚙️ Default';
 
   return (
     <ScreenContainer className="bg-surface-background">
@@ -50,25 +61,31 @@ export function SettingsScreen() {
       />
       <ScrollView className="flex-1 px-3" contentContainerClassName="pb-10">
         <SectionLabel label="Preferences" />
-        <ProfileMenuItem icon="🌐" label="Language" value="Urdu / English" />
-        <ProfileMenuItem icon="🔔" label="Push Notifications" value="Enabled" />
-        <ProfileMenuItem icon="📍" label="Location Services" value="Always" />
+        <ProfileMenuItem
+          icon="color-palette-outline"
+          label="Appearance"
+          value={appearanceLabel}
+          onPress={() => setModalVisible(true)}
+        />
+        <ProfileMenuItem icon="globe-outline" label="Language" value="Urdu / English" />
+        <ProfileMenuItem icon="notifications-outline" label="Push Notifications" value="Enabled" />
+        <ProfileMenuItem icon="location-outline" label="Location Services" value="Always" />
 
         <SectionLabel label="Legal" />
         <ProfileMenuItem
-          icon="📄"
+          icon="document-text-outline"
           label="Terms of Service"
           onPress={() => navigation.navigate('Terms')}
         />
         <ProfileMenuItem
-          icon="🔐"
+          icon="shield-checkmark-outline"
           label="Privacy Policy"
           onPress={() => navigation.navigate('Terms')}
         />
-        <ProfileMenuItem icon="🔒" label="Privacy & Safety" onPress={() => {}} />
+        <ProfileMenuItem icon="lock-closed-outline" label="Privacy & Safety" onPress={() => {}} />
 
         <SectionLabel label="About" />
-        <ProfileMenuItem icon="ℹ️" label="App Version" value="1.0.0" />
+        <ProfileMenuItem icon="information-circle-outline" label="App Version" value="1.0.0" />
 
         {/* Demo / Simulation Section */}
         <View className="mt-5 overflow-hidden rounded-2xl border-2 border-dashed border-accent/40 bg-accent/5 p-4">
@@ -96,6 +113,12 @@ export function SettingsScreen() {
           </Text>
         </View>
       </ScrollView>
+
+      <AppearanceModal
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)}
+      />
     </ScreenContainer>
   );
 }
+

@@ -4,11 +4,12 @@ import * as Notifications from "expo-notifications";
 import * as SplashScreen from "expo-splash-screen";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import { DarkTheme, NavigationContainer } from "@react-navigation/native";
+import { DefaultTheme, DarkTheme, NavigationContainer } from "@react-navigation/native";
 import { StatusBar } from "expo-status-bar";
 
 import { RootNavigator } from "@/navigation/RootNavigator";
 import { useAuthStore } from "@/store/authStore";
+import { useActiveTheme } from "@/store/themeStore";
 import { syncFcmTokenWithBackend } from "@/shared/services/pushNotifications";
 import "./global.css";
 
@@ -20,15 +21,29 @@ const queryClient = new QueryClient({
   },
 });
 
-export const navTheme = {
+export const lightNavTheme = {
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    primary: "#F5C400",
+    background: "#FFFFFF",
+    card: "#FFFFFF",
+    text: "#111111",
+    border: "#E5E7EB",
+    notification: "#F5C400",
+  },
+};
+
+export const darkNavTheme = {
   ...DarkTheme,
   colors: {
     ...DarkTheme.colors,
     primary: "#F5C400",
-    background: "#F5F5F5",
-    card: "#111111",
+    background: "#111111",
+    card: "#181818",
     text: "#FFFFFF",
-    border: "#E5E5E5",
+    border: "#2E2E2E",
+    notification: "#F5C400",
   },
 };
 
@@ -61,24 +76,34 @@ function PushNotificationBootstrap() {
   return null;
 }
 
+function AppContent() {
+  const activeTheme = useActiveTheme();
+  const isDark = activeTheme === "dark";
+
+  return (
+    <NavigationContainer
+      theme={isDark ? darkNavTheme : lightNavTheme}
+      onReady={async () => {
+        await SplashScreen.hideAsync();
+      }}
+    >
+      <StatusBar style={isDark ? "light" : "dark"} />
+      <PushNotificationBootstrap />
+      <RootNavigator />
+    </NavigationContainer>
+  );
+}
+
 export default function App() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>
         <QueryClientProvider client={queryClient}>
-          <NavigationContainer
-            theme={navTheme}
-            onReady={async () => {
-              await SplashScreen.hideAsync();
-            }}
-          >
-            <StatusBar style="light" />
-            <PushNotificationBootstrap />
-            <RootNavigator />
-          </NavigationContainer>
+          <AppContent />
         </QueryClientProvider>
       </SafeAreaProvider>
     </GestureHandlerRootView>
   );
 }
+
 

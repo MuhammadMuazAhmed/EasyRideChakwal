@@ -31,7 +31,9 @@ export function DestinationSelectionScreen() {
     <View className="flex-1 bg-white">
       <TopBar
         variant="light"
-        title="Set Destination"
+        showLogo
+        title="Easy Ride Chakwal"
+        subtitle="Set Destination"
         leftAction={<BackButton onPress={() => navigation.goBack()} color="#111111" />}
       />
       <RideMap
