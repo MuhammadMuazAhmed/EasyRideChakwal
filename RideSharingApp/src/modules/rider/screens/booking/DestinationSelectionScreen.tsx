@@ -28,10 +28,11 @@ export function DestinationSelectionScreen() {
   };
 
   return (
-    <View className="flex-1">
+    <View className="flex-1 bg-white">
       <TopBar
+        variant="light"
         title="Set Destination"
-        leftAction={<BackButton onPress={() => navigation.goBack()} />}
+        leftAction={<BackButton onPress={() => navigation.goBack()} color="#111111" />}
       />
       <RideMap
         pickup={pickup?.coordinates}
@@ -53,8 +54,9 @@ export function DestinationSelectionScreen() {
         <Text className="mb-3 text-xs text-text-secondary">
           {destination?.name ?? 'Tap on map to set destination'}
         </Text>
-        <Button title="Confirm Destination" onPress={handleConfirm} />
+        <Button title="Confirm Destination" variant="yellow" onPress={handleConfirm} />
       </MapBottomSheet>
     </View>
   );
 }
+

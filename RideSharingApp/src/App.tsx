@@ -4,6 +4,8 @@ import * as Notifications from "expo-notifications";
 import * as SplashScreen from "expo-splash-screen";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import { DarkTheme, NavigationContainer } from "@react-navigation/native";
+import { StatusBar } from "expo-status-bar";
 
 import { RootNavigator } from "@/navigation/RootNavigator";
 import { useAuthStore } from "@/store/authStore";
@@ -18,6 +20,18 @@ const queryClient = new QueryClient({
   },
 });
 
+export const navTheme = {
+  ...DarkTheme,
+  colors: {
+    ...DarkTheme.colors,
+    primary: "#F5C400",
+    background: "#F5F5F5",
+    card: "#111111",
+    text: "#FFFFFF",
+    border: "#E5E5E5",
+  },
+};
+
 function PushNotificationBootstrap() {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
   const activeRole = useAuthStore((s) => s.activeRole);
@@ -30,7 +44,6 @@ function PushNotificationBootstrap() {
   useEffect(() => {
     const receivedSub = Notifications.addNotificationReceivedListener(() => {
       void queryClient.invalidateQueries({ queryKey: ['currentRide'] });
-      // Use prefix-only key to match incomingRequests(isOnline) regardless of isOnline value
       void queryClient.invalidateQueries({ queryKey: ['incomingRequests'], exact: false });
     });
 
@@ -53,10 +66,19 @@ export default function App() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>
         <QueryClientProvider client={queryClient}>
-          <PushNotificationBootstrap />
-          <RootNavigator />
+          <NavigationContainer
+            theme={navTheme}
+            onReady={async () => {
+              await SplashScreen.hideAsync();
+            }}
+          >
+            <StatusBar style="light" />
+            <PushNotificationBootstrap />
+            <RootNavigator />
+          </NavigationContainer>
         </QueryClientProvider>
       </SafeAreaProvider>
     </GestureHandlerRootView>
   );
 }
+

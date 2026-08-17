@@ -81,18 +81,30 @@ export function VehicleOptionCard({
     <Pressable
       onPress={onSelect}
       className={cn(
-        'mb-2 flex-row items-center gap-3 rounded-xl border-2 p-3',
-        selected ? 'border-accent bg-accent-light' : 'border-border bg-white',
+        'mb-2.5 flex-row items-center gap-3.5 rounded-2xl border-[1.5px] p-3.5 active:opacity-90',
+        selected
+          ? 'border-[#F5C400] bg-[#FFFBEB]'
+          : 'border-[#E5E7EB] bg-white',
       )}
     >
-      <View className="h-14 w-14 items-center justify-center rounded-2xl bg-surface-muted p-2">
-        <Image source={vehicleImages[vehicle.type]} style={{ width: 44, height: 44, resizeMode: 'contain' }} />
+      <View className="h-14 w-16 items-center justify-center rounded-xl bg-[#F9FAFB] p-1">
+        <Image
+          source={vehicleImages[vehicle.type]}
+          style={{ width: 48, height: 48, resizeMode: 'contain' }}
+        />
       </View>
       <View className="flex-1">
-        <Text className="text-sm font-bold text-text-primary">{vehicle.label}</Text>
-        <Text className="text-[11px] text-text-tertiary">{eta} min away</Text>
+        <View className="flex-row items-center gap-1.5">
+          <Text className="text-[15px] font-bold text-[#111111]">{vehicle.label}</Text>
+          {selected && (
+            <Ionicons name="checkmark-circle" size={16} color="#F5C400" />
+          )}
+        </View>
+        <Text className="text-[12px] text-[#6B7280] mt-0.5">{eta} min away</Text>
       </View>
-      <Text className="text-sm font-extrabold text-text-primary">{formatCurrency(fare)}</Text>
+      <Text className="text-[16px] font-extrabold text-[#111111]">
+        {formatCurrency(fare)}
+      </Text>
     </Pressable>
   );
 }

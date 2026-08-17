@@ -36,7 +36,7 @@ export function TopBar({
           <View className="flex-row items-center gap-3">
             <Image
               source={require('@/assets/images/logo.jpeg')}
-              style={{ width: 50, height: 50, borderRadius: 8 }}
+              style={{ width: 44, height: 44, borderRadius: 8 }}
               resizeMode="cover"
             />
             <View>
