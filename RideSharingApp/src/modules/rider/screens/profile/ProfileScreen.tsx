@@ -2,7 +2,7 @@ import { ScrollView, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-import { TopBar } from '@/shared/components/common/TopBar';
+import { TopBar, ScreenContainer } from '@/shared/components/common/TopBar';
 import {
   ProfileHeader,
   ProfileStats,
@@ -24,8 +24,8 @@ export function ProfileScreen() {
   if (isLoading || !profile) return <LoadingState message="Loading profile..." />;
 
   return (
-    <View className="flex-1 bg-white">
-      <TopBar title="My Profile" />
+    <ScreenContainer>
+      <TopBar showLogo title="Easy Ride Chakwal" subtitle="My Profile" />
       <ScrollView className="flex-1">
         <ProfileHeader
           initials={profile.avatarInitials}
@@ -87,6 +87,6 @@ export function ProfileScreen() {
           />
         </View>
       </ScrollView>
-    </View>
+    </ScreenContainer>
   );
 }

@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
-import { View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
+import { ScreenContainer } from '@/shared/components/common/TopBar';
 import type { AuthStackParamList } from '@/navigation/types';
 
 type NavigationProp = NativeStackNavigationProp<AuthStackParamList, 'Login'>;
@@ -17,5 +17,5 @@ export function LoginScreen() {
     navigation.replace('PhoneNumber');
   }, [navigation]);
 
-  return <View className="flex-1 bg-white" />;
+  return <ScreenContainer />;
 }

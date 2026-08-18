@@ -37,7 +37,7 @@ export function TripCompletedScreen() {
   }, [setActiveRide, setDriverProfile, queryClient, rideId]);
 
   return (
-    <ScreenContainer className="bg-white">
+    <ScreenContainer>
       <TopBar title="Trip Complete!" />
       <View className="flex-1 items-center justify-center px-6">
         <Badge label="Trip Complete!" variant="green" className="mb-4 px-3 py-1" />

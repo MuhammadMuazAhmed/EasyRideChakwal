@@ -84,7 +84,7 @@ export function BackButton({ onPress, color }: BackButtonProps) {
 }
 
 interface ScreenContainerProps {
-  children: React.ReactNode;
+  children?: React.ReactNode;
   className?: string;
   edges?: boolean;
 }

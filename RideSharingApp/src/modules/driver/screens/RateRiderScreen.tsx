@@ -57,7 +57,7 @@ export function RateRiderScreen() {
   };
 
   return (
-    <ScreenContainer className="bg-white">
+    <ScreenContainer>
       <TopBar
         title="Rate Rider"
         leftAction={<BackButton onPress={goHome} />}

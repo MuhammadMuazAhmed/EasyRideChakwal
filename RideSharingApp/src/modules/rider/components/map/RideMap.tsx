@@ -101,7 +101,7 @@ export function RideMap({
         provider={PROVIDER_GOOGLE}
         style={{ flex: 1 }}
         initialRegion={defaultRegion}
-        showsUserLocation={permissionGranted}
+        showsUserLocation={false}
         showsMyLocationButton={false}
         onPress={(e) =>
           onPress?.({
@@ -110,6 +110,19 @@ export function RideMap({
           })
         }
       >
+        {userLocation && !pickupCoord ? (
+          <Marker
+            coordinate={userLocation}
+            title="My Location"
+            anchor={{ x: 0.5, y: 0.5 }}
+            tracksViewChanges={false}
+          >
+            <View className="h-5 w-5 items-center justify-center rounded-full border-2 border-white bg-blue-500 shadow-md">
+              <View className="h-2 w-2 rounded-full bg-white" />
+            </View>
+          </Marker>
+        ) : null}
+
         {pickupCoord ? (
           <Marker coordinate={pickupCoord} title="Pickup">
             <View className="h-5 w-5 rounded-full border-[3px] border-white bg-accent shadow-md" />

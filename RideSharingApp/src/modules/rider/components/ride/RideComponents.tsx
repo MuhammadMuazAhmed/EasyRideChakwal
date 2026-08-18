@@ -18,11 +18,7 @@ interface VehicleTypeSelectorProps {
 }
 
 export function VehicleTypeSelector({ selected, onSelect }: VehicleTypeSelectorProps) {
-  const iconName = (type: VehicleType) => {
-    if (type === 'car') return 'car-outline';
-    if (type === 'bike') return 'bicycle-outline';
-    return 'bus-outline';
-  };
+  const { theme } = useTheme();
 
   return (
     <View className="mb-2.5 flex-row gap-2">
@@ -32,24 +28,25 @@ export function VehicleTypeSelector({ selected, onSelect }: VehicleTypeSelectorP
           <Pressable
             key={vehicle.type}
             onPress={() => onSelect(vehicle.type)}
-            className={cn(
-              'flex-1 items-center rounded-xl border-2 px-3 py-3',
-              isSelected
-                ? 'border-accent bg-accent-light'
-                : 'border-transparent bg-white',
-            )}
+            style={{
+              backgroundColor: isSelected ? theme.accentLight : theme.card,
+              borderColor: isSelected ? theme.accentBorder : theme.cardBorder,
+              borderWidth: 2,
+            }}
+            className="flex-1 items-center rounded-xl px-3 py-3 active:opacity-80"
           >
-            <View className="mb-1 h-14 w-14 items-center justify-center rounded-full bg-surface-muted p-2">
+            <View
+              style={{ backgroundColor: theme.surfaceElevated }}
+              className="mb-1 h-16 w-16 items-center justify-center rounded-full p-2"
+            >
               <Image
                 source={vehicleImages[vehicle.type]}
-                style={{ width: 40, height: 40, resizeMode: 'contain' }}
+                style={{ width: 52, height: 52, resizeMode: 'contain' }}
               />
             </View>
             <Text
-              className={cn(
-                'text-sm font-semibold',
-                isSelected ? 'text-[#7A5800]' : 'text-text-primary',
-              )}
+              style={{ color: isSelected ? theme.accentText : theme.textPrimary }}
+              className="text-sm font-semibold"
             >
               {vehicle.label}
             </Text>
@@ -246,32 +243,41 @@ export function RideHistoryCard({
   onPress,
   onRebook,
 }: RideHistoryCardProps) {
+  const { theme } = useTheme();
+
   return (
-    <Pressable onPress={onPress} className="mb-2">
-      <View className="rounded-xl border border-border bg-white p-3">
-        <View className="mb-1.5 flex-row items-center justify-between">
-          <Text className="text-[11px] text-text-tertiary">{date}</Text>
-          <Text className="text-sm font-extrabold text-text-primary">{formatCurrency(fare)}</Text>
+    <Pressable onPress={onPress} className="mb-2.5 active:opacity-90">
+      <View
+        style={{
+          backgroundColor: theme.card,
+          borderColor: theme.cardBorder,
+        }}
+        className="rounded-2xl border-[1.5px] p-3.5 shadow-sm"
+      >
+        <View className="mb-2 flex-row items-center justify-between">
+          <Text style={{ color: theme.textSecondary }} className="text-[11px] font-semibold">{date}</Text>
+          <Text style={{ color: theme.textPrimary }} className="text-[16px] font-extrabold">{formatCurrency(fare)}</Text>
         </View>
-        <View className="mb-1 flex-row items-center gap-2">
-          <View className="h-2 w-2 rounded-full bg-accent" />
-          <Text className="text-xs text-text-primary">{pickup}</Text>
+        <View className="mb-1 flex-row items-center gap-2.5">
+          <View className="h-2.5 w-2.5 rounded-full bg-accent" />
+          <Text style={{ color: theme.textPrimary }} className="text-[13px] font-bold">{pickup}</Text>
         </View>
-        <View className="ml-[3px] h-2 border-l-2 border-dashed border-border" />
-        <View className="mb-2 flex-row items-center gap-2">
-          <View className="h-2 w-2 rounded-full bg-success" />
-          <Text className="text-xs text-text-primary">{destination}</Text>
+        <View style={{ borderColor: theme.border }} className="ml-[4px] my-0.5 h-3 border-l-2 border-dashed" />
+        <View className="mb-2.5 flex-row items-center gap-2.5">
+          <View className="h-2.5 w-2.5 rounded-full bg-success" />
+          <Text style={{ color: theme.textPrimary }} className="text-[13px] font-bold">{destination}</Text>
         </View>
-        <View className="flex-row items-center justify-between">
-          <Text className="text-[11px] text-text-tertiary">{driverName}</Text>
-          <View className="flex-row items-center gap-1.5">
-            <Text className="text-[11px] text-accent">★ {rating.toFixed(1)}</Text>
+        <View style={{ borderColor: theme.divider }} className="flex-row items-center justify-between border-t pt-2 mt-0.5">
+          <Text style={{ color: theme.textSecondary }} className="text-[11px] font-medium">{driverName}</Text>
+          <View className="flex-row items-center gap-2">
+            <Text className="text-[11px] font-bold text-accent">★ {rating.toFixed(1)}</Text>
             {onRebook ? (
               <Pressable
                 onPress={onRebook}
-                className="rounded-lg bg-primary px-2.5 py-1 active:opacity-90"
+                style={{ backgroundColor: theme.accentLight }}
+                className="rounded-lg px-2.5 py-1 active:opacity-90"
               >
-                <Text className="text-[11px] font-bold text-accent">Re-book</Text>
+                <Text style={{ color: theme.accentText }} className="text-[11px] font-bold">Re-book</Text>
               </Pressable>
             ) : null}
           </View>

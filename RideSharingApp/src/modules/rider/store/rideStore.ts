@@ -30,6 +30,10 @@ interface RideStore {
   updateCurrentFare: (fare: number) => void;
   completeRide: () => void;
   cancelRide: () => void;
+  /** Clears only the active ride and searching flag.
+   *  Intentionally preserves pickup/destination/vehicle/payment
+   *  so the retry-after-no-driver flow can reuse the original request data. */
+  resetRideOnly: () => void;
   resetBooking: () => void;
 }
 
@@ -111,6 +115,14 @@ export const useRideStore = create<RideStore>((set) => ({
         ? { ...state.currentRide, status: 'cancelled' }
         : null,
     })),
+
+  // Clears only the active ride — pickup/destination/vehicle/payment are preserved
+  // so the no-driver retry flow can re-request without losing location data.
+  resetRideOnly: () =>
+    set({
+      currentRide: null,
+      isSearching: false,
+    }),
 
   resetBooking: () =>
     set({

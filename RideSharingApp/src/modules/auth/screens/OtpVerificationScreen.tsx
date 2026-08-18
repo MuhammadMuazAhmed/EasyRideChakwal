@@ -22,6 +22,7 @@ import { AuthService } from '@/api/services/authService';
 import { useAuthStore } from '@/store/authStore';
 import { useOtpTimer } from '@/shared/hooks';
 import { formatPhoneNumber } from '@/shared/utils';
+import { useTheme } from '@/shared/theme';
 import { getDeviceFcmToken, syncFcmTokenWithBackend } from '@/shared/services/pushNotifications';
 import { useDriverRegistrationStore } from '@/store/driverRegistrationStore';
 import type { AuthStackParamList } from '@/navigation/types';
@@ -37,6 +38,7 @@ export function OtpVerificationScreen() {
   const insets = useSafeAreaInsets();
   const navigation = useNavigation<NavigationProp>();
   const route = useRoute<RouteProps>();
+  const { theme, isDark } = useTheme();
   const login = useAuthStore((s) => s.login);
   const phone = useAuthStore((s) => s.phone);
 
@@ -121,11 +123,11 @@ export function OtpVerificationScreen() {
   const isComplete = otp.length === 6;
 
   return (
-    <ScreenContainer className="bg-white">
+    <ScreenContainer>
       {/* Branded Header — matches Phone Number screen */}
       <View
-        className="bg-primary px-5 pb-5"
-        style={{ paddingTop: Math.max(insets.top + 12, 44) }}
+        style={{ paddingTop: Math.max(insets.top + 12, 44), backgroundColor: theme.headerBg, borderBottomWidth: 1, borderBottomColor: theme.border }}
+        className="px-5 pb-5"
       >
         <View className="flex-row items-center gap-3.5">
           <Image
@@ -134,10 +136,10 @@ export function OtpVerificationScreen() {
             resizeMode="cover"
           />
           <View className="justify-center">
-            <Text className="text-[19px] font-bold text-white tracking-tight">
+            <Text style={{ color: theme.headerText }} className="text-[19px] font-bold tracking-tight">
               Easy Ride Chakwal
             </Text>
-            <Text className="text-[12px] text-gray-400 font-medium mt-0.5">
+            <Text style={{ color: theme.headerSubtitle }} className="text-[12px] font-medium mt-0.5">
               OTP Verify Karein
             </Text>
           </View>
@@ -159,16 +161,16 @@ export function OtpVerificationScreen() {
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
         >
-          {/* Main Heading */}
-          <Text className="text-[24px] font-bold text-[#111111] text-center tracking-tight">
+          {/* Main Heading — Centered */}
+          <Text style={{ color: theme.textPrimary }} className="text-[24px] font-bold text-center tracking-tight">
             OTP Verify Karein
           </Text>
 
-          {/* Explanation + phone number */}
-          <Text className="text-[14px] text-[#666666] text-center mt-2 leading-5">
+          {/* Explanation + phone number — Centered */}
+          <Text style={{ color: theme.textSecondary }} className="text-[14px] text-center mt-2 leading-5">
             Hum ne aapke number par 6-digit OTP bheja hai
           </Text>
-          <Text className="text-[16px] font-bold text-[#111111] text-center mt-1">
+          <Text style={{ color: theme.textPrimary }} className="text-[16px] font-bold text-center mt-1">
             {displayPhone}
           </Text>
 
@@ -189,14 +191,14 @@ export function OtpVerificationScreen() {
                       height: OTP_BOX_SIZE,
                       borderRadius: 12,
                       borderWidth: 1.5,
-                      backgroundColor: '#FFFFFF',
+                      backgroundColor: theme.card,
                       alignItems: 'center',
                       justifyContent: 'center',
                       borderColor: isFilled
                         ? '#F5C400'
                         : isActive
                         ? '#F5C400'
-                        : '#E5E7EB',
+                        : theme.cardBorder,
                     }}
                   >
                     {isFilled ? (
@@ -204,8 +206,10 @@ export function OtpVerificationScreen() {
                         style={{
                           fontSize: OTP_BOX_SIZE * 0.42,
                           fontWeight: '700',
-                          color: '#111111',
-                          lineHeight: OTP_BOX_SIZE * 0.55,
+                          color: theme.inputText,
+                          textAlign: 'center',
+                          textAlignVertical: 'center',
+                          includeFontPadding: false,
                         }}
                       >
                         {digit}
@@ -251,25 +255,25 @@ export function OtpVerificationScreen() {
             />
           </View>
 
-          {/* Resend section */}
+          {/* Resend section — Centered */}
           <View className="mt-5 flex-row items-center justify-center gap-1">
             {canResend ? (
               <>
-                <Text className="text-[13px] text-[#6B7280]">OTP nahi mila?</Text>
+                <Text style={{ color: theme.textSecondary }} className="text-[13px]">OTP nahi mila?</Text>
                 <Pressable
                   onPress={() => void handleResend()}
                   disabled={resendLoading}
                   className="active:opacity-70"
                 >
-                  <Text className="text-[13px] font-bold text-[#111111] ml-1">
+                  <Text style={{ color: theme.textPrimary }} className="text-[13px] font-bold ml-1">
                     {resendLoading ? 'Bhej rahe hain...' : 'Resend OTP'}
                   </Text>
                 </Pressable>
               </>
             ) : (
               <>
-                <Text className="text-[13px] text-[#6B7280]">Resend OTP in</Text>
-                <Text className="text-[13px] font-bold text-[#111111] ml-1">{formatted}</Text>
+                <Text style={{ color: theme.textSecondary }} className="text-[13px]">Resend OTP in</Text>
+                <Text style={{ color: theme.textPrimary }} className="text-[13px] font-bold ml-1">{formatted}</Text>
               </>
             )}
           </View>
@@ -278,11 +282,10 @@ export function OtpVerificationScreen() {
           <Pressable
             onPress={() => void handleVerify(otp)}
             disabled={!isComplete || loading}
-            className="mt-8 h-[54px] rounded-xl items-center justify-center flex-row active:opacity-90"
+            className="mt-8 h-[54px] rounded-xl items-center justify-center flex-row active:opacity-90 w-full"
             style={{
-              backgroundColor: isComplete ? '#F5C400' : '#F5C400',
+              backgroundColor: '#F5C400',
               opacity: isComplete && !loading ? 1 : 0.45,
-              width: '100%',
             }}
           >
             {loading ? (
@@ -297,14 +300,14 @@ export function OtpVerificationScreen() {
             )}
           </Pressable>
 
-          {/* Wrong number / go back */}
+          {/* Wrong number / go back — Centered */}
           <Pressable
             onPress={() => navigation.goBack()}
             className="mt-5 py-2 active:opacity-70"
           >
-            <Text className="text-center text-[13px] text-[#9CA3AF]">
+            <Text style={{ color: theme.textMuted }} className="text-center text-[13px]">
               Galat number?{' '}
-              <Text className="font-bold text-[#111111]">Wapas jao</Text>
+              <Text style={{ color: theme.textPrimary }} className="font-bold">Wapas jao</Text>
             </Text>
           </Pressable>
         </ScrollView>

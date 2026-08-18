@@ -1,8 +1,8 @@
-import { ScrollView, View } from 'react-native';
+import { ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-import { TopBar } from '@/shared/components/common/TopBar';
+import { TopBar, ScreenContainer } from '@/shared/components/common/TopBar';
 import { RideHistoryCard } from '@/rider/components/ride/RideComponents';
 import { LoadingState, EmptyState, ErrorState } from '@/shared/components/common/StateViews';
 import { useRideHistory } from '@/shared/hooks/useQueries';
@@ -24,8 +24,8 @@ export function RideHistoryScreen() {
   const rides = data?.data ?? [];
 
   return (
-    <View className="flex-1 bg-white">
-      <TopBar title="My Rides" />
+    <ScreenContainer>
+      <TopBar showLogo title="Easy Ride Chakwal" subtitle="Ride History" />
       {rides.length === 0 ? (
         <EmptyState
           icon="🕐"
@@ -62,6 +62,6 @@ export function RideHistoryScreen() {
           ))}
         </ScrollView>
       )}
-    </View>
+    </ScreenContainer>
   );
 }

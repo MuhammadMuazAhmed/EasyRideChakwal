@@ -5,30 +5,37 @@ import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { BackButton, TopBar, ScreenContainer } from '@/shared/components/common/TopBar';
 import { useDriverStore } from '@/modules/driver/store/driverStore';
+import { useTheme } from '@/shared/theme';
 import type { DriverStackParamList } from '@/navigation/types';
 
 type NavigationProp = NativeStackNavigationProp<DriverStackParamList, 'VehicleDetails'>;
 
 function DetailRow({ label, value }: { label: string; value: string }) {
+  const { theme } = useTheme();
+
   return (
-    <View className="mb-3 rounded-xl border border-border bg-white p-4">
-      <Text className="text-[10px] font-bold uppercase text-text-tertiary">{label}</Text>
-      <Text className="mt-1 text-sm font-semibold capitalize text-text-primary">{value || '—'}</Text>
+    <View
+      style={{ backgroundColor: theme.card, borderColor: theme.cardBorder }}
+      className="mb-3 rounded-2xl border p-4 shadow-sm"
+    >
+      <Text style={{ color: theme.textMuted }} className="text-[10px] font-bold uppercase tracking-wider">{label}</Text>
+      <Text style={{ color: theme.textPrimary }} className="mt-1 text-sm font-bold capitalize">{value || '—'}</Text>
     </View>
   );
 }
 
 export function VehicleDetailsScreen() {
   const navigation = useNavigation<NavigationProp>();
+  const { theme } = useTheme();
   const driverProfile = useDriverStore((s) => s.driverProfile);
 
   return (
-    <ScreenContainer className="bg-surface-background">
+    <ScreenContainer>
       <TopBar
         title="Vehicle Details"
         leftAction={<BackButton onPress={() => navigation.goBack()} />}
       />
-      <ScrollView className="flex-1 px-3 pt-3" contentContainerClassName="pb-10">
+      <ScrollView className="flex-1 px-3.5 pt-3.5" contentContainerClassName="pb-10" showsVerticalScrollIndicator={false}>
         <DetailRow label="Vehicle Type" value={driverProfile?.vehicleType ?? ''} />
         <DetailRow label="Model" value={driverProfile?.vehicleModel ?? ''} />
         <DetailRow label="Number Plate" value={driverProfile?.vehiclePlate ?? ''} />
@@ -37,8 +44,11 @@ export function VehicleDetailsScreen() {
         <DetailRow label="License Number" value={driverProfile?.licenseNumber ?? ''} />
         <DetailRow label="CNIC" value={driverProfile?.cnicNumber ?? ''} />
 
-        <View className="mt-2 rounded-xl bg-accent/10 p-4">
-          <Text className="text-[11px] leading-5 text-text-secondary">
+        <View
+          style={{ backgroundColor: theme.accentLight, borderColor: theme.accentBorder }}
+          className="mt-2 rounded-2xl border p-4"
+        >
+          <Text style={{ color: theme.accentText }} className="text-[12px] leading-5 font-medium">
             Vehicle details update karne ke liye support se rabta karein. Document changes admin verification ke baad apply hote hain.
           </Text>
         </View>

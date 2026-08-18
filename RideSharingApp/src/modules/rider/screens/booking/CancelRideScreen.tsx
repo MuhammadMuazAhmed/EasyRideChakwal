@@ -1,33 +1,54 @@
 import { useState } from 'react';
-import { ActivityIndicator, Alert, Pressable, ScrollView, Text, View } from 'react-native';
+import {
+  ActivityIndicator,
+  Alert,
+  Pressable,
+  ScrollView,
+  Text,
+  View,
+} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useQueryClient } from '@tanstack/react-query';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { TopBar } from '@/shared/components/common/TopBar';
-import { Button } from '@/shared/components/ui/Button';
+import { BackButton, TopBar, ScreenContainer } from '@/shared/components/common/TopBar';
 import { cancelReasons } from '@/shared/constants/mockData';
 import { useRideStore } from '@/rider/store/rideStore';
 import { RideService } from '@/api/services/rideService';
-import { cn } from '@/shared/utils';
 import { QUERY_KEYS } from '@/shared/constants/queryKeys';
+import { useTheme } from '@/shared/theme';
 import type { RiderStackParamList } from '@/navigation/types';
 
 type NavigationProp = NativeStackNavigationProp<RiderStackParamList, 'CancelRide'>;
 
+// ------------------------------------------------------------------
+// Destructive colour constants — semantically meaningful across themes
+// ------------------------------------------------------------------
+const DANGER_BORDER_DARK = 'rgba(239,68,68,0.30)';
+const DANGER_BG_DARK = 'rgba(239,68,68,0.08)';
+const DANGER_BORDER_LIGHT = 'rgba(239,68,68,0.25)';
+const DANGER_BG_LIGHT = 'rgba(239,68,68,0.06)';
+const DANGER_PILL_BG_DARK = 'rgba(239,68,68,0.15)';
+const DANGER_PILL_BG_LIGHT = 'rgba(239,68,68,0.10)';
+
 export function CancelRideScreen() {
   const navigation = useNavigation<NavigationProp>();
   const queryClient = useQueryClient();
+  const { theme, isDark } = useTheme();
+  const insets = useSafeAreaInsets();
+
   const currentRide = useRideStore((s) => s.currentRide);
   const cancelRide = useRideStore((s) => s.cancelRide);
   const resetBooking = useRideStore((s) => s.resetBooking);
+
   const [selectedReason, setSelectedReason] = useState(cancelReasons[2]);
   const [loading, setLoading] = useState(false);
 
   const handleCancel = async () => {
     if (!currentRide?.id) {
       resetBooking();
-      // Wipe stale cache so useActiveRideSync doesn't re-navigate
       queryClient.removeQueries({ queryKey: QUERY_KEYS.currentRide });
       navigation.popToTop();
       return;
@@ -38,11 +59,7 @@ export function CancelRideScreen() {
       await RideService.cancelRide(currentRide.id, selectedReason);
       cancelRide();
       resetBooking();
-      // Clear the query cache immediately so useActiveRideSync sees null
-      // before the next refetch, preventing it from re-navigating to DriverSearching
       queryClient.removeQueries({ queryKey: QUERY_KEYS.currentRide });
-      // popToTop fully unwinds the stack back to MainTabs/Home,
-      // unlike navigate() which leaves DriverSearching in history
       navigation.popToTop();
     } catch (err: any) {
       Alert.alert('Cancel Failed', err.response?.data?.message ?? err.message);
@@ -51,67 +68,219 @@ export function CancelRideScreen() {
     }
   };
 
+  // Theme-specific danger surface
+  const dangerBorder = isDark ? DANGER_BORDER_DARK : DANGER_BORDER_LIGHT;
+  const dangerBg = isDark ? DANGER_BG_DARK : DANGER_BG_LIGHT;
+  const dangerPillBg = isDark ? DANGER_PILL_BG_DARK : DANGER_PILL_BG_LIGHT;
+
   return (
-    <View className="flex-1 bg-white">
-      <TopBar title="Ride Cancel Karein?" />
-      <ScrollView className="flex-1 p-3">
-        <View className="mb-3 rounded-xl border-[1.5px] border-red-300 bg-danger-light p-3">
-          <Text className="mb-1 text-sm font-bold text-danger">⚠️ Cancellation Policy</Text>
-          <Text className="mb-2 text-[11px] text-red-800">
-            Driver ne aapka request accept kar liya hai aur aapki taraf aa raha hai.
-          </Text>
-          <View className="flex-row gap-1.5">
-            <View className="flex-1 items-center rounded-lg bg-red-100 p-2">
-              <Text className="text-[10px] font-bold text-red-800">Abhi Cancel (0-2 min)</Text>
-              <Text className="text-sm font-extrabold text-danger">Free</Text>
-            </View>
-            <View className="flex-1 items-center rounded-lg bg-red-100 p-2">
-              <Text className="text-[10px] font-bold text-red-800">Driver Arrive ke Baad</Text>
-              <Text className="text-sm font-extrabold text-danger">PKR 30 Fee</Text>
+    <ScreenContainer>
+      {/* ── Header ──────────────────────────────────────────────── */}
+      <TopBar
+        title="Ride Cancel Karein?"
+        leftAction={<BackButton onPress={() => navigation.goBack()} />}
+      />
+
+      <ScrollView
+        className="flex-1"
+        contentContainerStyle={{ padding: 16, paddingBottom: insets.bottom + 24 }}
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+      >
+        {/* ── Cancellation Policy Card ───────────────────────────── */}
+        <View
+          style={{
+            backgroundColor: dangerBg,
+            borderColor: dangerBorder,
+            borderWidth: 1.5,
+          }}
+          className="mb-5 rounded-2xl overflow-hidden"
+        >
+          {/* Card header strip */}
+          <View
+            style={{ backgroundColor: dangerPillBg, borderBottomColor: dangerBorder, borderBottomWidth: 1 }}
+            className="flex-row items-center gap-2.5 px-4 py-3"
+          >
+            <Ionicons name="warning-outline" size={17} color={theme.danger} />
+            <Text style={{ color: theme.danger }} className="text-[13px] font-bold tracking-wide">
+              Cancellation Policy
+            </Text>
+          </View>
+
+          {/* Body */}
+          <View className="px-4 pt-3 pb-4">
+            <Text style={{ color: theme.textPrimary }} className="text-[13px] leading-5 mb-4">
+              Driver ne aapka request accept kar liya hai aur aapki taraf aa raha hai.
+            </Text>
+
+            {/* Fee breakdown pills */}
+            <View className="flex-row gap-2.5">
+              {/* Free window */}
+              <View
+                style={{ backgroundColor: theme.surfaceElevated, borderColor: theme.border, borderWidth: 1 }}
+                className="flex-1 items-center rounded-xl p-3 gap-1"
+              >
+                <Text style={{ color: theme.textSecondary }} className="text-[10px] font-semibold text-center uppercase tracking-wider">
+                  Abhi Cancel
+                </Text>
+                <Text style={{ color: theme.textMuted }} className="text-[10px] text-center mb-1">
+                  0 – 2 minutes
+                </Text>
+                <View
+                  style={{ backgroundColor: 'rgba(16,185,129,0.12)', borderColor: 'rgba(16,185,129,0.30)', borderWidth: 1 }}
+                  className="rounded-lg px-3 py-1"
+                >
+                  <Text style={{ color: '#10B981' }} className="text-[13px] font-extrabold">
+                    Free
+                  </Text>
+                </View>
+              </View>
+
+              {/* Fee window */}
+              <View
+                style={{ backgroundColor: theme.surfaceElevated, borderColor: theme.border, borderWidth: 1 }}
+                className="flex-1 items-center rounded-xl p-3 gap-1"
+              >
+                <Text style={{ color: theme.textSecondary }} className="text-[10px] font-semibold text-center uppercase tracking-wider">
+                  Driver Arrive
+                </Text>
+                <Text style={{ color: theme.textMuted }} className="text-[10px] text-center mb-1">
+                  ke baad
+                </Text>
+                <View
+                  style={{ backgroundColor: dangerPillBg, borderColor: dangerBorder, borderWidth: 1 }}
+                  className="rounded-lg px-3 py-1"
+                >
+                  <Text style={{ color: theme.danger }} className="text-[13px] font-extrabold">
+                    PKR 30 Fee
+                  </Text>
+                </View>
+              </View>
             </View>
           </View>
         </View>
 
-        <Text className="mb-2 text-sm font-bold text-text-primary">Cancel Karne ki Wajah?</Text>
-        {cancelReasons.map((reason) => (
+        {/* ── Reason Section Header ──────────────────────────────── */}
+        <Text
+          style={{ color: theme.textMuted }}
+          className="text-[11px] font-bold uppercase tracking-wider mb-3"
+        >
+          Cancel Karne ki Wajah?
+        </Text>
+
+        {/* ── Reason Cards ──────────────────────────────────────── */}
+        <View className="gap-2.5 mb-6">
+          {cancelReasons.map((reason) => {
+            const selected = selectedReason === reason;
+            return (
+              <Pressable
+                key={reason}
+                onPress={() => setSelectedReason(reason)}
+                style={{
+                  backgroundColor: selected ? theme.accentLight : theme.card,
+                  borderColor: selected ? theme.accentBorder : theme.cardBorder,
+                  borderWidth: 1.5,
+                }}
+                className="flex-row items-center gap-3 rounded-2xl p-3.5 active:opacity-80"
+              >
+                {/* Radio indicator */}
+                <View
+                  style={{
+                    width: 20,
+                    height: 20,
+                    borderRadius: 10,
+                    borderWidth: 2,
+                    borderColor: selected ? theme.accent : theme.textMuted,
+                    backgroundColor: selected ? theme.accent : 'transparent',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  {selected && (
+                    <View
+                      style={{
+                        width: 8,
+                        height: 8,
+                        borderRadius: 4,
+                        backgroundColor: isDark ? '#111111' : '#111111',
+                      }}
+                    />
+                  )}
+                </View>
+
+                {/* Label */}
+                <Text
+                  style={{
+                    color: selected ? theme.textPrimary : theme.textSecondary,
+                    fontWeight: selected ? '700' : '500',
+                  }}
+                  className="flex-1 text-[14px]"
+                >
+                  {reason}
+                </Text>
+
+                {/* Checkmark when selected */}
+                {selected && (
+                  <Ionicons name="checkmark-circle" size={18} color={theme.accent} />
+                )}
+              </Pressable>
+            );
+          })}
+        </View>
+
+        {/* ── Action Buttons ────────────────────────────────────── */}
+        <View className="gap-3">
+          {/* Secondary — Wapas Jao */}
           <Pressable
-            key={reason}
-            onPress={() => setSelectedReason(reason)}
-            className={cn(
-              'mb-1.5 flex-row items-center gap-2.5 rounded-lg border-[1.5px] p-2.5',
-              selectedReason === reason
-                ? 'border-accent bg-accent-light'
-                : 'border-border bg-white',
-            )}
+            onPress={() => navigation.goBack()}
+            style={{
+              height: 52,
+              backgroundColor: theme.surfaceElevated,
+              borderColor: theme.border,
+              borderWidth: 1.5,
+              borderRadius: 14,
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexDirection: 'row',
+              gap: 8,
+            }}
+            className="active:opacity-75"
           >
-            <View
-              className={cn(
-                'h-4 w-4 rounded-full border-2',
-                selectedReason === reason ? 'border-accent bg-accent' : 'border-[#CCCCCC]',
-              )}
-            />
-            <Text
-              className={cn(
-                'text-xs',
-                selectedReason === reason ? 'font-bold text-text-primary' : 'text-text-secondary',
-              )}
-            >
-              {reason}
+            <Ionicons name="arrow-back-outline" size={18} color={theme.textPrimary} />
+            <Text style={{ color: theme.textPrimary }} className="text-[15px] font-bold tracking-wide">
+              Wapas Jao
             </Text>
           </Pressable>
-        ))}
 
-        <View className="mt-2 flex-row gap-2">
-          <Button title="Wapas Jao" variant="outline" className="flex-1" onPress={() => navigation.goBack()} />
-          <Button
-            title="Ride Cancel Karein"
-            variant="danger"
-            className="flex-1"
-            loading={loading}
+          {/* Destructive — Ride Cancel Karein */}
+          <Pressable
             onPress={() => void handleCancel()}
-          />
+            disabled={loading}
+            style={{
+              height: 52,
+              backgroundColor: theme.danger,
+              borderRadius: 14,
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexDirection: 'row',
+              gap: 8,
+              opacity: loading ? 0.65 : 1,
+            }}
+            className="active:opacity-80"
+          >
+            {loading ? (
+              <ActivityIndicator color="#FFFFFF" size="small" />
+            ) : (
+              <>
+                <Ionicons name="close-circle-outline" size={20} color="#FFFFFF" />
+                <Text className="text-[15px] font-bold tracking-wide text-white">
+                  Ride Cancel Karein
+                </Text>
+              </>
+            )}
+          </Pressable>
         </View>
       </ScrollView>
-    </View>
+    </ScreenContainer>
   );
 }

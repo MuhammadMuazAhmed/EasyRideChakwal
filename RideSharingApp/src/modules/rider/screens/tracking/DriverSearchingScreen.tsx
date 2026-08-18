@@ -124,12 +124,12 @@ export function DriverSearchingScreen() {
   );
 
   useEffect(() => {
-    if (!hasRequested.current) {
+    if (!hasRequested.current && !currentRide?.id) {
       hasRequested.current = true;
       requestMutation.mutate();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [currentRide?.id]);
 
   const handleCancel = () => {
     if (currentRide?.id) {

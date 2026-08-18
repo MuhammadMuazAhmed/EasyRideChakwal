@@ -14,7 +14,7 @@ import { Button } from "@/shared/components/ui/Button";
 import { useCurrentLocation } from "@/shared/hooks";
 import type { RiderStackParamList } from "@/navigation/types";
 import { useRideStore } from "@/rider/store/rideStore";
-import { brand } from "@/shared/theme";
+import { brand, useTheme } from "@/shared/theme";
 import { GoogleMapsService } from '@/api/services/googleMapsService';
 
 
@@ -26,6 +26,7 @@ type NavigationProp = NativeStackNavigationProp<
 export function HomeMapScreen() {
   const navigation = useNavigation<NavigationProp>();
   const { location, hasPermission } = useCurrentLocation();
+  const { theme } = useTheme();
   const pickup = useRideStore((s) => s.pickup);
   const setPickup = useRideStore((s) => s.setPickup);
   const selectedVehicle = useRideStore((s) => s.selectedVehicle);
@@ -124,13 +125,18 @@ export function HomeMapScreen() {
   return (
     <View className="flex-1">
       <TopBar
-        variant="light"
         showLogo
         title={brand.name}
         rightAction={
-          <View className="flex-row items-center gap-2 rounded-full border border-border bg-white px-3 py-1.5">
+          <View
+            style={{
+              backgroundColor: theme.surfaceElevated,
+              borderColor: theme.border,
+            }}
+            className="flex-row items-center gap-2 rounded-full border px-3 py-1.5"
+          >
             <View className="h-2.5 w-2.5 rounded-full bg-success" />
-            <Text className="text-[12px] text-neutral-600" numberOfLines={1}>
+            <Text style={{ color: theme.textSecondary }} className="text-[12px]" numberOfLines={1}>
               {currentLocationName ?? 'Locating...'}
             </Text>
           </View>

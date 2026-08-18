@@ -18,7 +18,6 @@ import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import Animated, {
-  useSharedValue,
   useAnimatedStyle,
   withTiming,
   Easing,
@@ -27,6 +26,7 @@ import Animated, {
 import { ScreenContainer } from '@/shared/components/common/TopBar';
 import { AuthService } from '@/api/services/authService';
 import { useAuthStore } from '@/store/authStore';
+import { useTheme } from '@/shared/theme';
 import type { AuthStackParamList } from '@/navigation/types';
 
 const phoneSchema = z.object({
@@ -42,6 +42,7 @@ type NavigationProp = NativeStackNavigationProp<AuthStackParamList, 'PhoneNumber
 export function PhoneNumberScreen() {
   const insets = useSafeAreaInsets();
   const navigation = useNavigation<NavigationProp>();
+  const { theme, isDark } = useTheme();
   const setPhone = useAuthStore((s) => s.setPhone);
   const [loading, setLoading] = useState(false);
   const [role, setRole] = useState<'rider' | 'driver'>('rider');
@@ -97,11 +98,16 @@ export function PhoneNumberScreen() {
   };
 
   return (
-    <ScreenContainer className="bg-white">
+    <ScreenContainer>
       {/* Refined Branded Header */}
       <View
-        className="bg-primary px-5 pb-5"
-        style={{ paddingTop: Math.max(insets.top + 12, 44) }}
+        style={{
+          paddingTop: Math.max(insets.top + 12, 44),
+          backgroundColor: theme.headerBg,
+          borderBottomWidth: 1,
+          borderBottomColor: theme.border,
+        }}
+        className="px-5 pb-5"
       >
         <View className="flex-row items-center gap-3.5">
           <Image
@@ -110,10 +116,10 @@ export function PhoneNumberScreen() {
             resizeMode="cover"
           />
           <View className="justify-center">
-            <Text className="text-[19px] font-bold text-white tracking-tight">
+            <Text style={{ color: theme.headerText }} className="text-[19px] font-bold tracking-tight">
               Easy Ride Chakwal
             </Text>
-            <Text className="text-[12px] text-gray-400 font-medium mt-0.5">
+            <Text style={{ color: theme.headerSubtitle }} className="text-[12px] font-medium mt-0.5">
               Apna number darj karein
             </Text>
           </View>
@@ -130,24 +136,28 @@ export function PhoneNumberScreen() {
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
         >
-          {/* Main Heading & Subtitle */}
-          <Text className="text-[24px] font-bold text-[#111111] text-center tracking-tight">
+          {/* Main Heading & Subtitle — Centered */}
+          <Text style={{ color: theme.textPrimary }} className="text-[24px] font-bold text-center tracking-tight">
             Enter your phone number
           </Text>
-          <Text className="text-[14px] text-[#666666] text-center mt-2 leading-5">
+          <Text style={{ color: theme.textSecondary }} className="text-[14px] text-center mt-2 leading-5">
             We'll send you a 6-digit OTP to verify your number.
           </Text>
 
           {/* Rider / Driver Segmented Selector */}
           <View
-            className="my-7 flex-row rounded-xl bg-[#F3F4F6] p-1 relative h-[50px] items-center"
+            style={{ backgroundColor: theme.surfaceElevated, borderColor: theme.border, borderWidth: 1 }}
+            className="my-7 flex-row rounded-xl p-1 relative h-[50px] items-center"
             onLayout={(e) => setSelectorWidth(e.nativeEvent.layout.width)}
           >
             {/* Animated Tab Indicator */}
             {selectorWidth > 0 && (
               <Animated.View
-                className="absolute left-1 top-1 bottom-1 rounded-lg bg-[#111111]"
-                style={tabIndicatorStyle}
+                style={[
+                  tabIndicatorStyle,
+                  { backgroundColor: isDark ? '#2E2E2E' : '#111111' },
+                ]}
+                className="absolute left-1 top-1 bottom-1 rounded-lg"
               />
             )}
 
@@ -156,9 +166,8 @@ export function PhoneNumberScreen() {
               className="flex-1 items-center justify-center h-full z-10"
             >
               <Text
-                className={`text-[13px] font-bold ${
-                  role === 'rider' ? 'text-[#F5C400]' : 'text-[#6B7280]'
-                }`}
+                style={{ color: role === 'rider' ? theme.accent : theme.textSecondary }}
+                className="text-[13px] font-bold text-center"
               >
                 Rider (سواری)
               </Text>
@@ -169,9 +178,8 @@ export function PhoneNumberScreen() {
               className="flex-1 items-center justify-center h-full z-10"
             >
               <Text
-                className={`text-[13px] font-bold ${
-                  role === 'driver' ? 'text-[#F5C400]' : 'text-[#6B7280]'
-                }`}
+                style={{ color: role === 'driver' ? theme.accent : theme.textSecondary }}
+                className="text-[13px] font-bold text-center"
               >
                 Driver (ڈرائیور)
               </Text>
@@ -179,26 +187,28 @@ export function PhoneNumberScreen() {
           </View>
 
           {/* Phone Number Field Label */}
-          <Text className="text-[12px] font-bold uppercase tracking-wider text-[#6B7280] mb-2">
+          <Text style={{ color: theme.textMuted }} className="text-[12px] font-bold uppercase tracking-wider mb-2">
             Phone Number
           </Text>
 
           {/* Unified Phone Input Field */}
           <View
-            className={`flex-row items-center border-[1.5px] rounded-xl bg-white px-3.5 h-[54px] ${
-              errors.phone
-                ? 'border-danger'
+            style={{
+              backgroundColor: theme.inputBg,
+              borderColor: errors.phone
+                ? theme.danger
                 : isFocused
-                ? 'border-[#F5C400]'
-                : 'border-[#E5E7EB]'
-            }`}
+                ? theme.accent
+                : theme.inputBorder,
+            }}
+            className="flex-row items-center border-[1.5px] rounded-xl px-3.5 h-[54px]"
           >
             <View className="flex-row items-center gap-1.5 pr-3">
               <Text className="text-base">🇵🇰</Text>
-              <Text className="text-[15px] font-bold text-[#111111]">+92</Text>
+              <Text style={{ color: theme.inputText }} className="text-[15px] font-bold">+92</Text>
             </View>
 
-            <View className="h-6 w-[1px] bg-[#E5E7EB] mx-2.5" />
+            <View style={{ backgroundColor: theme.border }} className="h-6 w-[1px] mx-2.5" />
 
             <Controller
               control={control}
@@ -212,8 +222,9 @@ export function PhoneNumberScreen() {
                   keyboardType="phone-pad"
                   maxLength={10}
                   placeholder="300 1234567"
-                  placeholderTextColor="#9CA3AF"
-                  className="flex-1 text-[16px] font-medium text-[#111111] p-0"
+                  placeholderTextColor={theme.placeholderText}
+                  style={{ color: theme.inputText }}
+                  className="flex-1 text-[16px] font-medium p-0"
                   selectionColor="#F5C400"
                 />
               )}
@@ -221,7 +232,7 @@ export function PhoneNumberScreen() {
           </View>
 
           {errors.phone?.message && (
-            <Text className="text-xs text-danger font-medium mt-1.5 ml-1">
+            <Text style={{ color: theme.danger }} className="text-xs font-medium mt-1.5 ml-1">
               {errors.phone.message}
             </Text>
           )}
@@ -230,10 +241,11 @@ export function PhoneNumberScreen() {
           <Pressable
             onPress={handleSubmit(onSubmit)}
             disabled={loading}
-            className={`mt-6 h-[54px] rounded-xl items-center justify-center flex-row ${
-              loading ? 'bg-accent/70' : 'bg-accent active:opacity-90'
-            }`}
-            style={{ width: '100%' }}
+            style={{
+              backgroundColor: theme.accent,
+              opacity: loading ? 0.7 : 1,
+            }}
+            className="mt-6 h-[54px] rounded-xl items-center justify-center flex-row active:opacity-90 w-full"
           >
             {loading ? (
               <View className="flex-row items-center gap-2">
@@ -247,14 +259,22 @@ export function PhoneNumberScreen() {
             )}
           </Pressable>
 
-          {/* Terms & Privacy Statement */}
-          <Text className="text-[12px] text-[#9CA3AF] text-center mt-6 leading-5">
+          {/* Terms & Privacy Statement — Centered */}
+          <Text style={{ color: theme.textMuted }} className="text-[12px] text-center mt-6 leading-5">
             By continuing, you agree to our{' '}
-            <Text onPress={handleTermsPress} className="font-semibold text-[#111111] underline">
+            <Text
+              onPress={handleTermsPress}
+              style={{ color: theme.textPrimary }}
+              className="font-semibold underline"
+            >
               Terms of Service
             </Text>{' '}
             and{' '}
-            <Text onPress={handleTermsPress} className="font-semibold text-[#111111] underline">
+            <Text
+              onPress={handleTermsPress}
+              style={{ color: theme.textPrimary }}
+              className="font-semibold underline"
+            >
               Privacy Policy
             </Text>
             .

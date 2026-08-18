@@ -3,7 +3,7 @@ import { z } from 'zod';
 import { connectDB } from '@/lib/mongodb';
 import { requireAuth } from '@/lib/auth';
 import { calculateFare } from '@/lib/fare';
-import { updateRideStatus } from '@/lib/realtime';
+import { updateRideStatus, deleteRideRealtimeData } from '@/lib/realtime';
 import { Notify } from '@/lib/fcm';
 import { Ride } from '@/models/Ride';
 import { Driver } from '@/models/Driver';
@@ -51,6 +51,23 @@ export async function POST(req: NextRequest) {
     }
 
     const { pickup, destination, vehicleType, paymentMethod } = parsed.data;
+
+    // Auto-expire stale 'searching' rides older than 60 seconds
+    const sixtySecondsAgo = new Date(Date.now() - 60 * 1000);
+    const staleSearchingRides = await Ride.find({
+      riderId: auth.userId,
+      status: 'searching',
+      createdAt: { $lt: sixtySecondsAgo },
+    });
+
+    for (const staleRide of staleSearchingRides) {
+      staleRide.status = 'cancelled';
+      staleRide.cancelledAt = new Date();
+      staleRide.cancelReason = 'Searching timeout expired';
+      await staleRide.save();
+      await updateRideStatus(staleRide._id.toString(), 'cancelled', { cancelledAt: Date.now() });
+      await deleteRideRealtimeData(staleRide._id.toString());
+    }
 
     // Check rider does not already have an active ride
     const activeRide = await Ride.findOne({
@@ -171,6 +188,22 @@ export async function GET(req: NextRequest) {
     // to prevent a CastError when MongoDB tries to cast "temp_…" to ObjectId.
     if (auth.userId.startsWith('temp_')) {
       return ok({ rides: [], total: 0, page: 1, limit });
+    }
+
+    // Auto-expire stale 'searching' rides older than 60 seconds
+    const sixtySecondsAgo = new Date(Date.now() - 60 * 1000);
+    const staleSearchingRides = await Ride.find({
+      status: 'searching',
+      createdAt: { $lt: sixtySecondsAgo },
+    });
+
+    for (const staleRide of staleSearchingRides) {
+      staleRide.status = 'cancelled';
+      staleRide.cancelledAt = new Date();
+      staleRide.cancelReason = 'Searching timeout expired';
+      await staleRide.save();
+      await updateRideStatus(staleRide._id.toString(), 'cancelled', { cancelledAt: Date.now() });
+      await deleteRideRealtimeData(staleRide._id.toString());
     }
 
     const query: Record<string, unknown> = {};

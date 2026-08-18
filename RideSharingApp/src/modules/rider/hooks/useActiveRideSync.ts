@@ -22,6 +22,7 @@ export function useActiveRideSync() {
   const assignDriver = useRideStore((state) => state.assignDriver);
   const completeRide = useRideStore((state) => state.completeRide);
   const cancelRide = useRideStore((state) => state.cancelRide);
+  const resetRideOnly = useRideStore((state) => state.resetRideOnly);
   const resetBooking = useRideStore((state) => state.resetBooking);
 
   const prevStatusRef = useRef<string | null>(null);
@@ -105,7 +106,8 @@ export function useActiveRideSync() {
         ]);
       }
     } else if (status === 'no_driver') {
-      resetBooking();
+      // Use resetRideOnly so pickup/destination/vehicle are preserved for retry
+      resetRideOnly();
       if (prevStatusRef.current !== 'no_driver') {
         navigation.navigate('NoDriver');
       }
@@ -130,7 +132,8 @@ export function useActiveRideSync() {
       return;
     }
 
-    const startedAt = searchingStartedAtRef.current ?? Date.now();
+    const createdAtTime = activeRide.createdAt ? new Date(activeRide.createdAt).getTime() : Date.now();
+    const startedAt = searchingStartedAtRef.current ?? createdAtTime;
     const elapsed = Date.now() - startedAt;
     const remaining = Math.max(NO_DRIVER_TIMEOUT_MS - elapsed, 0);
 
@@ -144,12 +147,13 @@ export function useActiveRideSync() {
         } catch {
           // Still navigate — local state must recover even if cancel fails.
         } finally {
-          resetBooking();
+          // resetRideOnly preserves pickup/destination/vehicle for retry
+          resetRideOnly();
           navigation.navigate('NoDriver');
         }
       })();
     }, remaining);
 
     return () => clearTimeout(timer);
-  }, [activeRide, navigation, resetBooking]);
+  }, [activeRide, navigation, resetRideOnly]);
 }

@@ -29,9 +29,8 @@ export function DriverSettingsScreen() {
     preference === 'light' ? '☀️ Light' : preference === 'dark' ? '🌙 Dark' : '⚙️ Default';
 
   return (
-    <ScreenContainer className="bg-white">
+    <ScreenContainer>
       <TopBar
-        variant="light"
         showLogo
         title="Easy Ride Chakwal"
         subtitle="Settings"
